@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Terminal — Escáner de Mercado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0071e3; --blue-dark:#0051a2;
+  --green:#1d7a3c; --green-bg:#e8f8ee;
+  --red:#d5392f; --red-bg:#fdeceb;
+  --yellow:#b36a00; --yellow-bg:#fdf3e3;
+  --bg:#ffffff; --surface:#f5f5f7; --border:#e5e5ea;
+  --text:#1d1d1f; --muted:#86868b;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);}
+header h1{font-size:1.3rem;font-weight:600;margin:0;letter-spacing:-0.02em;}
+header h1 span{color:var(--blue);font-weight:600;}
+.updated{font-size:.8rem;color:var(--muted);}
+
+.tabs{display:flex;gap:4px;padding:14px 32px 0;border-bottom:1px solid var(--border);}
+.tab{padding:10px 18px;font-size:.9rem;border-radius:10px 10px 0 0;cursor:pointer;color:var(--muted);font-weight:500;transition:color .15s;}
+.tab.active{color:var(--blue);border-bottom:2px solid var(--blue);font-weight:600;}
+.tab:hover{color:var(--text);}
+
+.layout{display:grid;grid-template-columns:320px 1fr 340px;gap:0;height:calc(100vh - 110px);}
+@media (max-width:1100px){.layout{grid-template-columns:1fr;height:auto;}}
+.col{padding:24px;overflow-y:auto;}
+.col.left{border-right:1px solid var(--border);}
+.col.right{border-left:1px solid var(--border);}
+h2{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin:22px 0 10px;}
+h2:first-child{margin-top:0;}
+
+input[type=text]{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:12px;font-size:.92rem;font-family:inherit;background:var(--surface);transition:border-color .15s, background .15s;}
+input[type=text]:focus{outline:none;border-color:var(--blue);background:#fff;}
+
+.scan-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-radius:14px;cursor:pointer;margin-top:6px;background:var(--surface);transition:background .15s;}
+.scan-row:hover{background:#ececef;}
+.scan-row .sym{font-weight:600;font-size:.95rem;}
+.scan-row .meta{font-size:.75rem;color:var(--muted);margin-top:2px;}
+
+.tag{font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:20px;letter-spacing:.02em;}
+.tag.long{background:var(--green-bg);color:var(--green);}
+.tag.short{background:var(--red-bg);color:var(--red);}
+.tag.wait{background:var(--yellow-bg);color:var(--yellow);}
+
+.chart-wrap{padding:24px;display:flex;flex-direction:column;height:calc(100vh - 110px);}
+.chart-title{font-size:1.05rem;font-weight:600;margin-bottom:14px;letter-spacing:-0.01em;}
+.chart-title .sub{color:var(--muted);font-weight:400;font-size:.82rem;}
+iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
+
+.metric-card{background:var(--surface);border-radius:16px;padding:18px 20px;margin-bottom:14px;}
+.metric-row{display:flex;justify-content:space-between;font-size:.85rem;padding:7px 0;border-bottom:1px solid var(--border);}
+.metric-row:last-child{border-bottom:none;}
+.metric-row b{font-weight:600;}
+
+.verdict{text-align:center;padding:22px;border-radius:16px;margin-bottom:16px;}
+.verdict .label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+.verdict .action{font-size:1.4rem;font-weight:700;margin:6px 0;letter-spacing:-0.02em;}
+.verdict.long{background:var(--green-bg);} .verdict.long .action{color:var(--green);}
+.verdict.short{background:var(--red-bg);} .verdict.short .action{color:var(--red);}
+.verdict.wait{background:var(--yellow-bg);} .verdict.wait .action{color:var(--yellow);}
+
+.note{font-size:.74rem;color:var(--muted);line-height:1.6;margin-top:12px;}
+.empty{color:var(--muted);font-size:.88rem;text-align:center;padding:36px 12px;}
+.disclaimer{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:.76rem;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Nexus <span>Terminal</span></h1>
+  <a href="historico.html" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">Histórico de señales</a>
+  <div class="updated" id="updatedAt">Cargando resultados…</div>
+</header>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" data-market="stocks">Acciones EEUU</div>
+  <div class="tab" data-market="crypto">Cripto</div>
+  <div class="tab" data-market="fx">Forex</div>
+</div>
+
+<div class="layout">
+  <div class="col left">
+    <input type="text" id="filterBox" placeholder="Filtrar por símbolo..." oninput="renderLists()">
+    <button id="toggleAllBtn" style="margin-top:8px;width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:.8rem;">Ver todos los activos</button>
+    <h2 id="longsTitle">Candidatos con sesgo alcista</h2>
+    <div id="longsBox"></div>
+  <h2 id="shortsTitle">Candidatos con sesgo bajista</h2>
+  <div id="shortsBox"></div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title" id="chartTitle">Selecciona un activo de la lista</div>
+    <iframe id="tvChart" src="about:blank"></iframe>
+  </div>
+
+  <div class="col right">
+<div class="disclaimer">Análisis propio de Nexus Terminal sobre datos reales de mercado (cierre de sesión), calculado en segundo plano sobre miles de activos líquidos. No es asesoramiento financiero ni garantía de resultado.</div>
+    <h2>Lectura técnica</h2>
+    <div id="analysisBox"><div class="empty">Elige un activo para ver su análisis</div></div>
+  </div>
+</div>
+
+<script>
+const NAME_MAP = {
+  "nike":"NKE","apple":"AAPL","microsoft":"MSFT","google":"GOOGL","alphabet":"GOOGL",
+  "amazon":"AMZN","nvidia":"NVDA","tesla":"TSLA","meta":"META","facebook":"META",
+  "netflix":"NFLX","disney":"DIS","coca cola":"KO","coca-cola":"KO","mcdonalds":"MCD",
+  "mcdonald's":"MCD","bitcoin":"X:BTCUSD","ethereum":"X:ETHUSD","oro":"C:XAUUSD",
+  "gold":"C:XAUUSD","euro":"C:EURUSD"
+};
+let data = { stocks: null, crypto: null, fx: null };
+let currentMarket = "stocks";
+let currentSymbol = null;
+let showAll = false;
+
+async function loadResults(){
+  try{
+    const res = await fetch('./results.json');
+    data = await res.json();
+  }catch(e){
+    document.getElementById('updatedAt').textContent = "No se pudieron cargar los resultados.";
+    return;
+  }
+  const active = data[currentMarket];
+  document.getElementById('updatedAt').textContent = active
+    ? `Actualizado: ${new Date(active.updatedAt).toLocaleString('es-ES')} · ${active.totalEligible} activos líquidos analizados`
+    : "Aún sin datos suficientes — el escaneo en segundo plano todavía está acumulando histórico.";
+  renderLists();
+}
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    currentMarket = t.dataset.market;
+    loadResults();
+  };
+});
+
+document.getElementById('toggleAllBtn').onclick = () => {
+  showAll = !showAll;
+  document.getElementById('toggleAllBtn').textContent = showAll ? 'Ver solo con señal' : 'Ver todos los activos';
+  renderLists();
+};
+
+function renderLists(){
+  const q = document.getElementById('filterBox').value.toLowerCase().trim();
+  const qTicker = NAME_MAP[q] || q;
+  const active = data[currentMarket];
+  const longsBox = document.getElementById('longsBox'), shortsBox = document.getElementById('shortsBox');
+  longsBox.innerHTML = ''; shortsBox.innerHTML = '';
+  if(!active){ longsBox.innerHTML = '<div class="empty">Sin datos todavía</div>'; return; }
+
+  if(showAll){
+    document.getElementById('longsTitle').textContent = 'Todos los activos analizados';
+    document.getElementById('shortsTitle').style.display = 'none';
+    shortsBox.style.display = 'none';
+    const all = (active.all || []).filter(s=>!q || s.symbol.toLowerCase().includes(qTicker));
+    longsBox.innerHTML = all.length ? all.map(s => rowHtml(s, s.verdict)).join('') : '<div class="empty">Sin resultados para ese filtro</div>';
+  } else {
+    document.getElementById('longsTitle').textContent = 'Candidatos con sesgo alcista';
+    document.getElementById('shortsTitle').style.display = '';
+    shortsBox.style.display = '';
+    const longs = active.longs.filter(s=>!q || s.symbol.toLowerCase().includes(qTicker));
+    const shorts = active.shorts.filter(s=>!q || s.symbol.toLowerCase().includes(qTicker));
+    longsBox.innerHTML = longs.length ? '' : '<div class="empty">Ninguno ahora mismo</div>';
+    longs.forEach(s => longsBox.innerHTML += rowHtml(s,"long"));
+    shortsBox.innerHTML = shorts.length ? '' : '<div class="empty">Ninguno ahora mismo</div>';
+    shorts.forEach(s => shortsBox.innerHTML += rowHtml(s,"short"));
+  }
+
+  document.querySelectorAll('.scan-row').forEach(row=>{
+    row.onclick = () => selectSymbol(row.dataset.symbol);
+  });
+}
+
+function rowHtml(s, type){
+  return `<div class="scan-row" data-symbol="${s.symbol}">
+    <div><div class="sym">${s.symbol}</div><div class="meta">RSI ${s.rsi} · ${s.trend}</div></div>
+    <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"ESPERAR"}</span>
+  </div>`;
+}
+
+function tvSymbol(symbol, market){
+  if(market==="fx") return "FX:" + symbol.replace("C:","");
+  if(market==="crypto") return "COINBASE:" + symbol.replace("X:","");
+  return symbol;
+}
+
+function selectSymbol(symbol){
+  currentSymbol = symbol;
+  const active = data[currentMarket];
+  const s = [...active.longs, ...active.shorts, ...(active.all||[])].find(x=>x.symbol===symbol);
+  if(!s) return;
+  document.getElementById('chartTitle').innerHTML = `${symbol} <span class="sub">(${currentMarket})</span>`;
+  document.getElementById('tvChart').src = `https://s.tradingview.com/widgetembed/?frameElementId=tv_widget&symbol=${encodeURIComponent(tvSymbol(symbol, currentMarket))}&interval=D&hidesidetoolbar=0&saveimage=1&toolbarbg=f8f9fa&theme=light&style=1&timezone=Etc%2FUTC`;
+  renderAnalysis(s);
+}
+
+function renderAnalysis(s){
+  const box = document.getElementById('analysisBox');
+  const vLabel = s.verdict==="long"?"Sesgo alcista":s.verdict==="short"?"Sesgo bajista":"Esperar";
+  box.innerHTML = `
+    <div class="verdict ${s.verdict}">
+      <div class="label">Lectura técnica — ${s.symbol}</div>
+      <div class="action">${vLabel}</div>
+      <div style="font-size:.78rem;color:var(--muted)">${s.why}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-row"><span>Precio</span><b>${s.price}</b></div>
+      <div class="metric-row"><span>SMA 20 / SMA 50</span><b>${s.sma20} / ${s.sma50 ?? '—'}</b></div>
+      <div class="metric-row"><span>Tendencia</span><b>${s.trend} (${s.trendStrength}%)</b></div>
+      <div class="metric-row"><span>RSI (14)</span><b>${s.rsi}</b></div>
+      <div class="metric-row"><span>Máx / Mín 20 sesiones</span><b>${s.high20} / ${s.low20}</b></div>
+      <div class="metric-row"><span>ATR (14) — volatilidad real</span><b>${s.atr} (${s.atrPct}%)</b></div>
+      <div class="metric-row"><span>Riesgo sugerido (1.5×ATR)</span><b>${s.stopSuggested}</b></div>
+      <div class="metric-row"><span>Horizonte orientativo</span><b>${s.horizon}</b></div>
+    </div>
+    <div class="note">El horizonte y el riesgo se derivan de la volatilidad histórica real (ATR) y la fuerza de la tendencia — son orientativos, no una promesa de tiempo o resultado.</div>
+  `;
+}
+
+loadResults();
+</script>
+</body>
+</html>
