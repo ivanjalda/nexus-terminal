@@ -182,7 +182,7 @@ function renderLists(){
 
 function rowHtml(s, type){
   return `<div class="scan-row" data-symbol="${s.symbol}">
-    <div><div class="sym">${s.symbol}</div><div class="meta">RSI ${s.rsi} · ${s.trend}</div></div>
+    <div><div class="sym">${s.symbol}</div><div class="meta">RSI ${s.rsi} · ${s.trend}${s.atrPct >= 8 ? ' · ⚠ volatilidad muy alta' : ''}</div></div>
     <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"ESPERAR"}</span>
   </div>`;
 }
@@ -222,7 +222,7 @@ function renderAnalysis(s){
       <div class="metric-row"><span>Riesgo sugerido (1.5×ATR)</span><b>${s.stopSuggested}</b></div>
       <div class="metric-row"><span>Horizonte orientativo</span><b>${s.horizon}</b></div>
     </div>
-    <div class="note">El horizonte y el riesgo se derivan de la volatilidad histórica real (ATR) y la fuerza de la tendencia — son orientativos, no una promesa de tiempo o resultado.</div>
+    ${s.atrPct >= 8 ? '<div class="note" style="color:var(--yellow);font-weight:600;">⚠ Volatilidad diaria muy alta (' + s.atrPct + '%): los movimientos pueden ser muy bruscos en ambos sentidos.</div>' : ''}<div class="note">El horizonte y el riesgo se derivan de la volatilidad histórica real (ATR) y la fuerza de la tendencia — son orientativos, no una promesa de tiempo o resultado.</div>
   `;
 }
 
