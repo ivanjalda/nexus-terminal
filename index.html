@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nexus Terminal — Escáner de Mercado</title>
+<meta name="description" content="Nexus Terminal: lectura técnica diaria de miles de acciones, cripto y forex. Ordena, explica cada señal y mide sus resultados en público. Sin promesas de rentabilidad.">
+<meta property="og:title" content="Nexus Terminal — lectura técnica del mercado">
+<meta property="og:description" content="Miles de activos analizados cada día, cada señal explicada y un histórico público de resultados. Sin promesas de rentabilidad.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
@@ -68,6 +73,14 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
 .note{font-size:.74rem;color:var(--muted);line-height:1.6;margin-top:12px;}
 .empty{color:var(--muted);font-size:.88rem;text-align:center;padding:36px 12px;}
 .disclaimer{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:.76rem;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.welcome{background:var(--surface);border-radius:18px;padding:28px 32px;max-width:640px;line-height:1.6;}
+.welcome h3{margin:0 0 10px;font-size:1.25rem;letter-spacing:-0.02em;}
+.welcome p{margin:0 0 14px;color:var(--muted);}
+.welcome ol{margin:0 0 14px;padding-left:20px;}
+.welcome li{margin-bottom:6px;}
+.welcome .small{font-size:.8rem;margin:0;}
+.chart-wrap:has(iframe[src*="tradingview"]) .welcome{display:none;}
+.chart-wrap:not(:has(iframe[src*="tradingview"])) iframe{display:none;}
 </style>
 </head>
 <body>
@@ -96,6 +109,16 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
 
   <div class="chart-wrap">
     <div class="chart-title" id="chartTitle">Selecciona un activo de la lista</div>
+    <div class="welcome">
+  <h3>Lectura técnica del mercado, explicada</h3>
+  <p>Cada día analizamos miles de acciones, criptomonedas y pares de divisas y te mostramos las que tienen señales técnicas claras, con el porqué de cada una.</p>
+  <ol>
+    <li>Elige un mercado arriba: Acciones EEUU, Cripto o Forex.</li>
+    <li>Pulsa un activo de la lista: verás su gráfico y su análisis.</li>
+    <li>Entra en «Histórico de señales»: allí medimos en público qué pasó después de cada una.</li>
+  </ol>
+  <p class="small">Son señales técnicas automáticas, no recomendaciones de inversión. La rentabilidad pasada no garantiza resultados futuros.</p>
+</div>
     <iframe id="tvChart" src="about:blank"></iframe>
   </div>
 
