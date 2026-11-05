@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cómo funciona — Nexus Terminal</title>
+<meta name="description" content="Qué hace Nexus Terminal cada día, qué significa cada dato del análisis y qué límites tiene. Sin tecnicismos y sin promesas de rentabilidad.">
+<style>
+:root{
+  --blue:#0071e3;
+  --bg:#ffffff; --surface:#f5f5f7; --border:#e5e5ea;
+  --text:#1d1d1f; --muted:#86868b;
+  --yellow:#b36a00; --yellow-bg:#fdf3e3;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.7;}
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);}
+header .brand{font-size:1.3rem;font-weight:600;letter-spacing:-0.02em;}
+header .brand span{color:var(--blue);}
+header a{font-size:.9rem;color:var(--blue);text-decoration:none;font-weight:500;}
+main{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
+h1{font-size:2rem;font-weight:700;letter-spacing:-0.03em;margin:0 0 12px;}
+.lead{color:var(--muted);font-size:1.05rem;margin:0 0 32px;}
+h2{font-size:1.2rem;font-weight:600;letter-spacing:-0.02em;margin:36px 0 10px;}
+p{margin:0 0 14px;}
+dl{margin:0;}
+dt{font-weight:600;margin-top:14px;}
+dd{margin:2px 0 0;color:var(--muted);}
+ul{padding-left:20px;margin:0 0 14px;}
+li{margin-bottom:8px;}
+a.enlace{color:var(--blue);}
+.aviso{background:var(--yellow-bg);color:var(--yellow);border-radius:14px;padding:16px 20px;margin-top:36px;font-size:.92rem;}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Nexus <span>Terminal</span></div>
+  <a href="./">← Volver al escáner</a>
+</header>
+<main>
+  <h1>Cómo funciona Nexus Terminal</h1>
+  <p class="lead">Una explicación sin tecnicismos de lo que hacemos cada día, qué significa cada dato y qué límites tiene.</p>
+
+  <h2>Qué hacemos cada día</h2>
+  <p>Cada día laborable descargamos los precios y el volumen de cierre de miles de acciones de EEUU, criptomonedas y pares de divisas. Nos quedamos con los que tienen suficiente volumen de negociación y, para cada uno, calculamos tres cosas: hacia dónde va su tendencia, si ha subido o bajado demasiado rápido y cuánto suele moverse en un día.</p>
+
+  <h2>Cómo decidimos si una señal es alcista, bajista o de espera</h2>
+  <ul>
+    <li><b>Sesgo alcista:</b> la tendencia reciente es al alza, el precio está cerca de su máximo de las últimas 20 sesiones y no ha subido de forma exagerada.</li>
+    <li><b>Sesgo bajista:</b> la tendencia es a la baja, el precio está cerca de su mínimo de las últimas 20 sesiones y no ha caído de forma exagerada.</li>
+    <li><b>Esperar:</b> no se da ninguna de las dos situaciones.</li>
+  </ul>
+  <p>Las listas muestran los activos con la tendencia más marcada en cada sentido. El botón «Ver todos los activos» enseña también los que están en espera.</p>
+
+  <h2>Qué significa cada dato del análisis</h2>
+  <dl>
+    <dt>Precio</dt>
+    <dd>El último precio de cierre.</dd>
+    <dt>SMA 20 / SMA 50</dt>
+    <dd>La media del precio en las últimas 20 y 50 sesiones. Si la de 20 está por encima de la de 50, la tendencia es al alza.</dd>
+    <dt>Tendencia</dt>
+    <dd>Alcista o bajista, y la distancia entre esas dos medias en porcentaje. Cuanto mayor, más marcada.</dd>
+    <dt>RSI (14)</dt>
+    <dd>Una escala de 0 a 100 que mide si el precio ha subido o bajado muy rápido en las últimas 14 sesiones. Por encima de 70 se suele hablar de «sobrecompra», y por debajo de 30, de «sobreventa».</dd>
+    <dt>Máx / Mín 20 sesiones</dt>
+    <dd>El precio más alto y el más bajo de las últimas 20 sesiones.</dd>
+    <dt>ATR (14)</dt>
+    <dd>Lo que se mueve el precio en un día normal, en la moneda del activo y en porcentaje. Más alto significa más volatilidad y, por tanto, más riesgo.</dd>
+    <dt>Riesgo sugerido</dt>
+    <dd>Una distancia orientativa (1,5 veces el ATR) para situar una protección, calculada con esa volatilidad.</dd>
+    <dt>Horizonte orientativo</dt>
+    <dd>Una referencia aproximada de sesiones, calculada con una regla sencilla según la fuerza de la tendencia y la volatilidad. No está demostrado que se cumpla.</dd>
+  </dl>
+
+  <h2>Lo que debes tener en cuenta</h2>
+  <ul>
+    <li><b>No es asesoramiento financiero</b> ni una recomendación de comprar o vender.</li>
+    <li><b>No es una predicción.</b> Describe cómo se ha comportado el precio; no sabemos qué pasará.</li>
+    <li><b>Todavía no tenemos datos suficientes</b> para afirmar que estas señales superen al mercado. Por eso las medimos en público y publicamos los resultados, sean buenos o malos.</li>
+    <li><b>Los datos son de cierre de sesión</b>, no en tiempo real.</li>
+    <li><b>Algunos activos pueden dar señales engañosas</b>, por ejemplo fondos apalancados, que se mueven muchísimo, o empresas en proceso de compra, cuyo precio queda casi quieto tras un salto. Los de volatilidad muy alta llevan un aviso.</li>
+    <li><b>No se incluyen comisiones ni costes de operar.</b></li>
+  </ul>
+
+  <h2>Transparencia</h2>
+  <p>Cada señal nueva se registra con su fecha y, cinco sesiones después de la entrada, se anota qué pasó. Puedes verlo todo en el <a class="enlace" href="historico.html">Histórico de señales</a> y descargarlo para analizarlo por tu cuenta.</p>
+
+  <div class="aviso">Nexus Terminal ofrece análisis técnico automático con fines informativos. Las decisiones de inversión son tuyas, y toda inversión implica riesgo de pérdida.</div>
+</main>
+</body>
+</html>
