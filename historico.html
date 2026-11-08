@@ -131,7 +131,10 @@ function render(){
   document.getElementById('warn').innerHTML = closed.length < 30
     ? `<div class="warn">Muestra pequeña: ${closed.length} señales cerradas. Con menos de 30 los porcentajes no son fiables; irán siendo más significativos con el tiempo.${since ? " Registro iniciado el " + since + "." : ""}</div>`
     : "";
-
+  const withBase = closed.filter(s => s.baseRet !== null && s.baseRet !== undefined);
+  const exAll = withBase.map(s => s.returnPct - (s.verdict === "long" ? 1 : -1) * s.baseRet);
+  const exMean = exAll.length ? exAll.reduce((a, b) => a + b, 0) / exAll.length : null;
+  const baseHit = withBase.length ? withBase.reduce((a, s) => a + (s.verdict === "long" ? s.baseUp : 100 - s.baseUp), 0) / withBase.length : null;
   document.getElementById('cards').innerHTML = `
     <div class="card"><div class="num">${list.length}</div><div class="lbl">señales registradas<br>${closed.length} cerradas · ${open.length} en curso</div></div>
     <div class="card"><div class="num">${closed.filter(s => s.verdict === "long" && s.returnPct > 0).length} de ${closed.filter(s => s.verdict === "long").length}</div><div class="lbl">veces que dijimos que subiría y subió (a 5 sesiones)</div></div>
