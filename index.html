@@ -152,8 +152,7 @@ async function loadResults(){
   }
   const active = data[currentMarket];
   document.getElementById('updatedAt').textContent = active
-    ? `Actualizado: ${new Date(active.updatedAt).toLocaleString('es-ES')} · ${active.totalEligible} activos líquidos analizados`
-    : "Aún sin datos suficientes — el escaneo en segundo plano todavía está acumulando histórico.";
+    ? `Datos al cierre del ${active.dataDate ? new Date(active.dataDate + 'T12:00:00').toLocaleDateString('es-ES') : '—'} · ${active.totalEligible} activos analizados`    : "Aún sin datos suficientes — el escaneo en segundo plano todavía está acumulando histórico.";
   renderLists();
 }
 
