@@ -185,7 +185,7 @@ document.querySelectorAll('.tab').forEach(t=>{
   t.onclick = () => {
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
-    currentMarket = t.dataset.market;
+    currentMarket = t.dataset.market; document.getElementById('tvChart').src = 'about:blank'; document.getElementById('chartTitle').textContent = 'Selecciona un activo de la lista'; document.getElementById('analysisBox').innerHTML = '<div class="empty">Elige un activo para ver su análisis</div>';
     loadResults();
   };
 });
