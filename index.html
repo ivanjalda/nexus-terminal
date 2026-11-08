@@ -326,7 +326,7 @@ function renderCalc(s){
     const cap = parseFloat(document.getElementById('calcCap').value);
     const rk = parseFloat(document.getElementById('calcRisk').value);
     const out = document.getElementById('calcOut');
-    const stopDist = 1.5 * Number(s.atr);
+    const stopDist = Number(s.stopSuggested) > 0 ? Number(s.stopSuggested) : 1.5 * Number(s.atr);
     const price = Number(s.price);
     if(!(cap > 0) || !(rk > 0) || !(stopDist > 0) || !(price > 0)){
       out.innerHTML = '<div class="empty" style="padding:10px">Introduce un capital y un riesgo válidos</div>';
