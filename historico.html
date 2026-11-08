@@ -135,12 +135,16 @@ function render(){
   const exAll = withBase.map(s => s.returnPct - (s.verdict === "long" ? 1 : -1) * s.baseRet);
   const exMean = exAll.length ? exAll.reduce((a, b) => a + b, 0) / exAll.length : null;
   const baseHit = withBase.length ? withBase.reduce((a, s) => a + (s.verdict === "long" ? s.baseUp : 100 - s.baseUp), 0) / withBase.length : null;
+  const exSide = side => { const a = withBase.filter(s => s.verdict === side).map(s => s.returnPct - (side === "long" ? 1 : -1) * s.baseRet); return a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; };
+  const exLong = exSide("long"), exShort = exSide("short");
   document.getElementById('cards').innerHTML = `
     <div class="card"><div class="num">${list.length}</div><div class="lbl">señales registradas<br>${closed.length} cerradas · ${open.length} en curso</div></div>
     <div class="card"><div class="num">${closed.filter(s => s.verdict === "long" && s.returnPct > 0).length} de ${closed.filter(s => s.verdict === "long").length}</div><div class="lbl">veces que dijimos que subiría y subió (a 5 sesiones)</div></div>
     <div class="card"><div class="num">${closed.filter(s => s.verdict === "short" && s.returnPct > 0).length} de ${closed.filter(s => s.verdict === "short").length}</div><div class="lbl">veces que dijimos que bajaría y bajó (a 5 sesiones)</div></div>
     <div class="card"><div class="num">${hit === null ? "—" : hit.toFixed(0) + "%"}</div><div class="lbl">acierto total · al azar habría salido ${baseHit === null ? "—" : baseHit.toFixed(0) + "%"}</div></div>
     <div class="card"><div class="num ${cls(exMean)}">${exMean === null ? "—" : fmtPct(exMean)}</div><div class="lbl">resultado medio frente al promedio del mercado en las mismas fechas</div></div>
+    <div class="card"><div class="num ${cls(exLong)}">${exLong === null ? "—" : fmtPct(exLong)}</div><div class="lbl">solo compras, frente al promedio del mercado</div></div>
+    <div class="card"><div class="num ${cls(exShort)}">${exShort === null ? "—" : fmtPct(exShort)}</div><div class="lbl">solo ventas, frente al promedio del mercado</div></div>
     <div class="card"><div class="num ${cls(avg)}">${fmtPct(avg)}</div><div class="lbl">resultado medio</div></div>
     <div class="card"><div class="num ${cls(med)}">${fmtPct(med)}</div><div class="lbl">resultado mediano (menos sensible a casos extremos)</div></div>
   `;
