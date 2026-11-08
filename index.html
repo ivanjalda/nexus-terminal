@@ -102,7 +102,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
 <div class="layout">
   <div class="col left">
     <input type="text" id="filterBox" placeholder="Filtrar por símbolo..." oninput="renderLists()">
-    <button id="toggleAllBtn" style="margin-top:8px;width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:.8rem;">Ver todos los activos</button>
+    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas">Nuevas hoy</button><button class="modebtn" data-mode="activas">Siguen activas</button><button class="modebtn" data-mode="todos">Todos</button></div>
     <h2 id="longsTitle">Candidatos con sesgo alcista</h2>
     <div id="longsBox"></div>
   <h2 id="shortsTitle">Candidatos con sesgo bajista</h2>
