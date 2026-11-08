@@ -106,6 +106,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
 
 <div class="layout">
   <div class="col left">
+    <div id="marketPulse" class="metric-card"></div>
     <input type="text" id="filterBox" placeholder="Filtrar por símbolo..." oninput="renderLists()">
     <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas">Nuevas hoy</button><button class="modebtn" data-mode="activas">Siguen activas</button><button class="modebtn" data-mode="todos">Todos</button></div>
     <h2 id="longsTitle">Candidatos con sesgo alcista</h2>
@@ -183,8 +184,7 @@ async function loadResults(){
   document.getElementById('updatedAt').textContent = active
     ? `Datos al cierre del ${active.dataDate ? new Date(active.dataDate + 'T12:00:00').toLocaleDateString('es-ES') : '—'} · ${active.totalEligible} activos analizados`
     : "Aún sin datos suficientes — el escaneo en segundo plano todavía está acumulando histórico.";
-  renderLists();
-}
+renderPulse(); renderLists();}
 
 document.querySelectorAll('.tab').forEach(t=>{
   t.onclick = () => {
@@ -282,7 +282,31 @@ function renderAnalysis(s){
     ${s.atrPct >= 8 ? '<div class="note" style="color:var(--yellow);font-weight:600;">⚠ Volatilidad diaria muy alta (' + s.atrPct + '%): los movimientos pueden ser muy bruscos en ambos sentidos.</div>' : ''}<div class="note">El horizonte y el riesgo se derivan de la volatilidad histórica real (ATR) y la fuerza de la tendencia — son orientativos, no una promesa de tiempo o resultado.</div>
   `;
 }
-
+function renderPulse(){
+  const box = document.getElementById('marketPulse');
+  const d = data[currentMarket];
+  if(!d || !(d.all||[]).length){ box.style.display='none'; return; }
+  box.style.display='';
+  const all = d.all;
+  let up=0, down=0;
+  for(const s of all){
+    const t = String(s.trend||'').toLowerCase();
+    if(t.includes('alcist')) up++; else if(t.includes('bajist')) down++;
+  }
+  const flat = all.length - up - down;
+  const p = n => Math.round(n*100/all.length);
+  box.innerHTML = `
+    <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:10px">Mercado hoy</div>
+    <div style="display:flex;height:8px;border-radius:6px;overflow:hidden;margin-bottom:10px">
+      <div style="width:${p(up)}%;background:var(--green)"></div>
+      <div style="width:${p(flat)}%;background:var(--border)"></div>
+      <div style="width:${p(down)}%;background:var(--red)"></div>
+    </div>
+    <div class="metric-row"><span>En tendencia alcista</span><b style="color:var(--green)">${up} · ${p(up)}%</b></div>
+    <div class="metric-row"><span>Sin tendencia clara</span><b>${flat} · ${p(flat)}%</b></div>
+    <div class="metric-row"><span>En tendencia bajista</span><b style="color:var(--red)">${down} · ${p(down)}%</b></div>
+    <div class="note">Sobre ${all.length} activos analizados al cierre.</div>`;
+}
 loadResults();
 </script>
 </body>
