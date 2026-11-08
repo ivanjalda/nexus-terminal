@@ -134,7 +134,9 @@ function render(){
 
   document.getElementById('cards').innerHTML = `
     <div class="card"><div class="num">${list.length}</div><div class="lbl">señales registradas<br>${closed.length} cerradas · ${open.length} en curso</div></div>
-    <div class="card"><div class="num">${hit === null ? "—" : hit.toFixed(0) + "%"}</div><div class="lbl">con resultado positivo a 5 sesiones</div></div>
+    <div class="card"><div class="num">${closed.filter(s => s.verdict === "long" && s.returnPct > 0).length} de ${closed.filter(s => s.verdict === "long").length}</div><div class="lbl">veces que dijimos que subiría y subió (a 5 sesiones)</div></div>
+    <div class="card"><div class="num">${closed.filter(s => s.verdict === "short" && s.returnPct > 0).length} de ${closed.filter(s => s.verdict === "short").length}</div><div class="lbl">veces que dijimos que bajaría y bajó (a 5 sesiones)</div></div>
+    <div class="card"><div class="num">${hit === null ? "—" : hit.toFixed(0) + "%"}</div><div class="lbl">acierto total (la comparación con el promedio llegará pronto)</div></div>
     <div class="card"><div class="num ${cls(avg)}">${fmtPct(avg)}</div><div class="lbl">resultado medio</div></div>
     <div class="card"><div class="num ${cls(med)}">${fmtPct(med)}</div><div class="lbl">resultado mediano (menos sensible a casos extremos)</div></div>
   `;
