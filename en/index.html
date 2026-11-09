@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Terminal — Market Scanner</title>
+<meta name="description" content="Nexus Terminal: a daily technical read of thousands of US stocks, crypto and forex pairs. Ranked, explained signal by signal, with results tracked in public. No promises of returns.">
+<meta property="og:title" content="Nexus Terminal — technical market scanner">
+<meta property="og:description" content="Thousands of assets analyzed every day, every signal explained and a public track record of results. No promises of returns.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nexusterminalalerts.com/en/">
+<meta property="og:image" content="https://nexusterminalalerts.com/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://nexusterminalalerts.com/en/">
+<link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/">
+<link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../logo.png">
+<style>
+:root{
+  --blue:#0071e3; --blue-dark:#0051a2;
+  --green:#1d7a3c; --green-bg:#e8f8ee;
+  --red:#d5392f; --red-bg:#fdeceb;
+  --yellow:#b36a00; --yellow-bg:#fdf3e3;
+  --bg:#ffffff; --surface:#f5f5f7; --border:#e5e5ea;
+  --text:#1d1d1f; --muted:#86868b;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);}
+header h1{font-size:1.3rem;font-weight:600;margin:0;letter-spacing:-0.02em;}
+header h1 span{color:var(--blue);font-weight:600;}
+.updated{font-size:.8rem;color:var(--muted);}
+
+.tabs{display:flex;gap:4px;padding:14px 32px 0;border-bottom:1px solid var(--border);}
+.tab{padding:10px 18px;font-size:.9rem;border-radius:10px 10px 0 0;cursor:pointer;color:var(--muted);font-weight:500;transition:color .15s;}
+.tab.active{color:var(--blue);border-bottom:2px solid var(--blue);font-weight:600;}
+.tab:hover{color:var(--text);}
+
+.layout{display:grid;grid-template-columns:320px 1fr 340px;gap:0;height:calc(100vh - 110px);}
+@media (max-width:1100px){.layout{grid-template-columns:1fr;height:auto;}}
+.col{padding:24px;overflow-y:auto;}
+.col.left{border-right:1px solid var(--border);}
+.col.right{border-left:1px solid var(--border);}
+h2{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin:22px 0 10px;}
+h2:first-child{margin-top:0;}
+
+input[type=text]{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:12px;font-size:.92rem;font-family:inherit;background:var(--surface);transition:border-color .15s, background .15s;}
+input[type=text]:focus{outline:none;border-color:var(--blue);background:#fff;}
+
+.scan-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-radius:14px;cursor:pointer;margin-top:6px;background:var(--surface);transition:background .15s;}
+.scan-row:hover{background:#ececef;}
+.scan-row .sym{font-weight:600;font-size:.95rem;}
+.scan-row .meta{font-size:.75rem;color:var(--muted);margin-top:2px;}
+
+.tag{font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:20px;letter-spacing:.02em;}
+.tag.long{background:var(--green-bg);color:var(--green);}
+.tag.short{background:var(--red-bg);color:var(--red);}
+.tag.wait{background:var(--yellow-bg);color:var(--yellow);}
+
+.chart-wrap{padding:24px;display:flex;flex-direction:column;height:calc(100vh - 110px);}
+.chart-title{font-size:1.05rem;font-weight:600;margin-bottom:14px;letter-spacing:-0.01em;}
+.chart-title .sub{color:var(--muted);font-weight:400;font-size:.82rem;}
+iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
+
+.metric-card{background:var(--surface);border-radius:16px;padding:18px 20px;margin-bottom:14px;}
+.metric-row{display:flex;justify-content:space-between;font-size:.85rem;padding:7px 0;border-bottom:1px solid var(--border);}
+.metric-row:last-child{border-bottom:none;}
+.metric-row b{font-weight:600;}
+
+.verdict{text-align:center;padding:22px;border-radius:16px;margin-bottom:16px;}
+.verdict .label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+.verdict .action{font-size:1.4rem;font-weight:700;margin:6px 0;letter-spacing:-0.02em;}
+.verdict.long{background:var(--green-bg);} .verdict.long .action{color:var(--green);}
+.verdict.short{background:var(--red-bg);} .verdict.short .action{color:var(--red);}
+.verdict.wait{background:var(--yellow-bg);} .verdict.wait .action{color:var(--yellow);}
+
+.note{font-size:.74rem;color:var(--muted);line-height:1.6;margin-top:12px;}
+.empty{color:var(--muted);font-size:.88rem;text-align:center;padding:36px 12px;}
+.disclaimer{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:.76rem;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.welcome{background:var(--surface);border-radius:18px;padding:28px 32px;max-width:640px;line-height:1.6;}
+.welcome h3{margin:0 0 10px;font-size:1.25rem;letter-spacing:-0.02em;}
+.welcome p{margin:0 0 14px;color:var(--muted);}
+.welcome ol{margin:0 0 14px;padding-left:20px;}
+.welcome li{margin-bottom:6px;}
+.welcome .small{font-size:.8rem;margin:0;}
+.chart-wrap:has(iframe[src*="tradingview"]) .welcome{display:none;}
+.chart-wrap:not(:has(iframe[src*="tradingview"])) iframe{display:none;}
+.modebtn{flex:1;padding:8px 6px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:.78rem;font-family:inherit;color:var(--text);}
+.modebtn.active{background:var(--text);color:#fff;border-color:var(--text);}
+.navlink{font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;}
+.lang{font-size:.85rem;color:var(--muted);}
+.lang b{color:var(--text);}
+.lang a{color:var(--blue);text-decoration:none;font-weight:500;}
+</style>
+</head>
+<body>
+
+<header>
+<a href="./" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../logo.png" alt="Nexus Terminal" style="height:34px;width:34px;border-radius:9px;object-fit:cover" onerror="this.style.display='none'"><h1>Nexus <span>Terminal</span></h1></a>
+<div style="display:flex;gap:24px;align-items:center;"><a class="navlink" href="como.html">How it works</a><a class="navlink" href="historico.html">Signal history</a><a class="navlink" href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener">Telegram alerts</a><span class="lang"><b>EN</b> | <a href="../" hreflang="es">ES</a></span></div>
+<div class="updated" id="updatedAt">Loading results…</div>
+</header>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" data-market="stocks">US Stocks</div>
+  <div class="tab" data-market="crypto">Crypto</div>
+  <div class="tab" data-market="fx">Forex</div>
+</div>
+
+<div class="layout">
+  <div class="col left">
+    <div id="marketPulse" class="metric-card"></div>
+    <input type="text" id="filterBox" placeholder="Filter by symbol..." oninput="renderLists()">
+    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas">New today</button><button class="modebtn" data-mode="activas">Still active</button><button class="modebtn" data-mode="todos">All</button></div>
+    <h2 id="longsTitle">Bullish-bias candidates</h2>
+    <div id="longsBox"></div>
+  <h2 id="shortsTitle">Bearish-bias candidates</h2>
+  <div id="shortsBox"></div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title" id="chartTitle">Select an asset from the list</div>
+    <div class="welcome">
+  <h3>A technical read of the market, explained</h3>
+  <p>Every day we analyze thousands of stocks, cryptocurrencies and currency pairs, and show you the ones with clear technical signals, with the reasoning behind each one.</p>
+  <ol>
+    <li>Pick a market above: US Stocks, Crypto or Forex.</li>
+    <li>Click an asset in the list: you'll see its chart and its analysis.</li>
+    <li>Open “Signal history”: we publicly measure what happened after each one.</li>
+  </ol>
+  <p class="small">These are automatic technical signals, not investment recommendations. Past performance does not guarantee future results.</p>
+</div>
+    <iframe id="tvChart" src="about:blank"></iframe>
+  </div>
+
+  <div class="col right">
+<div class="disclaimer">Nexus Terminal's own analysis of real market data (end-of-day close), calculated in the background across thousands of liquid assets. Not financial advice or a guarantee of results.</div>
+    <h2>Technical reading</h2>
+    <div id="analysisBox"><div class="empty">Pick an asset to see its analysis</div></div>
+  </div>
+</div>
+
+<script>
+const NAME_MAP = {
+  "nike":"NKE","apple":"AAPL","microsoft":"MSFT","google":"GOOGL","alphabet":"GOOGL",
+  "amazon":"AMZN","nvidia":"NVDA","tesla":"TSLA","meta":"META","facebook":"META",
+  "netflix":"NFLX","disney":"DIS","coca cola":"KO","coca-cola":"KO","mcdonalds":"MCD",
+  "mcdonald's":"MCD","bitcoin":"X:BTCUSD","ethereum":"X:ETHUSD","oro":"C:XAUUSD",
+  "gold":"C:XAUUSD","euro":"C:EURUSD"
+};
+const MARKET_LABEL = { stocks:"US Stocks", crypto:"Crypto", fx:"Forex" };
+let data = { stocks: null, crypto: null, fx: null };
+let currentMarket = "stocks";
+let currentSymbol = null;
+let mode = "nuevas";
+
+// The scanner writes its explanations in Spanish; translate them here for the English page.
+function trEn(t){ const x = String(t||'').toLowerCase(); return x === 'alcista' ? 'bullish' : x === 'bajista' ? 'bearish' : t; }
+function whyEn(w){
+  if(!w) return '';
+  let m;
+  if(/^Tendencia alcista, RSI sin sobrecompra/.test(w)) return "Uptrend, RSI not extremely overbought and price near its 20-session high.";
+  if(/^Tendencia bajista, RSI sin sobreventa/.test(w)) return "Downtrend, RSI not extremely oversold and price near its 20-session low.";
+  if(/^Sin condiciones/.test(w)) return "No clear technical conditions — range-bound with no defined direction.";
+  if((m = w.match(/^RSI en sobrecompra \(([\d.]+)\)/))) return "RSI overbought (" + m[1] + ") — risk of a pullback before continuing.";
+  if((m = w.match(/^RSI en sobreventa \(([\d.]+)\)/))) return "RSI oversold (" + m[1] + ") — risk of a bounce before a bearish signal is confirmed.";
+  return w;
+}
+function horizonEn(h){ return String(h||'').replace('sesiones','sessions'); }
+
+async function markNew(){
+  const keys = new Set();
+  try{
+    const r = await fetch('../data/signals.json?v=' + Date.now());
+    const sigs = await r.json();
+    for(const m of Object.keys(data)){
+      const dd = data[m] && data[m].dataDate;
+      if(!dd) continue;
+      sigs.filter(x => x.market === m && x.signalDate === dd)
+          .forEach(x => keys.add(`${m}|${x.symbol}|${x.verdict}`));
+    }
+  }catch(e){}
+  for(const m of Object.keys(data)){
+    const d = data[m];
+    if(!d) continue;
+    for(const list of [d.longs || [], d.shorts || [], d.all || []]){
+      for(const s of list) s.nuevo = keys.has(`${m}|${s.symbol}|${s.verdict}`);
+    }
+  }
+}
+
+async function loadResults(){
+  try{
+    const res = await fetch('../results.json');
+    data = await res.json();
+  }catch(e){
+    document.getElementById('updatedAt').textContent = "Couldn't load the results.";
+    return;
+  }
+  await markNew();
+  const active = data[currentMarket];
+  document.getElementById('updatedAt').textContent = active
+    ? `Data as of the close on ${active.dataDate ? new Date(active.dataDate + 'T12:00:00').toLocaleDateString('en-US') : '—'} · ${active.totalEligible} assets analyzed`
+    : "Not enough data yet — the background scan is still building up history.";
+renderPulse(); renderLists();}
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    currentMarket = t.dataset.market; document.getElementById('tvChart').src = 'about:blank'; document.getElementById('chartTitle').textContent = 'Select an asset from the list'; document.getElementById('analysisBox').innerHTML = '<div class="empty">Pick an asset to see its analysis</div>';
+    loadResults();
+  };
+});
+
+document.querySelectorAll('.modebtn').forEach(b => {
+  b.onclick = () => {
+    mode = b.dataset.mode;
+    document.querySelectorAll('.modebtn').forEach(x => x.classList.toggle('active', x === b));
+    renderLists();
+  };
+});
+
+function renderLists(){
+  const q = document.getElementById('filterBox').value.toLowerCase().trim();
+  const qTicker = NAME_MAP[q] || q;
+  const active = data[currentMarket];
+  const longsBox = document.getElementById('longsBox'), shortsBox = document.getElementById('shortsBox');
+  longsBox.innerHTML = ''; shortsBox.innerHTML = '';
+  if(!active){ longsBox.innerHTML = '<div class="empty">No data yet</div>'; return; }
+  const match = s => !q || s.symbol.toLowerCase().includes(qTicker);
+
+  if(mode === "todos"){
+    document.getElementById('longsTitle').textContent = 'All analyzed assets';
+    document.getElementById('shortsTitle').style.display = 'none';
+    shortsBox.style.display = 'none';
+    const all = (active.all || []).filter(match);
+    longsBox.innerHTML = all.length ? all.map(s => rowHtml(s, s.verdict)).join('') : '<div class="empty">No results for that filter</div>';
+  } else {
+    const soloNuevas = mode === "nuevas";
+    document.getElementById('longsTitle').textContent = soloNuevas ? 'New bullish signals today' : 'Bullish-bias candidates';
+    document.getElementById('shortsTitle').textContent = soloNuevas ? 'New bearish signals today' : 'Bearish-bias candidates';
+    document.getElementById('shortsTitle').style.display = '';
+    shortsBox.style.display = '';
+    const pick = s => match(s) && (!soloNuevas || s.nuevo);
+    const longs = active.longs.filter(pick);
+    const shorts = active.shorts.filter(pick);
+    const vacio = soloNuevas ? 'None new today' : 'None right now';
+    longsBox.innerHTML = longs.length ? longs.map(s => rowHtml(s, "long")).join('') : `<div class="empty">${vacio}</div>`;
+    shortsBox.innerHTML = shorts.length ? shorts.map(s => rowHtml(s, "short")).join('') : `<div class="empty">${vacio}</div>`;
+  }
+
+  document.querySelectorAll('.scan-row').forEach(row=>{
+    row.onclick = () => selectSymbol(row.dataset.symbol);
+  });
+}
+
+function rowHtml(s, type){
+  return `<div class="scan-row" data-symbol="${s.symbol}">
+    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">NEW</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${trEn(s.trend)}${s.atrPct >= 8 ? ' · ⚠ very high volatility' : ''}</div></div>
+    <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"WAIT"}</span>
+  </div>`;
+}
+
+function tvSymbol(symbol, market){
+  if(market==="fx") return "FX:" + symbol.replace("C:","");
+  if(market==="crypto") return "COINBASE:" + symbol.replace("X:","");
+  return symbol;
+}
+
+function selectSymbol(symbol){
+  currentSymbol = symbol;
+  const active = data[currentMarket];
+  const s = [...active.longs, ...active.shorts, ...(active.all||[])].find(x=>x.symbol===symbol);
+  if(!s) return;
+  document.getElementById('chartTitle').innerHTML = `${symbol} <span class="sub">(${MARKET_LABEL[currentMarket] || currentMarket})</span>`;
+  document.getElementById('tvChart').src = `https://s.tradingview.com/widgetembed/?frameElementId=tv_widget&symbol=${encodeURIComponent(tvSymbol(symbol, currentMarket))}&interval=D&hidesidetoolbar=0&saveimage=1&toolbarbg=f8f9fa&theme=light&style=1&timezone=Etc%2FUTC&locale=en`;
+  renderAnalysis(s);
+}
+
+function renderAnalysis(s){
+  const box = document.getElementById('analysisBox');
+  const vLabel = s.verdict==="long"?"Bullish bias":s.verdict==="short"?"Bearish bias":"Wait";
+  box.innerHTML = `
+    <div class="verdict ${s.verdict}">
+      <div class="label">Technical reading — ${s.symbol}</div>
+      <div class="action">${vLabel}</div>
+      <div style="font-size:.78rem;color:var(--muted)">${whyEn(s.why)}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-row"><span>Price</span><b>${s.price}</b></div>
+      <div class="metric-row"><span>SMA 20 / SMA 50</span><b>${s.sma20} / ${s.sma50 ?? '—'}</b></div>
+      <div class="metric-row"><span>Trend</span><b>${trEn(s.trend)} (${s.trendStrength}%)</b></div>
+      <div class="metric-row"><span>RSI (14)</span><b>${s.rsi}</b></div>
+      <div class="metric-row"><span>20-session high / low</span><b>${s.high20} / ${s.low20}</b></div>
+      <div class="metric-row"><span>ATR (14) — real volatility</span><b>${s.atr} (${s.atrPct}%)</b></div>
+      <div class="metric-row"><span>Suggested risk (1.5×ATR)</span><b>${s.stopSuggested}</b></div>
+      <div class="metric-row"><span>Indicative horizon</span><b>${horizonEn(s.horizon)}</b></div>
+    </div>
+    ${s.atrPct >= 8 ? '<div class="note" style="color:var(--yellow);font-weight:600;">⚠ Very high daily volatility (' + s.atrPct + '%): moves can be very sharp in both directions.</div>' : ''}<div class="note">The horizon and the risk come from the asset's real historical volatility (ATR) and the strength of the trend — they are indicative, not a promise of timing or results.</div>
+  `;
+  renderCalc(s);
+}
+function renderPulse(){
+  const box = document.getElementById('marketPulse');
+  const d = data[currentMarket];
+  if(!d || !(d.all||[]).length){ box.style.display='none'; return; }
+  box.style.display='';
+  const all = d.all;
+  let up=0, down=0;
+  for(const s of all){
+    const t = String(s.trend||'').toLowerCase();
+    if(t.includes('alcist')) up++; else if(t.includes('bajist')) down++;
+  }
+  const flat = all.length - up - down;
+  const p = n => Math.round(n*100/all.length);
+  box.innerHTML = `
+    <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:10px">Market today</div>
+    <div style="display:flex;height:8px;border-radius:6px;overflow:hidden;margin-bottom:10px">
+      <div style="width:${p(up)}%;background:var(--green)"></div>
+      <div style="width:${p(flat)}%;background:var(--border)"></div>
+      <div style="width:${p(down)}%;background:var(--red)"></div>
+    </div>
+    <div class="metric-row"><span>In an uptrend</span><b style="color:var(--green)">${up} · ${p(up)}%</b></div>
+    ${flat>0 ? `<div class="metric-row"><span>No clear trend</span><b>${flat} · ${p(flat)}%</b></div>` : ''}
+    <div class="metric-row"><span>In a downtrend</span><b style="color:var(--red)">${down} · ${p(down)}%</b></div>
+    <div class="note">Out of ${all.length} assets analyzed at the close.</div>`;
+}
+function renderCalc(s){
+  const box = document.getElementById('analysisBox');
+  const saved = window.__calc || {cap:1000, risk:1};
+  const wrap = document.createElement('div');
+  wrap.className = 'metric-card';
+  const inp = 'width:110px;padding:6px 8px;font-size:.85rem;text-align:right;border:1px solid var(--border);border-radius:8px;background:#fff;font-family:inherit';
+  wrap.innerHTML = `
+    <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:10px">Risk calculator</div>
+    <div class="metric-row"><span>Capital</span><input type="number" id="calcCap" value="${saved.cap}" min="0" step="100" style="${inp}"></div>
+    <div class="metric-row"><span>Risk per trade (%)</span><input type="number" id="calcRisk" value="${saved.risk}" min="0.1" max="10" step="0.1" style="${inp}"></div>
+    <div id="calcOut"></div>
+    <div class="note">Indicative calculation using real volatility (1.5 × ATR). Amounts are in the asset's currency (dollars for stocks and crypto). Not an investment recommendation.</div>`;
+  box.appendChild(wrap);
+  const fmt = (n, d) => n.toLocaleString('en-US', {maximumFractionDigits: d});
+  const compute = () => {
+    const cap = parseFloat(document.getElementById('calcCap').value);
+    const rk = parseFloat(document.getElementById('calcRisk').value);
+    const out = document.getElementById('calcOut');
+    const stopDist = Number(s.stopSuggested) > 0 ? Number(s.stopSuggested) : 1.5 * Number(s.atr);
+    const price = Number(s.price);
+    if(!(cap > 0) || !(rk > 0) || !(stopDist > 0) || !(price > 0)){
+      out.innerHTML = '<div class="empty" style="padding:10px">Enter a valid capital and risk</div>';
+      return;
+    }
+    window.__calc = {cap: cap, risk: rk};
+    const riskAmt = cap * rk / 100;
+    let units = riskAmt / stopDist;
+    const maxUnits = cap / price;
+    const limited = units > maxUnits;
+    if(limited) units = maxUnits;
+    const isStock = currentMarket === 'stocks';
+    units = isStock ? Math.floor(units) : Math.floor(units * 10000) / 10000;
+    if(units <= 0){
+      out.innerHTML = '<div class="empty" style="padding:10px">With this capital and risk you can\'t afford even one unit</div>';
+      return;
+    }
+    out.innerHTML = `
+      <div class="metric-row"><span>Safety distance</span><b>${fmt(stopDist, 4)}</b></div>
+      <div class="metric-row"><span>Units to buy</span><b>${fmt(units, isStock ? 0 : 4)}</b></div>
+      <div class="metric-row"><span>Position size</span><b>${fmt(units * price, 2)}</b></div>
+      <div class="metric-row"><span>Loss if it hits the limit</span><b>${fmt(units * stopDist, 2)}</b></div>
+      ${limited ? '<div class="note" style="color:var(--yellow)">Limited by your capital (no leverage).</div>' : ''}`;
+  };
+  wrap.querySelectorAll('input').forEach(i => { i.oninput = compute; });
+  compute();
+}
+loadResults();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

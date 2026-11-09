@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Terminal — Signal history</title>
+<meta name="description" content="Public track record of every Nexus Terminal signal and what the price did afterwards, hits and misses included. Nothing is deleted or edited.">
+<link rel="canonical" href="https://nexusterminalalerts.com/en/historico.html">
+<link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/historico.html">
+<link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/historico.html">
+<link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/historico.html">
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+:root{
+  --blue:#0071e3;
+  --green:#1d7a3c; --green-bg:#e8f8ee;
+  --red:#d5392f; --red-bg:#fdeceb;
+  --yellow:#b36a00; --yellow-bg:#fdf3e3;
+  --bg:#ffffff; --surface:#f5f5f7; --border:#e5e5ea;
+  --text:#1d1d1f; --muted:#86868b;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);}
+header .brand{font-size:1.3rem;font-weight:600;letter-spacing:-0.02em;}
+header .brand span{color:var(--blue);}
+header a{font-size:.9rem;color:var(--blue);text-decoration:none;font-weight:500;}
+header .lang{font-size:.85rem;color:var(--muted);margin-left:20px;}
+header .lang b{color:var(--text);}
+main{max-width:980px;margin:0 auto;padding:40px 24px 80px;}
+h1.title{font-size:2rem;font-weight:700;letter-spacing:-0.03em;margin:0 0 12px;}
+.lead{color:var(--muted);font-size:1rem;line-height:1.6;max-width:680px;margin:0 0 28px;}
+h2{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin:36px 0 12px;}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.pill{padding:8px 16px;border-radius:20px;background:var(--surface);border:none;font-size:.85rem;cursor:pointer;font-family:inherit;color:var(--text);}
+.pill.active{background:var(--text);color:#fff;}
+.warn{background:var(--yellow-bg);color:var(--yellow);border-radius:14px;padding:14px 18px;font-size:.88rem;line-height:1.5;margin-bottom:20px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+.card{background:var(--surface);border-radius:18px;padding:20px;}
+.card .num{font-size:1.9rem;font-weight:700;letter-spacing:-0.02em;}
+.card .lbl{font-size:.78rem;color:var(--muted);margin-top:6px;line-height:1.4;}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.88rem;}
+th{text-align:left;color:var(--muted);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;border-bottom:1px solid var(--border);}
+td{padding:12px;border-bottom:1px solid var(--border);white-space:nowrap;}
+.pos{color:var(--green);font-weight:600;}
+.neg{color:var(--red);font-weight:600;}
+.muted{color:var(--muted);}
+.tag{font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:20px;letter-spacing:.02em;}
+.tag.long{background:var(--green-bg);color:var(--green);}
+.tag.short{background:var(--red-bg);color:var(--red);}
+.empty{color:var(--muted);text-align:center;padding:36px 12px;white-space:normal;}
+.method{background:var(--surface);border-radius:18px;padding:24px 28px;font-size:.92rem;line-height:1.7;}
+.method ul{margin:10px 0 0;padding-left:20px;}
+.method li{margin-bottom:6px;}
+.method a{color:var(--blue);}
+</style>
+</head>
+<body>
+<header>
+  <a href="./" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><div class="brand">Nexus <span>Terminal</span></div></a>
+  <div><a href="./">← Back to the scanner</a><span class="lang"><b>EN</b> | <a href="../historico.html" hreflang="es" style="font-size:.85rem;">ES</a></span></div>
+</header>
+<main>
+  <h1 class="title">Signal history</h1>
+  <p class="lead">Here we record every signal the system generates and what the price did afterwards, hits and misses included. Nothing is deleted or edited.</p>
+
+  <div class="filters">
+    <button class="pill active" data-f="all">All</button>
+    <button class="pill" data-f="stocks">US Stocks</button>
+    <button class="pill" data-f="crypto">Crypto</button>
+    <button class="pill" data-f="fx">Forex</button>
+    <button id="dlBtn" style="margin-left:auto;padding:8px 16px;border-radius:20px;background:var(--surface);border:none;font-size:.85rem;cursor:pointer;font-family:inherit;color:var(--blue);">Download full log (CSV)</button>
+  </div>
+
+  <div id="warn"></div>
+  <div class="cards" id="cards"></div>
+
+  <h2>Latest signals</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Signal date</th><th>Market</th><th>Asset</th><th>Direction</th><th>Strength</th><th>Entry</th><th>Result after 5 sessions</th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <h2>How it's measured</h2>
+  <div class="method">
+    <ul>
+      <li><b>What a signal is:</b> an asset that enters the bullish or bearish list when it wasn't on either before.</li>
+      <li><b>Entry:</b> the close of the session after the signal, which is when you could actually act.</li>
+      <li><b>Exit:</b> the close 5 sessions after entry. Always 5, fixed in advance.</li>
+      <li><b>Result:</b> change in %. For bearish signals the sign is flipped (you gain if the price falls).</li>
+      <li><b>Forward tracking:</b> only signals recorded since the system started are counted; nothing is computed with past data.</li>
+    </ul>
+    <p><b>What this history does NOT include:</b> commissions or price differences when trading. To avoid mistaking a general market rise for skill, each signal is compared with the average of the same market over the same dates. With few closed signals the percentages don't mean anything. Past performance does not guarantee future results and this is not financial advice.</p>
+<p>Recorded signals are not deleted or modified: only their result is filled in once the 5-session period is over.</p>  </div>
+</main>
+
+<script>
+const LABELS = { stocks:"US Stocks", crypto:"Crypto", fx:"Forex" };
+let signals = [];
+let filter = "all";
+
+function fmtPct(n){
+  if(n === null || n === undefined) return "—";
+  return (n > 0 ? "+" : "") + n.toFixed(2) + "%";
+}
+function cls(n){ return n > 0 ? "pos" : n < 0 ? "neg" : ""; }
+function median(arr){
+  if(!arr.length) return null;
+  const a = [...arr].sort((x,y)=>x-y);
+  const m = Math.floor(a.length/2);
+  return a.length % 2 ? a[m] : (a[m-1] + a[m]) / 2;
+}
+
+async function load(){
+  try{
+    const res = await fetch('../data/signals.json?v=' + Date.now());
+    if(!res.ok) throw new Error('no file');
+    signals = await res.json();
+  }catch(e){ signals = []; }
+  render();
+}
+
+function render(){
+  const list = signals.filter(s => filter === "all" || s.market === filter);
+  const closed = list.filter(s => s.status === "closed");
+  const open = list.filter(s => s.status !== "closed" && s.status !== "unverified");
+  const returns = closed.map(s => s.returnPct);
+  const wins = closed.filter(s => s.returnPct > 0).length;
+  const hit = closed.length ? (wins / closed.length * 100) : null;
+  const avg = closed.length ? returns.reduce((a,b)=>a+b,0) / closed.length : null;
+  const med = median(returns);
+  const since = signals.length ? signals.map(s => s.signalDate).sort()[0] : null;
+
+  document.getElementById('warn').innerHTML = closed.length < 30
+    ? `<div class="warn">Small sample: ${closed.length} closed signal${closed.length === 1 ? "" : "s"}. With fewer than 30 the percentages are not reliable; they will become more meaningful over time.${since ? " Tracking started on " + since + "." : ""}</div>`
+    : "";
+  const withBase = closed.filter(s => s.baseRet !== null && s.baseRet !== undefined);
+  const exAll = withBase.map(s => s.returnPct - (s.verdict === "long" ? 1 : -1) * s.baseRet);
+  const exMean = exAll.length ? exAll.reduce((a, b) => a + b, 0) / exAll.length : null;
+  const baseHit = withBase.length ? withBase.reduce((a, s) => a + (s.verdict === "long" ? s.baseUp : 100 - s.baseUp), 0) / withBase.length : null;
+  const exSide = side => { const a = withBase.filter(s => s.verdict === side).map(s => s.returnPct - (side === "long" ? 1 : -1) * s.baseRet); return a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; };
+  const exLong = exSide("long"), exShort = exSide("short");
+  document.getElementById('cards').innerHTML = `
+    <div class="card"><div class="num">${list.length}</div><div class="lbl">signals recorded<br>${closed.length} closed · ${open.length} in progress</div></div>
+    <div class="card"><div class="num">${closed.filter(s => s.verdict === "long" && s.returnPct > 0).length} of ${closed.filter(s => s.verdict === "long").length}</div><div class="lbl">times we said it would rise and it rose (after 5 sessions)</div></div>
+    <div class="card"><div class="num">${closed.filter(s => s.verdict === "short" && s.returnPct > 0).length} of ${closed.filter(s => s.verdict === "short").length}</div><div class="lbl">times we said it would fall and it fell (after 5 sessions)</div></div>
+    <div class="card"><div class="num">${hit === null ? "—" : hit.toFixed(0) + "%"}</div><div class="lbl">overall hit rate · by pure chance it would have been ${baseHit === null ? "—" : baseHit.toFixed(0) + "%"}</div></div>
+    <div class="card"><div class="num ${cls(exMean)}">${exMean === null ? "—" : fmtPct(exMean)}</div><div class="lbl">average result vs. the market average over the same dates</div></div>
+    <div class="card"><div class="num ${cls(exLong)}">${exLong === null ? "—" : fmtPct(exLong)}</div><div class="lbl">bullish signals only, vs. the market average</div></div>
+    <div class="card"><div class="num ${cls(exShort)}">${exShort === null ? "—" : fmtPct(exShort)}</div><div class="lbl">bearish signals only, vs. the market average</div></div>
+    <div class="card"><div class="num ${cls(avg)}">${fmtPct(avg)}</div><div class="lbl">average result</div></div>
+    <div class="card"><div class="num ${cls(med)}">${fmtPct(med)}</div><div class="lbl">median result (less sensitive to extreme cases)</div></div>
+  `;
+
+  const rows = [...list]
+    .sort((a,b) => b.signalDate.localeCompare(a.signalDate) || a.symbol.localeCompare(b.symbol))
+    .slice(0,150);
+
+  document.getElementById('tbody').innerHTML = rows.length ? rows.map(s => {
+    let res;
+    if(s.status === "closed") res = `<span class="${cls(s.returnPct)}">${fmtPct(s.returnPct)}</span>`;
+    else if(s.status === "unverified") res = `<span class="muted">no data</span>`;
+    else if(s.currentReturnPct !== null && s.currentReturnPct !== undefined) res = `<span class="muted">in progress (${fmtPct(s.currentReturnPct)})</span>`;
+    else res = `<span class="muted">awaiting entry</span>`;
+    const entry = (s.entryPrice === null || s.entryPrice === undefined) ? "—" : s.entryPrice;
+    return `<tr>
+      <td>${s.signalDate}</td>
+      <td>${LABELS[s.market] || s.market}</td>
+      <td><b>${s.symbol}</b></td>
+      <td><span class="tag ${s.verdict}">${s.verdict === "long" ? "LONG" : "SHORT"}</span></td>
+      <td>${s.trendStrength}%</td>
+      <td>${entry}</td>
+      <td>${res}</td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="7" class="empty">No signals recorded yet. They will appear here as the system detects new ones.</td></tr>`;
+}
+
+document.querySelectorAll('.pill').forEach(p => {
+  p.onclick = () => {
+    document.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    filter = p.dataset.f;
+    render();
+  };
+});
+document.getElementById('dlBtn').onclick = () => {
+  const head = ["signal_date","market","asset","direction","strength_pct","entry_date","entry_price","exit_date","exit_price","result_5_sessions_pct","status"];
+  const lines = [head.join(",")];
+  signals.forEach(s => {
+    lines.push([
+      s.signalDate, s.market, s.symbol, s.verdict, s.trendStrength,
+      s.entryDate ?? "", s.entryPrice ?? "", s.exitDate ?? "", s.exitPrice ?? "",
+      s.returnPct ?? "", s.status
+    ].join(","));
+  });
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "nexus-terminal-signal-log.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+load();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

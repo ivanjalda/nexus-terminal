@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How it works — Nexus Terminal</title>
+<meta name="description" content="What Nexus Terminal does every day, what each data point in the analysis means and what its limits are. No jargon and no promises of returns.">
+<link rel="canonical" href="https://nexusterminalalerts.com/en/como.html">
+<link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/como.html">
+<link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/como.html">
+<link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/como.html">
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+:root{
+  --blue:#0071e3;
+  --bg:#ffffff; --surface:#f5f5f7; --border:#e5e5ea;
+  --text:#1d1d1f; --muted:#86868b;
+  --yellow:#b36a00; --yellow-bg:#fdf3e3;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.7;}
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);}
+header .brand{font-size:1.3rem;font-weight:600;letter-spacing:-0.02em;}
+header .brand span{color:var(--blue);}
+header a{font-size:.9rem;color:var(--blue);text-decoration:none;font-weight:500;}
+header .lang{font-size:.85rem;color:var(--muted);margin-left:20px;}
+header .lang b{color:var(--text);}
+main{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
+h1{font-size:2rem;font-weight:700;letter-spacing:-0.03em;margin:0 0 12px;}
+.lead{color:var(--muted);font-size:1.05rem;margin:0 0 32px;}
+h2{font-size:1.2rem;font-weight:600;letter-spacing:-0.02em;margin:36px 0 10px;}
+p{margin:0 0 14px;}
+dl{margin:0;}
+dt{font-weight:600;margin-top:14px;}
+dd{margin:2px 0 0;color:var(--muted);}
+ul{padding-left:20px;margin:0 0 14px;}
+li{margin-bottom:8px;}
+a.enlace{color:var(--blue);}
+.aviso{background:var(--yellow-bg);color:var(--yellow);border-radius:14px;padding:16px 20px;margin-top:36px;font-size:.92rem;}
+</style>
+</head>
+<body>
+<header>
+  <a href="./" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><div class="brand">Nexus <span>Terminal</span></div></a>
+  <div><a href="./">← Back to the scanner</a><span class="lang"><b>EN</b> | <a href="../como.html" hreflang="es" style="font-size:.85rem;">ES</a></span></div>
+</header>
+<main>
+  <h1>How Nexus Terminal works</h1>
+  <p class="lead">A plain-language explanation of what we do every day, what each data point means and what its limits are.</p>
+
+  <h2>What we do every day</h2>
+  <p>Every trading day we download the closing prices and volume of thousands of US stocks, cryptocurrencies and currency pairs. We keep the ones with enough trading volume and, for each one, we calculate three things: which way its trend is heading, whether it has risen or fallen too fast, and how much it usually moves in a day.</p>
+
+  <h2>How we decide whether a signal is bullish, bearish or a wait</h2>
+  <ul>
+    <li><b>Bullish bias:</b> the recent trend is up, the price is close to its 20-session high and it has not risen in an exaggerated way.</li>
+    <li><b>Bearish bias:</b> the trend is down, the price is close to its 20-session low and it has not fallen in an exaggerated way.</li>
+    <li><b>Wait:</b> neither of the two situations applies.</li>
+  </ul>
+  <p>The lists show the assets with the strongest trend in each direction. The “All” button also shows the ones on hold.</p>
+
+  <h2>What each data point in the analysis means</h2>
+  <dl>
+    <dt>Price</dt>
+    <dd>The latest closing price.</dd>
+    <dt>SMA 20 / SMA 50</dt>
+    <dd>The average price over the last 20 and 50 sessions. If the 20 is above the 50, the trend is up.</dd>
+    <dt>Trend</dt>
+    <dd>Bullish or bearish, and the distance between those two averages as a percentage. The bigger it is, the stronger the trend.</dd>
+    <dt>RSI (14)</dt>
+    <dd>A scale from 0 to 100 that measures whether the price has risen or fallen very fast over the last 14 sessions. Above 70 is usually called “overbought”, and below 30, “oversold”.</dd>
+    <dt>20-session high / low</dt>
+    <dd>The highest and lowest price of the last 20 sessions.</dd>
+    <dt>ATR (14)</dt>
+    <dd>How much the price moves on a normal day, in the asset's currency and as a percentage. Higher means more volatility and therefore more risk.</dd>
+    <dt>Suggested risk</dt>
+    <dd>An indicative distance (1.5 times the ATR) for placing a protective stop, calculated from that volatility.</dd>
+    <dt>Indicative horizon</dt>
+    <dd>A rough reference in sessions, calculated with a simple rule based on trend strength and volatility. It has not been shown to hold true.</dd>
+  </dl>
+
+  <h2>What you should keep in mind</h2>
+  <ul>
+    <li><b>This is not financial advice</b> or a recommendation to buy or sell.</li>
+    <li><b>It is not a prediction.</b> It describes how the price has behaved; we don't know what will happen.</li>
+    <li><b>We don't yet have enough data</b> to claim these signals beat the market. That's why we measure them in public and publish the results, good or bad.</li>
+    <li><b>The data is end-of-day</b>, not real time.</li>
+    <li><b>Some assets can give misleading signals</b>, for example leveraged funds, which move enormously, or companies being acquired, whose price sits almost still after a jump. Those with very high volatility carry a warning.</li>
+    <li><b>Commissions and trading costs are not included.</b></li>
+  </ul>
+
+  <h2>Transparency</h2>
+  <p>Every new signal is recorded with its date and, five sessions after entry, we note what happened. You can see it all in the <a class="enlace" href="historico.html">Signal history</a> and download it to analyze it yourself.</p>
+
+  <div class="aviso">Nexus Terminal provides automatic technical analysis for informational purposes only. Investment decisions are yours, and every investment carries a risk of loss.</div>
+</main>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
