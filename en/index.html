@@ -90,6 +90,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
 .modebtn{flex:1;padding:8px 6px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:.78rem;font-family:inherit;color:var(--text);}
 .modebtn.active{background:var(--text);color:#fff;border-color:var(--text);}
 .mobile-hint{display:none;}
+.close-detail{display:block;width:100%;padding:12px;margin-top:4px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:.9rem;cursor:pointer;font-family:inherit;color:var(--text);}
 @media (max-width:1100px){
   .mobile-hint{display:block;font-size:.8rem;color:var(--muted);margin:12px 2px 0;line-height:1.5;}
   .chart-wrap:not(.inline){display:none;}
@@ -248,6 +249,7 @@ function restoreDetail(){
   if(cw.parentElement !== layout) layout.appendChild(cw);
   if(cr.parentElement !== layout) layout.appendChild(cr);
   cw.classList.remove('inline'); cr.classList.remove('inline');
+  document.querySelectorAll('.close-detail').forEach(b => b.remove());
   document.querySelectorAll('.scan-row.open').forEach(r => r.classList.remove('open'));
 }
 function renderLists(){
@@ -312,6 +314,9 @@ function selectSymbol(symbol){
       cw.classList.add('inline'); cr.classList.add('inline');
       row.after(cw); cw.after(cr);
       row.classList.add('open');
+      const cb = document.createElement('button'); cb.className = 'close-detail'; cb.textContent = 'Close ✕';
+      cb.onclick = () => { const r = row; restoreDetail(); document.getElementById('tvChart').src = 'about:blank'; r.scrollIntoView({behavior:'smooth', block:'center'}); };
+      cr.appendChild(cb);
       setTimeout(() => row.scrollIntoView({behavior:'smooth', block:'start'}), 50);
     }
   }
