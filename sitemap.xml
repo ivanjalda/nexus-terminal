@@ -13,6 +13,18 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/"/>
   </url>
   <url>
+    <loc>https://nexusterminalalerts.com/escaner.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/escaner.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/escaner.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/escaner.html"/>
+  </url>
+  <url>
+    <loc>https://nexusterminalalerts.com/en/escaner.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/escaner.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/escaner.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/escaner.html"/>
+  </url>
+  <url>
     <loc>https://nexusterminalalerts.com/como.html</loc>
     <xhtml:link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/como.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/como.html"/>
