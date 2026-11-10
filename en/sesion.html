@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Today's session — Statistical forecast | Nexus Terminal</title>
+<meta name="description" content="A statistical forecast for the next session for US stocks, with chart, the reasons and the reliability measured on real data. No promises of returns.">
+<meta property="og:title" content="Today's session — Statistical forecast | Nexus Terminal">
+<meta property="og:description" content="A statistical forecast for the next session for US stocks, with chart, the reasons and the reliability measured on real data. No promises of returns.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nexusterminalalerts.com/en/sesion.html">
+<meta property="og:image" content="https://nexusterminalalerts.com/og-image.jpg">
+<link rel="canonical" href="https://nexusterminalalerts.com/en/sesion.html">
+<link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/sesion.html">
+<link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/sesion.html">
+<link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/sesion.html">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../logo.png">
+<style>
+:root{
+  --bg:#0a0c10; --surface:#12151c; --surface2:#181c25; --border:#242a36;
+  --text:#eceef2; --muted:#8e97a7;
+  --gold:#d4af37; --gold2:#f0d27a; --gold-bg:rgba(212,175,55,.10);
+  --green:#35c98a; --red:#ff6159; --amber:#e8a93a;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55;}
+a{color:inherit;}
+header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 32px;background:rgba(10,12,16,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-size:1.2rem;font-weight:600;letter-spacing:-.02em;}
+.brand img{height:34px;width:34px;border-radius:9px;object-fit:cover;}
+.brand span{color:var(--gold);}
+nav{display:flex;align-items:center;gap:22px;flex-wrap:wrap;font-size:.88rem;}
+nav a{color:var(--muted);text-decoration:none;font-weight:500;}
+nav a:hover{color:var(--gold2);}
+nav .lang{color:var(--muted);}
+nav .lang b{color:var(--text);}
+main{max-width:1120px;margin:0 auto;padding:0 24px 40px;}
+.hero{padding:64px 0 36px;}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;letter-spacing:-.035em;margin:0 0 18px;font-weight:700;}
+.hero h1 em{font-style:normal;color:var(--gold);}
+.hero p{max-width:680px;color:var(--muted);font-size:1.08rem;margin:0 0 28px;}
+.btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{display:inline-block;padding:13px 24px;border-radius:12px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--border);}
+.btn.gold{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1405;border-color:transparent;}
+.btn.gold:hover{filter:brightness(1.07);}
+.btn.ghost{color:var(--text);background:var(--surface);}
+.btn.ghost:hover{border-color:var(--gold);}
+h2{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:700;margin:44px 0 14px;}
+.note{color:var(--muted);font-size:.8rem;margin-top:10px;}
+.clocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+.clock{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;}
+.clock .city{display:flex;justify-content:space-between;align-items:center;font-size:.86rem;color:var(--muted);font-weight:600;}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;}
+.badge.on{color:var(--green);background:rgba(53,201,138,.12);}
+.badge.on::before{animation:pulse 1.6s infinite;}
+.badge.off{color:var(--muted);background:rgba(142,151,167,.12);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.clock .time{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:2rem;letter-spacing:.02em;margin:8px 0 2px;font-weight:600;}
+.clock .cd{font-size:.82rem;color:var(--muted);}
+.clock .cd b{color:var(--gold2);font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600;}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.pill{font-size:.78rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 14px;}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;}
+.kv .k{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;}
+.kv .v{font-size:1.1rem;font-weight:600;margin-top:4px;}
+.kv .v small{display:block;font-size:.78rem;color:var(--muted);font-weight:400;margin-top:2px;}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.tlc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;}
+.tlc.now{border-color:var(--gold);background:linear-gradient(180deg,rgba(212,175,55,.08),var(--surface));}
+.tlc .tk{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--muted);}
+.tlc.now .tk{color:var(--gold);}
+.tlc .tv{font-size:1.2rem;font-weight:700;margin:6px 0 8px;letter-spacing:-.01em;}
+.tlc .ts{font-size:.86rem;color:var(--muted);line-height:1.6;}
+.tlc .ts b{color:var(--text);font-weight:600;}
+.clock .hrs{font-size:.78rem;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
+.warn{margin-top:16px;background:rgba(232,169,58,.1);color:var(--amber);border:1px solid rgba(232,169,58,.3);border-radius:12px;padding:12px 16px;font-size:.88rem;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;}
+.bar{display:flex;height:8px;border-radius:6px;overflow:hidden;margin:14px 0 12px;background:var(--border);}
+.bar i{display:block;height:100%;}
+.row{display:flex;justify-content:space-between;font-size:.88rem;padding:3px 0;}
+.row b{font-weight:600;}
+.g{color:var(--green);} .r{color:var(--red);}
+.mname{font-weight:700;font-size:1rem;}
+.rec{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:16px;}
+.rec .n{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;}
+.rec .l{font-size:.8rem;color:var(--muted);margin-top:2px;}
+.honest{margin-top:16px;border-left:3px solid var(--gold);background:var(--gold-bg);padding:12px 16px;border-radius:0 10px 10px 0;font-size:.92rem;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+.card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;transition:border-color .15s,transform .15s;}
+.card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.card h3{margin:0 0 6px;font-size:1.05rem;}
+.card p{margin:0 0 14px;color:var(--muted);font-size:.9rem;}
+.card span{color:var(--gold);font-weight:600;font-size:.88rem;}
+footer{max-width:1120px;margin:0 auto;padding:10px 24px 60px;color:var(--muted);font-size:.8rem;}
+footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
+@media (max-width:900px){.tl{grid-template-columns:1fr;}}
+@media (max-width:700px){
+  header{padding:12px 16px;}
+  nav{gap:14px;font-size:.82rem;}
+  main{padding:0 16px 30px;}
+  .hero{padding:40px 0 24px;}
+  .clock .time{font-size:1.7rem;}
+}
+
+.pgh{padding:48px 0 10px;}
+.pgh h1{font-size:clamp(1.8rem,4.4vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:0 0 14px;font-weight:700;}
+.pgh h1 em{font-style:normal;color:var(--gold);}
+.pgh p{max-width:760px;color:var(--muted);font-size:1.02rem;margin:0;}
+.verdict{display:flex;gap:14px;align-items:flex-start;}
+.verdict .ic{flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;}
+.verdict.sin .ic{background:rgba(232,169,58,.15);color:var(--amber);}
+.verdict.dem .ic{background:rgba(53,201,138,.15);color:var(--green);}
+.verdict.ins .ic{background:rgba(142,151,167,.15);color:var(--muted);}
+.verdict h3{margin:0 0 4px;font-size:1.1rem;}
+.verdict p{margin:0;color:var(--muted);font-size:.94rem;}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:.88rem;}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:600;}
+td{padding:9px 10px;border-bottom:1px solid var(--border);}
+td.num,th.num{text-align:right;}
+.tw{overflow-x:auto;}
+.two{display:grid;grid-template-columns:1.05fr 1fr;gap:14px;align-items:stretch;}
+.big{font-size:2.6rem;font-weight:700;letter-spacing:-.03em;line-height:1;}
+.big small{font-size:1rem;color:var(--muted);font-weight:500;letter-spacing:0;}
+.tabs2{display:flex;gap:8px;margin:0 0 14px;}
+.tabs2 button{font-family:inherit;font-size:.9rem;font-weight:600;padding:9px 18px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;}
+.tabs2 button.on{color:#1a1405;background:linear-gradient(180deg,var(--gold2),var(--gold));border-color:transparent;}
+details.cand{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:10px;}
+details.cand[open]{border-color:#3a4252;}
+details.cand summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1.1fr 1fr 1fr 24px;gap:12px;align-items:center;padding:16px 18px;}
+details.cand summary::-webkit-details-marker{display:none;}
+.sym{font-size:1.08rem;font-weight:700;}
+.sym small{display:block;font-weight:400;color:var(--muted);font-size:.78rem;}
+.pp{font-size:1.25rem;font-weight:700;}
+.pp small{display:block;font-weight:400;color:var(--muted);font-size:.74rem;}
+.chev{color:var(--muted);transition:transform .15s;}
+details[open] .chev{transform:rotate(90deg);}
+.body{padding:4px 18px 20px;display:grid;grid-template-columns:1.1fr 1fr;gap:20px;}
+.body h4{margin:0 0 8px;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);}
+.body ul{margin:0;padding-left:18px;color:var(--text);font-size:.9rem;}
+.body li{margin-bottom:6px;}
+.body .lim{margin-top:12px;font-size:.82rem;color:var(--muted);border-left:3px solid var(--border);padding-left:12px;}
+svg.fan{width:100%;height:auto;display:block;}
+.fanleg{display:flex;gap:14px;flex-wrap:wrap;font-size:.74rem;color:var(--muted);margin-top:6px;}
+.fanleg i{display:inline-block;width:12px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle;}
+.empty{color:var(--muted);padding:30px;text-align:center;}
+.tag{display:inline-block;font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:6px;margin-left:8px;vertical-align:middle;}
+.tag.long{background:rgba(53,201,138,.14);color:var(--green);}
+.tag.short{background:rgba(255,97,89,.14);color:var(--red);}
+@media (max-width:900px){.two,.body{grid-template-columns:1fr;}details.cand summary{grid-template-columns:1fr 1fr 24px;}details.cand summary .pp.s5{display:none;}}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="./"><img src="../logo.png" alt="Nexus Terminal" onerror="this.style.display='none'">Nexus <span>Terminal</span></a>
+  <nav>
+    <a href="sesion.html" style="color:var(--gold2)">Today's session</a>
+    <a href="escaner.html">Scanner</a>
+    <a href="historico.html">Signal history</a>
+    <a href="como.html">How it works</a>
+    <a href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener">Telegram alerts</a>
+    <span class="lang"><b>EN</b> | <a href="../sesion.html" hreflang="ES">ES</a></span>
+  </nav>
+</header>
+
+<main>
+  <section class="pgh">
+    <h1 id="h1">Forecast for the session of …</h1>
+    <p id="sub">Loading…</p>
+  </section>
+
+  <h2>Measured reliability: have these forecasts been right?</h2>
+  <div class="panel" id="rel"><div class="empty">Loading…</div></div>
+
+  <h2>The market as a whole</h2>
+  <div class="two" id="mkt"></div>
+
+  <h2>US stocks: forecast by asset</h2>
+  <div class="tabs2"><button class="on" data-v="long" id="tbL">Bullish</button><button data-v="short" id="tbS">Bearish</button></div>
+  <div id="cands"></div>
+  <div class="note">Statistical forecast built from similar situations in the past. It is not financial advice or a guarantee of results. Data from the latest close, not live.</div>
+</main>
+<footer><div class="d">Nexus Terminal provides automatic technical and statistical analysis for informational purposes only. It is not financial advice or a recommendation to buy or sell. Every investment carries a risk of loss and past performance does not guarantee future results.<br><br>Nexus Terminal is a service of Community16 LLC, a New Mexico (USA) limited liability company.</div></footer>
+
+<script>
+const T = {"NOFILE": "There is no forecast published yet.", "H1_DYN": "Forecast for the session of <em>{d}</em>", "SUB": "Calculated with the close of {c}. It is what the data from similar past situations says, not a promise.", "REL_INS_H": "There is not enough data yet to measure reliability", "REL_INS_P": "We keep accumulating days. Until there are enough, do not give these numbers more weight than they deserve.", "REL_SIN_H": "So far, these forecasts have not been shown to beat chance", "REL_SIN_P": "When the forecast was favorable (55% or more), it was right <b>{a}%</b> of the time in the past, while chance gave <b>{b}%</b> (over {n} cases on {d} days). We show it as it is, untouched.", "REL_DEM_H": "These forecasts have beaten chance in a statistically significant way", "REL_DEM_P": "When the forecast was favorable (55% or more), it was right <b>{a}%</b> of the time versus <b>{b}%</b> by chance (over {n} cases on {d} days). Even so, the past does not guarantee the future.", "TB_P": "Announced probability", "TB_N": "Cases", "TB_A": "Actual hit rate", "TB_B": "By chance it would be", "REL_NOTE": "Measured day by day over {n} sessions of history, using only what was known on each date (no looking ahead). Hit = the price moved in the direction of the signal over 5 sessions.", "MKT_UP1": "Probability that the market rises in the next session", "MKT_VS": "· in general it rises", "MKT_RANGE": "Normal range of movement (between 25% and 75% of cases): from {lo} to {hi} on the average stock.", "MKT_R1": "{x}% of stocks are in an uptrend.", "MKT_R2": "The average stock has moved {x} in 20 sessions.", "MKT_R3": "In {n} past days with a similar situation, the market was up over 5 sessions {p5}% of the time.", "MKT_N1": "Calculated from similar days in the past (same trend breadth and same 20-session move).", "MKT_N2": "There are not enough similar days: the market's general behavior is shown.", "MKT_CH": "Probable range of the market (average stock)", "FAN_NOW": "today", "FAN_S1": "session", "FAN_SN": "sessions", "FAN_ARIA": "Fan chart with the probable range of movement", "FAN_L50": "50% of cases", "FAN_L80": "80% of cases", "FAN_LMED": "Typical case", "NOCAND": "There are no candidates in this direction with enough data.", "PRICE": "Close", "P1": "in favor tomorrow", "P5": "in favor over 5 sessions", "CH_T": "Probable price range", "WHY": "Why we think so", "UP": "bullish", "DOWN": "bearish", "R_TREND": "{t} trend: the 20-session average is {x}% from the 50-session one.", "R_RSI": "RSI at {x} ({z}).", "RSI_HI": "high, overbought zone", "RSI_LO": "low, oversold zone", "RSI_MID": "normal zone", "R_HIGH": "It is {x}% from its 20-session high.", "R_LOW": "It is {x}% above its 20-session low.", "R_VOL": "It normally moves {x}% a day.", "R_ANALOG": "In {n} similar past situations, {p}% ended up moving in the direction of the signal over 5 sessions; the typical range was {lo} to {hi}.", "LIM": "What we do not know: news, company results or last-minute events. The forecast only uses the behavior of the price."};
+const LOC = "en-GB";
+let P = null, side = "long";
+const cap = x => x.charAt(0).toUpperCase() + x.slice(1);
+function stepWeekday(iso, step){ const d = new Date(iso+'T12:00:00Z'); do{ d.setUTCDate(d.getUTCDate()+step); }while(d.getUTCDay()===0||d.getUTCDay()===6); return d.toISOString().slice(0,10); }
+const fd = iso => cap(new Date(iso+'T12:00:00').toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'}));
+const fl = iso => new Date(iso+'T12:00:00').toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
+const pc = (x,d=1) => (x>0?'+':'')+x.toFixed(d)+'%';
+
+// gráfico de abanico: bandas 10–90 y 25–75 y mediana a 0, 1, 3 y 5 sesiones
+function fan(hz){
+  const W=420,H=210,L=44,R=12,Tp=12,B=28;
+  const xs=[0,1,3,5], pts=[[0,0,0,0,0]].concat(hz.map(z=>z.q));
+  let mn=0,mx=0; for(const q of pts){ mn=Math.min(mn,q[0]); mx=Math.max(mx,q[4]); }
+  const pad=(mx-mn)*0.1||1; mn-=pad; mx+=pad;
+  const X=d=>L+(d/5)*(W-L-R), Y=v=>Tp+(1-(v-mn)/(mx-mn))*(H-Tp-B);
+  const band=(lo,hi,fill)=>{ let a=''; xs.forEach((d,i)=>a+=(i?'L':'M')+X(d)+','+Y(pts[i][hi])); for(let i=xs.length-1;i>=0;i--) a+='L'+X(xs[i])+','+Y(pts[i][lo]); return `<path d="${a}Z" fill="${fill}"/>`; };
+  const med=xs.map((d,i)=>(i?'L':'M')+X(d)+','+Y(pts[i][2])).join('');
+  const step=(mx-mn)>8?2:(mx-mn)>3?1:0.5; let grid='';
+  for(let v=Math.ceil(mn/step)*step; v<=mx; v+=step){ grid+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${Math.abs(v)<1e-9?'#8e97a7':'#242a36'}" stroke-width="${Math.abs(v)<1e-9?1.2:1}" ${Math.abs(v)<1e-9?'stroke-dasharray="4 3"':''}/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" fill="#8e97a7" font-size="11">${v>0?'+':''}${v.toFixed(step<1?1:0)}%</text>`; }
+  let xl=''; xs.forEach(d=>{ xl+=`<text x="${X(d)}" y="${H-8}" text-anchor="${d===5?'end':'middle'}" fill="#8e97a7" font-size="11">${d===0?T.FAN_NOW:d+' '+(d===1?T.FAN_S1:T.FAN_SN)}</text>`; });
+  return `<svg class="fan" viewBox="0 0 ${W} ${H}" role="img" aria-label="${T.FAN_ARIA}">${grid}${band(0,4,'rgba(212,175,55,.16)')}${band(1,3,'rgba(212,175,55,.34)')}<path d="${med}" fill="none" stroke="#f0d27a" stroke-width="2"/>${xl}</svg>
+  <div class="fanleg"><span><i style="background:rgba(212,175,55,.34)"></i>${T.FAN_L50}</span><span><i style="background:rgba(212,175,55,.16)"></i>${T.FAN_L80}</span><span><i style="background:#f0d27a;height:3px"></i>${T.FAN_LMED}</span></div>`;
+}
+
+function renderRel(){
+  const c = P.calibracion, f = c.favorables || {};
+  let cls='ins', ic='…', h=T.REL_INS_H, p=T.REL_INS_P;
+  if(c.estado==='sin_ventaja'){ cls='sin'; ic='!'; h=T.REL_SIN_H; p=T.REL_SIN_P; }
+  if(c.estado==='demostrada'){ cls='dem'; ic='✓'; h=T.REL_DEM_H; p=T.REL_DEM_P; }
+  p = p.replace('{a}', f.acierto ?? '—').replace('{b}', f.azar ?? '—').replace('{n}', (f.n||0).toLocaleString(LOC)).replace('{d}', f.dias ?? 0);
+  const rows = (c.tramos||[]).map(t => `<tr><td>${t.label}</td><td class="num">${(t.n||0).toLocaleString(LOC)}</td><td class="num">${t.n? t.acierto+'%':'—'}</td><td class="num">${t.n? t.azar+'%':'—'}</td></tr>`).join('');
+  document.getElementById('rel').innerHTML = `<div class="verdict ${cls}"><div class="ic">${ic}</div><div><h3>${h}</h3><p>${p}</p></div></div>
+    <div class="tw"><table><thead><tr><th>${T.TB_P}</th><th class="num">${T.TB_N}</th><th class="num">${T.TB_A}</th><th class="num">${T.TB_B}</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="note">${T.REL_NOTE.replace('{n}', P.fechasHistorial)}</div>`;
+}
+
+function renderMkt(){
+  const m = P.market, h1 = m.horizons[0], h5 = m.horizons[2];
+  const hz = m.horizons.map(z => ({q:z.q}));
+  document.getElementById('mkt').innerHTML = `
+  <div class="panel">
+    <div class="k" style="font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600">${T.MKT_UP1}</div>
+    <div class="big">${Math.round(h1.pUp*100)}% <small>${T.MKT_VS} ${Math.round(h1.pUpBase*100)}%</small></div>
+    <div class="note" style="margin-top:12px">${T.MKT_RANGE.replace('{lo}',pc(h1.q[1],2)).replace('{hi}',pc(h1.q[3],2))}</div>
+    <ul style="margin:16px 0 0;padding-left:18px;font-size:.9rem">
+      <li>${T.MKT_R1.replace('{x}', m.breadthUpPct)}</li>
+      <li>${T.MKT_R2.replace('{x}', pc(m.ret20Pct,1))}</li>
+      <li>${T.MKT_R3.replace('{n}', h1.dias).replace('{p5}', Math.round(h5.pUp*100))}</li>
+    </ul>
+    <div class="note">${m.condicionado ? T.MKT_N1 : T.MKT_N2}</div>
+  </div>
+  <div class="panel"><div class="k" style="font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:8px">${T.MKT_CH}</div>${fan(hz)}</div>`;
+}
+
+function reasons(c){
+  const dir = c.verdict==='long';
+  const h1=c.hz[0], h5=c.hz[2];
+  const L=[];
+  L.push(T.R_TREND.replace('{t}', dir?T.UP:T.DOWN).replace('{x}', Math.abs(c.trend).toFixed(1)));
+  L.push(T.R_RSI.replace('{x}', Math.round(c.rsi)).replace('{z}', c.rsi>=70?T.RSI_HI:c.rsi<=30?T.RSI_LO:T.RSI_MID));
+  L.push(dir ? T.R_HIGH.replace('{x}', c.distHigh.toFixed(1)) : T.R_LOW.replace('{x}', c.distLow.toFixed(1)));
+  L.push(T.R_VOL.replace('{x}', c.atrPct));
+  L.push(T.R_ANALOG.replace('{n}', c.n.toLocaleString(LOC)).replace('{p}', Math.round(h5.p)).replace('{lo}',pc(h5.q[1],1)).replace('{hi}',pc(h5.q[3],1)));
+  return L.map(x=>`<li>${x}</li>`).join('');
+}
+
+function renderCands(){
+  const list = (P.candidatos||{})[side] || [];
+  const box = document.getElementById('cands');
+  if(!list.length){ box.innerHTML = `<div class="panel empty">${T.NOCAND}</div>`; return; }
+  box.innerHTML = list.map((c,i) => {
+    const h1=c.hz[0], h5=c.hz[2];
+    return `<details class="cand" ${i===0?'open':''}><summary>
+      <div class="sym">${c.symbol}<span class="tag ${c.verdict}">${c.verdict==='long'?'LONG':'SHORT'}</span><small>${T.PRICE} ${c.price}</small></div>
+      <div class="pp s1">${Math.round(h1.p)}%<small>${T.P1}</small></div>
+      <div class="pp s5">${Math.round(h5.p)}%<small>${T.P5}</small></div>
+      <div class="chev">›</div></summary>
+      <div class="body"><div><h4>${T.CH_T}</h4>${fan(c.hz)}</div>
+      <div><h4>${T.WHY}</h4><ul>${reasons(c)}</ul><div class="lim">${T.LIM}</div></div></div></details>`;
+  }).join('');
+}
+
+document.getElementById('tbL').onclick = () => { side='long'; document.getElementById('tbL').classList.add('on'); document.getElementById('tbS').classList.remove('on'); renderCands(); };
+document.getElementById('tbS').onclick = () => { side='short'; document.getElementById('tbS').classList.add('on'); document.getElementById('tbL').classList.remove('on'); renderCands(); };
+
+(async function(){
+  try{ P = await (await fetch('../prediccion.json?v='+Date.now())).json(); }catch(e){}
+  if(!P){ document.getElementById('sub').textContent = T.NOFILE; document.getElementById('rel').innerHTML = '<div class="empty">'+T.NOFILE+'</div>'; return; }
+  const sess = stepWeekday(P.dataDate, 1);
+  document.getElementById('h1').innerHTML = T.H1_DYN.replace('{d}', fl(sess));
+  document.getElementById('sub').textContent = T.SUB.replace('{c}', fl(P.dataDate));
+  renderRel(); renderMkt(); renderCands();
+})();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
