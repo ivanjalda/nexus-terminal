@@ -69,6 +69,15 @@ h2{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:var(--go
 .kv .k{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;}
 .kv .v{font-size:1.1rem;font-weight:600;margin-top:4px;}
 .kv .v small{display:block;font-size:.78rem;color:var(--muted);font-weight:400;margin-top:2px;}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.tlc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;}
+.tlc.now{border-color:var(--gold);background:linear-gradient(180deg,rgba(212,175,55,.08),var(--surface));}
+.tlc .tk{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--muted);}
+.tlc.now .tk{color:var(--gold);}
+.tlc .tv{font-size:1.2rem;font-weight:700;margin:6px 0 8px;letter-spacing:-.01em;}
+.tlc .ts{font-size:.86rem;color:var(--muted);line-height:1.6;}
+.tlc .ts b{color:var(--text);font-weight:600;}
+.clock .hrs{font-size:.78rem;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
 .warn{margin-top:16px;background:rgba(232,169,58,.1);color:var(--amber);border:1px solid rgba(232,169,58,.3);border-radius:12px;padding:12px 16px;font-size:.88rem;}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;}
 .bar{display:flex;height:8px;border-radius:6px;overflow:hidden;margin:14px 0 12px;background:var(--border);}
@@ -89,6 +98,7 @@ h2{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:var(--go
 .card span{color:var(--gold);font-weight:600;font-size:.88rem;}
 footer{max-width:1120px;margin:0 auto;padding:10px 24px 60px;color:var(--muted);font-size:.8rem;}
 footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
+@media (max-width:900px){.tl{grid-template-columns:1fr;}}
 @media (max-width:700px){
   header{padding:12px 16px;}
   nav{gap:14px;font-size:.82rem;}
@@ -114,29 +124,28 @@ footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
   <section class="hero">
     <h1>The market, read every day.<br><em>Limits in plain sight.</em></h1>
     <p>We analyze thousands of stocks, cryptocurrencies and currency pairs, show you what each chart says and measure in public whether we were right. The data is from the latest close, not live.</p>
-    <div class="btns"><a class="btn gold" href="escaner.html">Open the scanner</a><a class="btn ghost" href="historico.html">See the public record</a></div>
+    <div class="btns"><a class="btn gold" href="#estado">See the data status</a><a class="btn ghost" href="#medido">See what we have measured</a></div>
   </section>
 
   <h2>Markets right now</h2>
   <div class="clocks" id="clocks"></div>
   <div class="pills"><span class="pill">Crypto: open 24 h, every day</span><span class="pill">Forex: Sunday night to Friday night</span></div>
-  <div class="note">Usual trading hours for each exchange. Holidays are not taken into account.</div>
+  <div class="note">Usual trading hours for each exchange, shown in your local time. Holidays are not taken into account.</div>
 
-  <h2>Data status</h2>
-  <div class="panel">
-    <div class="kv">
-      <div><div class="k">Latest close analyzed</div><div class="v" id="stLast">Loading…</div></div>
-      <div><div class="k">Updated</div><div class="v" id="stUpd">—</div></div>
-      <div><div class="k">Next update</div><div class="v" id="stNext">—</div></div>
-    </div>
-    <div class="note">Prices and signals are from the latest close, not live. The robot runs every early morning and can take a few minutes longer.</div>
-    <div id="stWarn"></div>
+  <h2 id="estado">Data status</h2>
+  <div class="tl">
+    <div class="tlc past"><div class="tk">Latest close analyzed</div><div class="tv" id="tl1v">Loading…</div><div class="ts" id="tl1s"></div></div>
+    <div class="tlc now"><div class="tk">Today's session</div><div class="tv" id="tl2v">—</div><div class="ts" id="tl2s"></div></div>
+    <div class="tlc next"><div class="tk">Next update</div><div class="tv" id="tl3v">—</div><div class="ts" id="tl3s"></div></div>
   </div>
+  <div class="note">Prices and signals are from the latest close, not live. The robot runs every early morning and can take a few minutes longer.</div>
+  <div id="stWarn"></div>
 
   <h2>Overview of the latest close</h2>
   <div class="grid3" id="pan"></div>
+  <div style="margin-top:14px"><a href="escaner.html" style="color:var(--gold);font-weight:600;text-decoration:none">See the signals in the scanner →</a></div>
 
-  <h2>What we have measured, good or bad</h2>
+  <h2 id="medido">What we have measured, good or bad</h2>
   <div class="panel">
     <div>Every signal is recorded with its date and, five sessions after entry, we note what the price did. Nothing is deleted or touched up.</div>
     <div id="rec"></div>
@@ -144,19 +153,12 @@ footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
     <div style="margin-top:14px"><a href="historico.html" style="color:var(--gold);font-weight:600;text-decoration:none">See all the data →</a></div>
   </div>
 
-  <h2>All of Nexus Terminal</h2>
-  <div class="cards">
-    <a class="card" href="escaner.html"><h3>Scanner</h3><p>US stocks, crypto and forex with the signal, the reason and the chart for each asset.</p><span>Open →</span></a>
-    <a class="card" href="historico.html"><h3>Signal history</h3><p>The public record of every signal and what the price did afterwards. Downloadable.</p><span>Open →</span></a>
-    <a class="card" href="como.html"><h3>How it works</h3><p>What each data point means, how we decide a signal and what its limits are.</p><span>Open →</span></a>
-    <a class="card" href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener"><h3>Telegram alerts</h3><p>An alert when a new signal appears. Public, free channel.</p><span>Open →</span></a>
-  </div>
 </main>
 
 <footer><div class="d">Nexus Terminal provides automatic technical analysis for informational purposes only. It is not financial advice or a recommendation to buy or sell. Every investment carries a risk of loss and past performance does not guarantee future results.</div></footer>
 
 <script>
-const T = {"OPEN_S": "Open", "CLOSED_S": "Closed", "CLOSES_IN": "Closes in", "OPENS_IN": "Opens in", "ST_STALE": "Warning: the data has not been updated for {d} days.", "PAN_N": "{n} assets analyzed", "PAN_SIG": "{l} bullish candidates · {s} bearish", "PAN_NODATA": "Not enough data yet.", "PAN_UP": "In an uptrend", "PAN_DOWN": "In a downtrend", "PAN_FLAT": "No clear trend", "M_stocks": "US stocks", "M_crypto": "Crypto", "M_fx": "Forex", "REC_SMALL": "Small sample ({n} closed signals): with fewer than 30 the percentages are not reliable.", "REC_N": "closed signals", "REC_HIT": "overall hit rate", "REC_RAND": "by chance it would have been", "REC_EX": "average result vs the market average", "REC_NONE": "There are no closed signals to measure yet.", "REC_HONEST": "So far we have not shown that the signals beat the market. If they ever do, you will see it here with the numbers.", "REC_LINK": "See all the data →", "CITY_NY": "New York", "CITY_MAD": "Madrid", "CITY_LON": "London", "CITY_TYO": "Tokyo", "LOADING": "Loading…", "NOFILE": "The data could not be loaded."};
+const T = {"TL1_S": "Updated {t}", "TL2_S1": "Signals calculated with the close of {d}", "TL2_S3": "Measured historical hit rate: {h} · by chance: {b} (over {n} closed signals)", "TL2_NOTE": "This is not a prediction: it is what the latest close data says.", "TL3_S": "Will analyze the close of {d}", "HRS_OPENS": "Opens", "HRS_CLOSES": "Closes", "OPEN_S": "Open", "CLOSED_S": "Closed", "CLOSES_IN": "Closes in", "OPENS_IN": "Opens in", "ST_STALE": "Warning: the data has not been updated for {d} days.", "PAN_N": "{n} assets analyzed", "PAN_SIG": "{l} bullish candidates · {s} bearish", "PAN_NODATA": "Not enough data yet.", "PAN_UP": "In an uptrend", "PAN_DOWN": "In a downtrend", "PAN_FLAT": "No clear trend", "M_stocks": "US stocks", "M_crypto": "Crypto", "M_fx": "Forex", "REC_SMALL": "Small sample ({n} closed signals): with fewer than 30 the percentages are not reliable.", "REC_N": "closed signals", "REC_HIT": "overall hit rate", "REC_RAND": "by chance it would have been", "REC_EX": "average result vs the market average", "REC_NONE": "There are no closed signals to measure yet.", "REC_HONEST": "So far we have not shown that the signals beat the market. If they ever do, you will see it here with the numbers.", "REC_LINK": "See all the data →", "CITY_NY": "New York", "CITY_MAD": "Madrid", "CITY_LON": "London", "CITY_TYO": "Tokyo", "LOADING": "Loading…", "NOFILE": "The data could not be loaded."};
 const LOC = "en-GB";
 const MARKETS = [
   {key:"NY",  city:T.CITY_NY,  tz:"America/New_York", sessions:[[570,960]]},
@@ -198,11 +200,18 @@ function fmtCd(sec){
   const d = Math.floor(sec/86400), h = Math.floor(sec%86400/3600), m = Math.floor(sec%3600/60), s = sec%60;
   return (d? d+"d ":"") + pad(h)+":"+pad(m)+":"+pad(s);
 }
+function hoursLocal(mk, now){
+  const p = parts(mk.tz, now), nowMin = p.h*60 + p.m;
+  const first = mk.sessions[0][0], last = mk.sessions[mk.sessions.length-1][1];
+  const at = m => new Date(now.getTime() + (m - nowMin)*60000 - p.s*1000);
+  const f = d => d.toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit'});
+  return T.HRS_OPENS + ' <b>' + f(at(first)) + '</b> · ' + T.HRS_CLOSES + ' <b>' + f(at(last)) + '</b>';
+}
 function drawClocks(){
   const now = new Date();
   const box = document.getElementById('clocks');
   if(!box.children.length){
-    box.innerHTML = MARKETS.map(mk => `<div class="clock" id="ck-${mk.key}"><div class="city"><span>${mk.city}</span><span class="badge" id="bd-${mk.key}"></span></div><div class="time" id="tm-${mk.key}"></div><div class="cd" id="cd-${mk.key}"></div></div>`).join('');
+    box.innerHTML = MARKETS.map(mk => `<div class="clock" id="ck-${mk.key}"><div class="city"><span>${mk.city}</span><span class="badge" id="bd-${mk.key}"></span></div><div class="time" id="tm-${mk.key}"></div><div class="cd" id="cd-${mk.key}"></div><div class="hrs" id="hr-${mk.key}"></div></div>`).join('');
   }
   for(const mk of MARKETS){
     const st = status(mk, now);
@@ -210,42 +219,64 @@ function drawClocks(){
     bd.className = 'badge ' + (st.open ? 'on' : 'off');
     bd.textContent = st.open ? T.OPEN_S : T.CLOSED_S;
     document.getElementById('tm-'+mk.key).textContent = pad(st.p.h)+":"+pad(st.p.m)+":"+pad(st.p.s);
+    document.getElementById('hr-'+mk.key).innerHTML = hoursLocal(mk, now);
     document.getElementById('cd-'+mk.key).innerHTML = (st.open ? T.CLOSES_IN : T.OPENS_IN) + " <b>" + fmtCd(st.secs) + "</b>";
   }
 }
 drawClocks(); setInterval(drawClocks, 1000);
 
+function cap(x){ return x.charAt(0).toUpperCase() + x.slice(1); }
 function fmtDate(iso){
   if(!iso) return "—";
-  return new Date(iso+'T12:00:00').toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  return cap(new Date(iso+'T12:00:00').toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'}));
 }
 function fmtStamp(iso){
   if(!iso) return "—";
   const d = new Date(iso); if(isNaN(d)) return "—";
-  return d.toLocaleString(LOC,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZoneName:'short'});
+  return d.toLocaleString(LOC,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 }
-function nextRun(){
+function stepWeekday(iso, step){
+  const d = new Date(iso+'T12:00:00Z');
+  do{ d.setUTCDate(d.getUTCDate()+step); }while(d.getUTCDay()===0 || d.getUTCDay()===6);
+  return d.toISOString().slice(0,10);
+}
+function nextRunDate(){
   // el robot se programa a las 05:30 UTC cada día
   const n = new Date(); const r = new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate(), 5, 30));
   if(r <= n) r.setUTCDate(r.getUTCDate()+1);
-  return r.toLocaleString(LOC,{weekday:'long',hour:'2-digit',minute:'2-digit',timeZoneName:'short'});
+  return r;
 }
 
 async function load(){
   let data = null, sigs = [];
   try{ data = await (await fetch('../results.json')).json(); }catch(e){}
   try{ sigs = await (await fetch('../data/signals.json?v='+Date.now())).json(); }catch(e){ sigs = []; }
-  document.getElementById('stNext').textContent = nextRun();
-  if(!data){ document.getElementById('stLast').textContent = T.NOFILE; return; }
+  const run = nextRunDate();
+  const runIso = run.toISOString().slice(0,10);
+  document.getElementById('tl3v').textContent = cap(run.toLocaleString(LOC,{weekday:'long',day:'numeric',month:'long'}));
+  document.getElementById('tl3s').innerHTML = '<b>' + run.toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit',timeZoneName:'short'}) + '</b><br>' + T.TL3_S.replace('{d}', fmtDate(stepWeekday(runIso,-1)).toLowerCase());
+  if(!data){ document.getElementById('tl1v').textContent = T.NOFILE; return; }
+
+  const closed = sigs.filter(s => s.status === 'closed' && typeof s.returnPct === 'number');
+  const hit = closed.length ? closed.filter(s=>s.returnPct>0).length/closed.length*100 : null;
+  const wb = closed.filter(s => typeof s.baseRet==='number' && typeof s.baseUp==='number');
+  const baseHit = wb.length ? wb.reduce((a,s)=>a+(s.verdict==='long'?s.baseUp:100-s.baseUp),0)/wb.length : null;
+  const ex = wb.length ? wb.reduce((a,s)=>a+s.returnPct-(s.verdict==='long'?1:-1)*s.baseRet,0)/wb.length : null;
 
   const order = ["stocks","crypto","fx"];
-  const dates = order.map(k => data[k] && data[k].dataDate).filter(Boolean);
-  const main = (data.stocks && data.stocks.dataDate) || dates[0];
-  document.getElementById('stLast').innerHTML = fmtDate(main) +
-    '<small>' + order.filter(k=>data[k]&&data[k].dataDate).map(k => T["M_"+k]+": "+new Date(data[k].dataDate+'T12:00:00').toLocaleDateString(LOC,{day:'numeric',month:'short'})).join(' · ') + '</small>';
+  const main = (data.stocks && data.stocks.dataDate) || order.map(k => data[k] && data[k].dataDate).filter(Boolean)[0];
   const upd = order.map(k => data[k] && data[k].updatedAt).filter(Boolean).sort().pop();
-  document.getElementById('stUpd').textContent = fmtStamp(upd);
+  document.getElementById('tl1v').textContent = fmtDate(main);
+  document.getElementById('tl1s').innerHTML = T.TL1_S.replace('{t}', '<b>' + fmtStamp(upd) + '</b>') + '<br>' +
+    order.filter(k=>data[k]&&data[k].dataDate).map(k => T["M_"+k]+": "+new Date(data[k].dataDate+'T12:00:00').toLocaleDateString(LOC,{day:'numeric',month:'short'})).join(' · ');
+
   if(main){
+    const sess = stepWeekday(main, 1), st = data.stocks || {};
+    document.getElementById('tl2v').textContent = fmtDate(sess);
+    document.getElementById('tl2s').innerHTML = T.TL2_S1.replace('{d}', '<b>' + fmtDate(main).toLowerCase() + '</b>') + '<br>' +
+      T.PAN_SIG.replace('{l}','<b>'+(st.longs||[]).length+'</b>').replace('{s}','<b>'+(st.shorts||[]).length+'</b>') + ' · ' + T.M_stocks + '<br>' +
+      (hit===null ? T.REC_NONE : T.TL2_S3.replace('{h}','<b>'+hit.toFixed(0)+'%</b>').replace('{b}', baseHit===null?'—':baseHit.toFixed(0)+'%').replace('{n}', closed.length)) +
+      '<br><i>' + T.TL2_NOTE + '</i>';
     const lag = Math.floor((Date.now() - new Date(main+'T12:00:00').getTime())/86400000);
     if(lag > 4) document.getElementById('stWarn').innerHTML = '<div class="warn">'+T.ST_STALE.replace('{d}', lag)+'</div>';
   }
@@ -264,13 +295,8 @@ async function load(){
       <div class="note">${T.PAN_N.replace('{n}', n.toLocaleString(LOC))}<br>${T.PAN_SIG.replace('{l}',(d.longs||[]).length).replace('{s}',(d.shorts||[]).length)}</div></div>`;
   }).join('');
 
-  const closed = sigs.filter(s => s.status === 'closed' && typeof s.returnPct === 'number');
   const rec = document.getElementById('rec');
   if(!closed.length){ rec.innerHTML = '<div class="note">'+T.REC_NONE+'</div>'; return; }
-  const hit = closed.filter(s=>s.returnPct>0).length/closed.length*100;
-  const wb = closed.filter(s => typeof s.baseRet==='number' && typeof s.baseUp==='number');
-  const baseHit = wb.length ? wb.reduce((a,s)=>a+(s.verdict==='long'?s.baseUp:100-s.baseUp),0)/wb.length : null;
-  const ex = wb.length ? wb.reduce((a,s)=>a+s.returnPct-(s.verdict==='long'?1:-1)*s.baseRet,0)/wb.length : null;
   const f = v => (v>0?'+':'')+v.toFixed(2)+'%';
   rec.innerHTML = (closed.length<30 ? '<div class="warn">'+T.REC_SMALL.replace('{n}',closed.length)+'</div>' : '') +
     '<div class="rec">' +
