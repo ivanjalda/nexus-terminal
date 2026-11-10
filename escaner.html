@@ -115,7 +115,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
 
 <header>
 <a href="./" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="logo.png" alt="Nexus Terminal" style="height:34px;width:34px;border-radius:9px;object-fit:cover" onerror="this.style.display='none'"><h1>Nexus <span>Terminal</span></h1></a>
-<div style="display:flex;gap:24px;"><a href="como.html" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">Cómo funciona</a><a href="historico.html" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">Histórico de señales</a><a href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">Avisos en Telegram</a><span style="font-size:.85rem;color:var(--muted);align-self:center;"><b style="color:var(--text);">ES</b> | <a href="en/escaner.html" hreflang="en" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">EN</a></span></div>  
+<div style="display:flex;gap:24px;"><a href="sesion.html" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">Sesión de hoy</a><a href="como.html" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">Cómo funciona</a><a href="historico.html" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">Histórico de señales</a><a href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">Avisos en Telegram</a><span style="font-size:.85rem;color:var(--muted);align-self:center;"><b style="color:var(--text);">ES</b> | <a href="en/escaner.html" hreflang="en" style="font-size:.85rem;color:var(--blue);text-decoration:none;font-weight:500;">EN</a></span></div>  
 <div class="updated" id="updatedAt">Cargando resultados…</div>
 </header>
 
@@ -129,7 +129,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
   <div class="col left">
     <div id="marketPulse" class="metric-card"></div>
     <input type="text" id="filterBox" placeholder="Filtrar por símbolo..." oninput="renderLists()">
-    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas" id="btnNuevas">Nuevas</button><button class="modebtn" data-mode="activas">Siguen activas</button><button class="modebtn" data-mode="todos">Todos</button></div>
+    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas" id="btnNuevas">Nuevas</button><button class="modebtn" data-mode="activas">Anteriores</button><button class="modebtn" data-mode="todos">Todos</button></div>
     <div id="modeNote" style="font-size:.75rem;color:var(--muted);margin-top:8px;line-height:1.45"></div>
     <div class="mobile-hint">Toca un activo para abrir su gráfico y su análisis justo debajo.</div>
     <h2 id="longsTitle">Candidatos con sesgo alcista</h2>
@@ -173,6 +173,11 @@ let currentMarket = "stocks";
 let currentSymbol = null;
 let mode = "nuevas";
 
+function sesBetween(a, b, m){
+  let n = 0; const d = new Date(a + 'T12:00:00Z'), e = new Date(b + 'T12:00:00Z');
+  while(d < e){ d.setUTCDate(d.getUTCDate() + 1); const w = d.getUTCDay(); if(m === 'crypto' || (w !== 0 && w !== 6)) n++; }
+  return n;
+}
 async function markNew(){
   const keys = new Set(); const since = new Map();
   try{
@@ -190,7 +195,7 @@ async function markNew(){
     const d = data[m];
     if(!d) continue;
     for(const list of [d.longs || [], d.shorts || [], d.all || []]){
-      for(const s of list){ const k = `${m}|${s.symbol}|${s.verdict}`; s.nuevo = keys.has(k); s.desde = s.nuevo ? null : (since.get(k) || null); }
+      for(const s of list){ const k = `${m}|${s.symbol}|${s.verdict}`; s.nuevo = keys.has(k); s.desde = s.nuevo ? null : (since.get(k) || null); s.ses = s.desde ? sesBetween(s.desde, data[m].dataDate, m) : null; }
     }
   }
 }
@@ -243,7 +248,7 @@ function refreshLabels(){
   window.__cs = fmtD(dd,{day:'numeric',month:'short'});
   const l = fmtD(dd,{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('btnNuevas').textContent = 'Nuevas · ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = '<b>Nuevas</b>: señales que aparecen por primera vez con el cierre del ' + l + '. <b>Siguen activas</b>: señales de cierres anteriores que continúan (se indica desde qué día). Los precios no son en directo.';
+  document.getElementById('modeNote').innerHTML = '<b>Nuevas</b>: señales que aparecen por primera vez con el cierre del ' + l + '. <b>Anteriores</b>: señales de los últimos 4 cierres que siguen dentro de sus 5 sesiones de seguimiento («día 3 de 5»). Las más antiguas están en Todos. Los precios no son en directo.';
 }
 function renderLists(){
   restoreDetail();
@@ -264,14 +269,14 @@ function renderLists(){
     longsBox.innerHTML = all.length ? all.map(s => rowHtml(s, s.verdict)).join('') : '<div class="empty">Sin resultados para ese filtro</div>';
   } else {
     const soloNuevas = mode === "nuevas";
-    document.getElementById('longsTitle').textContent = soloNuevas ? 'Alcistas nuevas · cierre del ' + (window.__cs||'') : 'Alcistas que siguen activas';
-    document.getElementById('shortsTitle').textContent = soloNuevas ? 'Bajistas nuevas · cierre del ' + (window.__cs||'') : 'Bajistas que siguen activas';
+    document.getElementById('longsTitle').textContent = soloNuevas ? 'Alcistas nuevas · cierre del ' + (window.__cs||'') : 'Alcistas anteriores · dentro de sus 5 sesiones';
+    document.getElementById('shortsTitle').textContent = soloNuevas ? 'Bajistas nuevas · cierre del ' + (window.__cs||'') : 'Bajistas anteriores · dentro de sus 5 sesiones';
     document.getElementById('shortsTitle').style.display = '';
     shortsBox.style.display = '';
-    const pick = s => match(s) && (soloNuevas ? s.nuevo : !s.nuevo);
+    const pick = s => match(s) && !(currentMarket === 'stocks' && s.atrPct < 0.4) && (soloNuevas ? s.nuevo : (!s.nuevo && s.ses != null && s.ses >= 1 && s.ses <= 5));
     const longs = active.longs.filter(pick);
     const shorts = active.shorts.filter(pick);
-    const vacio = soloNuevas ? 'Ninguna nueva en este cierre' : 'Ninguna activa de cierres anteriores';
+    const vacio = soloNuevas ? 'Ninguna nueva en este cierre' : 'Ninguna dentro de su ventana de 5 sesiones';
     longsBox.innerHTML = longs.length ? longs.map(s => rowHtml(s, "long")).join('') : `<div class="empty">${vacio}</div>`;
     shortsBox.innerHTML = shorts.length ? shorts.map(s => rowHtml(s, "short")).join('') : `<div class="empty">${vacio}</div>`;
   }
@@ -283,7 +288,7 @@ function renderLists(){
 
 function rowHtml(s, type){
   return `<div class="scan-row" data-symbol="${s.symbol}">
-    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">NUEVA</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${s.trend}${s.atrPct >= 8 ? ' · ⚠ volatilidad muy alta' : ''}${s.desde ? ' · desde ' + fmtD(s.desde,{day:'numeric',month:'short'}) : ''}</div></div>
+    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">NUEVA</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${s.trend}${s.atrPct >= 8 ? ' · ⚠ volatilidad muy alta' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · día ' + s.ses + ' de 5' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ precio casi inmóvil, señal poco fiable' : ''}</div></div>
     <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"ESPERAR"}</span>
   </div>`;
 }
