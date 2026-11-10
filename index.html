@@ -91,6 +91,23 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
 .chart-wrap:not(:has(iframe[src*="tradingview"])) iframe{display:none;}
 .modebtn{flex:1;padding:8px 6px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:.78rem;font-family:inherit;color:var(--text);}
 .modebtn.active{background:var(--text);color:#fff;border-color:var(--text);}
+.mobile-hint{display:none;}
+@media (max-width:1100px){
+  .mobile-hint{display:block;font-size:.8rem;color:var(--muted);margin:12px 2px 0;line-height:1.5;}
+  .chart-wrap:not(.inline){display:none;}
+  .chart-wrap.inline{height:auto;padding:10px 0 0;}
+  .chart-wrap.inline iframe{flex:none;height:420px;}
+  .col.right.inline{border:none;padding:8px 0 18px;overflow:visible;}
+  .scan-row.open{background:#e4e4e8;}
+}
+@media (max-width:700px){
+  header{flex-wrap:wrap;gap:8px 16px;padding:14px 16px;}
+  header > div[style*="gap"]{gap:6px 14px !important;flex-wrap:wrap;}
+  .updated{width:100%;}
+  .tabs{padding:10px 12px 0;overflow-x:auto;}
+  .tab{padding:10px 12px;white-space:nowrap;}
+  .col{padding:16px;}
+}
 </style>
 </head>
 <body>
@@ -112,6 +129,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
     <div id="marketPulse" class="metric-card"></div>
     <input type="text" id="filterBox" placeholder="Filtrar por símbolo..." oninput="renderLists()">
     <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas">Nuevas hoy</button><button class="modebtn" data-mode="activas">Siguen activas</button><button class="modebtn" data-mode="todos">Todos</button></div>
+    <div class="mobile-hint">Toca un activo para abrir su gráfico y su análisis justo debajo.</div>
     <h2 id="longsTitle">Candidatos con sesgo alcista</h2>
     <div id="longsBox"></div>
   <h2 id="shortsTitle">Candidatos con sesgo bajista</h2>
@@ -206,7 +224,17 @@ document.querySelectorAll('.modebtn').forEach(b => {
   };
 });
 
+const isMobile = () => window.matchMedia('(max-width:1100px)').matches;
+function restoreDetail(){
+  const layout = document.querySelector('.layout');
+  const cw = document.querySelector('.chart-wrap'), cr = document.querySelector('.col.right');
+  if(cw.parentElement !== layout) layout.appendChild(cw);
+  if(cr.parentElement !== layout) layout.appendChild(cr);
+  cw.classList.remove('inline'); cr.classList.remove('inline');
+  document.querySelectorAll('.scan-row.open').forEach(r => r.classList.remove('open'));
+}
 function renderLists(){
+  restoreDetail();
   const q = document.getElementById('filterBox').value.toLowerCase().trim();
   const qTicker = NAME_MAP[q] || q;
   const active = data[currentMarket];
@@ -258,6 +286,18 @@ function selectSymbol(symbol){
   const active = data[currentMarket];
   const s = [...active.longs, ...active.shorts, ...(active.all||[])].find(x=>x.symbol===symbol);
   if(!s) return;
+  if(isMobile()){
+    const row = [...document.querySelectorAll('.scan-row')].find(r => r.dataset.symbol === symbol);
+    if(row){
+      if(row.classList.contains('open')){ restoreDetail(); document.getElementById('tvChart').src = 'about:blank'; return; }
+      restoreDetail();
+      const cw = document.querySelector('.chart-wrap'), cr = document.querySelector('.col.right');
+      cw.classList.add('inline'); cr.classList.add('inline');
+      row.after(cw); cw.after(cr);
+      row.classList.add('open');
+      setTimeout(() => row.scrollIntoView({behavior:'smooth', block:'start'}), 50);
+    }
+  }
   document.getElementById('chartTitle').innerHTML = `${symbol} <span class="sub">(${currentMarket})</span>`;
   document.getElementById('tvChart').src = `https://s.tradingview.com/widgetembed/?frameElementId=tv_widget&symbol=${encodeURIComponent(tvSymbol(symbol, currentMarket))}&interval=D&hidesidetoolbar=0&saveimage=1&toolbarbg=f8f9fa&theme=light&style=1&timezone=Etc%2FUTC`;
   renderAnalysis(s);
