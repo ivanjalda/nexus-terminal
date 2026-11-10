@@ -129,7 +129,8 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
   <div class="col left">
     <div id="marketPulse" class="metric-card"></div>
     <input type="text" id="filterBox" placeholder="Filtrar por símbolo..." oninput="renderLists()">
-    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas">Nuevas hoy</button><button class="modebtn" data-mode="activas">Siguen activas</button><button class="modebtn" data-mode="todos">Todos</button></div>
+    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas" id="btnNuevas">Nuevas</button><button class="modebtn" data-mode="activas">Siguen activas</button><button class="modebtn" data-mode="todos">Todos</button></div>
+    <div id="modeNote" style="font-size:.75rem;color:var(--muted);margin-top:8px;line-height:1.45"></div>
     <div class="mobile-hint">Toca un activo para abrir su gráfico y su análisis justo debajo.</div>
     <h2 id="longsTitle">Candidatos con sesgo alcista</h2>
     <div id="longsBox"></div>
@@ -173,7 +174,7 @@ let currentSymbol = null;
 let mode = "nuevas";
 
 async function markNew(){
-  const keys = new Set();
+  const keys = new Set(); const since = new Map();
   try{
     const r = await fetch('./data/signals.json?v=' + Date.now());
     const sigs = await r.json();
@@ -182,13 +183,14 @@ async function markNew(){
       if(!dd) continue;
       sigs.filter(x => x.market === m && x.signalDate === dd)
           .forEach(x => keys.add(`${m}|${x.symbol}|${x.verdict}`));
+      sigs.filter(x => x.market === m && x.status !== 'unverified').forEach(x => { const k = `${m}|${x.symbol}|${x.verdict}`; if(!since.has(k) || x.signalDate > since.get(k)) since.set(k, x.signalDate); });
     }
   }catch(e){}
   for(const m of Object.keys(data)){
     const d = data[m];
     if(!d) continue;
     for(const list of [d.longs || [], d.shorts || [], d.all || []]){
-      for(const s of list) s.nuevo = keys.has(`${m}|${s.symbol}|${s.verdict}`);
+      for(const s of list){ const k = `${m}|${s.symbol}|${s.verdict}`; s.nuevo = keys.has(k); s.desde = s.nuevo ? null : (since.get(k) || null); }
     }
   }
 }
@@ -204,7 +206,7 @@ async function loadResults(){
   await markNew();
   const active = data[currentMarket];
   document.getElementById('updatedAt').textContent = active
-    ? `Datos al cierre del ${active.dataDate ? new Date(active.dataDate + 'T12:00:00').toLocaleDateString('es-ES') : '—'} · ${active.totalEligible} activos analizados`
+    ? `Cierre del ${active.dataDate ? new Date(active.dataDate + 'T12:00:00').toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}) : '—'} · no en directo · ${active.totalEligible} activos analizados`
     : "Aún sin datos suficientes — el escaneo en segundo plano todavía está acumulando histórico.";
 renderPulse(); renderLists();}
 
@@ -235,8 +237,17 @@ function restoreDetail(){
   document.querySelectorAll('.close-detail').forEach(b => b.remove());
   document.querySelectorAll('.scan-row.open').forEach(r => r.classList.remove('open'));
 }
+function fmtD(iso,o){ return new Date(iso+'T12:00:00').toLocaleDateString('es-ES',o); }
+function refreshLabels(){
+  const a = data[currentMarket]; const dd = a && a.dataDate; if(!dd) return;
+  window.__cs = fmtD(dd,{day:'numeric',month:'short'});
+  const l = fmtD(dd,{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('btnNuevas').textContent = 'Nuevas · ' + window.__cs;
+  document.getElementById('modeNote').innerHTML = '<b>Nuevas</b>: señales que aparecen por primera vez con el cierre del ' + l + '. <b>Siguen activas</b>: señales de cierres anteriores que continúan (se indica desde qué día). Los precios no son en directo.';
+}
 function renderLists(){
   restoreDetail();
+  refreshLabels();
   const q = document.getElementById('filterBox').value.toLowerCase().trim();
   const qTicker = NAME_MAP[q] || q;
   const active = data[currentMarket];
@@ -253,14 +264,14 @@ function renderLists(){
     longsBox.innerHTML = all.length ? all.map(s => rowHtml(s, s.verdict)).join('') : '<div class="empty">Sin resultados para ese filtro</div>';
   } else {
     const soloNuevas = mode === "nuevas";
-    document.getElementById('longsTitle').textContent = soloNuevas ? 'Señales alcistas nuevas hoy' : 'Candidatos con sesgo alcista';
-    document.getElementById('shortsTitle').textContent = soloNuevas ? 'Señales bajistas nuevas hoy' : 'Candidatos con sesgo bajista';
+    document.getElementById('longsTitle').textContent = soloNuevas ? 'Alcistas nuevas · cierre del ' + (window.__cs||'') : 'Alcistas que siguen activas';
+    document.getElementById('shortsTitle').textContent = soloNuevas ? 'Bajistas nuevas · cierre del ' + (window.__cs||'') : 'Bajistas que siguen activas';
     document.getElementById('shortsTitle').style.display = '';
     shortsBox.style.display = '';
-    const pick = s => match(s) && (!soloNuevas || s.nuevo);
+    const pick = s => match(s) && (soloNuevas ? s.nuevo : !s.nuevo);
     const longs = active.longs.filter(pick);
     const shorts = active.shorts.filter(pick);
-    const vacio = soloNuevas ? 'Ninguna nueva hoy' : 'Ninguno ahora mismo';
+    const vacio = soloNuevas ? 'Ninguna nueva en este cierre' : 'Ninguna activa de cierres anteriores';
     longsBox.innerHTML = longs.length ? longs.map(s => rowHtml(s, "long")).join('') : `<div class="empty">${vacio}</div>`;
     shortsBox.innerHTML = shorts.length ? shorts.map(s => rowHtml(s, "short")).join('') : `<div class="empty">${vacio}</div>`;
   }
@@ -272,7 +283,7 @@ function renderLists(){
 
 function rowHtml(s, type){
   return `<div class="scan-row" data-symbol="${s.symbol}">
-    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">NUEVA</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${s.trend}${s.atrPct >= 8 ? ' · ⚠ volatilidad muy alta' : ''}</div></div>
+    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">NUEVA</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${s.trend}${s.atrPct >= 8 ? ' · ⚠ volatilidad muy alta' : ''}${s.desde ? ' · desde ' + fmtD(s.desde,{day:'numeric',month:'short'}) : ''}</div></div>
     <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"ESPERAR"}</span>
   </div>`;
 }
