@@ -265,7 +265,7 @@ function refreshLabels(){
   window.__cs = fmtD(dd,{day:'numeric',month:'short'});
   const l = fmtD(dd,{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('btnNuevas').textContent = 'Detected · ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = '<b>Detected</b>: signals appearing for the first time with the close of ' + l + ' (not forecasts for tomorrow: those are in «Today\'s session»). <b>Earlier</b>: signals from the last 4 closes still inside their 5-session tracking window (“day 3 of 5”). Older ones are under All. Prices are not live.';
+  document.getElementById('modeNote').innerHTML = '<b>Detected</b>: signals appearing for the first time with the close of ' + l + ' (not forecasts for tomorrow: those are in «Today\'s session»). <b>Earlier</b>: signals detected in earlier closes. Each is tracked for 5 sessions from the day it was detected: “day 3 of 5” means 3 sessions have passed since that date. Afterwards they move to All. Prices are not live.';
 }
 function renderLists(){
   restoreDetail();
@@ -305,7 +305,7 @@ function renderLists(){
 
 function rowHtml(s, type){
   return `<div class="scan-row" data-symbol="${s.symbol}">
-    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">DETECTED</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${trEn(s.trend)}${s.atrPct >= 8 ? ' · ⚠ very high volatility' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · day ' + s.ses + ' of 5' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ price almost frozen, unreliable signal' : ''}</div></div>
+    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">DETECTED</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${trEn(s.trend)}${s.atrPct >= 8 ? ' · ⚠ very high volatility' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · detected ' + fmtD(s.desde,{day:'numeric',month:'short'}) + ' · day ' + s.ses + ' of 5' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ price almost frozen, unreliable signal' : ''}</div></div>
     <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"WAIT"}</span>
   </div>`;
 }
