@@ -131,7 +131,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
   <div class="col left">
     <div id="marketPulse" class="metric-card"></div>
     <input type="text" id="filterBox" placeholder="Filter by symbol..." oninput="renderLists()">
-    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas" id="btnNuevas">New</button><button class="modebtn" data-mode="activas">Earlier</button><button class="modebtn" data-mode="todos">All</button></div>
+    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas" id="btnNuevas">Detected</button><button class="modebtn" data-mode="activas">Earlier</button><button class="modebtn" data-mode="todos">All</button></div>
     <div id="modeNote" style="font-size:.75rem;color:var(--muted);margin-top:8px;line-height:1.45"></div>
     <div class="mobile-hint">Tap an asset to open its chart and analysis right below it.</div>
     <h2 id="longsTitle">Bullish-bias candidates</h2>
@@ -264,8 +264,8 @@ function refreshLabels(){
   const a = data[currentMarket]; const dd = a && a.dataDate; if(!dd) return;
   window.__cs = fmtD(dd,{day:'numeric',month:'short'});
   const l = fmtD(dd,{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('btnNuevas').textContent = 'New · ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = '<b>New</b>: signals appearing for the first time with the close of ' + l + '. <b>Earlier</b>: signals from the last 4 closes still inside their 5-session tracking window (“day 3 of 5”). Older ones are under All. Prices are not live.';
+  document.getElementById('btnNuevas').textContent = 'Detected · ' + window.__cs;
+  document.getElementById('modeNote').innerHTML = '<b>Detected</b>: signals appearing for the first time with the close of ' + l + ' (not forecasts for tomorrow: those are in «Today\'s session»). <b>Earlier</b>: signals from the last 4 closes still inside their 5-session tracking window (“day 3 of 5”). Older ones are under All. Prices are not live.';
 }
 function renderLists(){
   restoreDetail();
@@ -286,14 +286,14 @@ function renderLists(){
     longsBox.innerHTML = all.length ? all.map(s => rowHtml(s, s.verdict)).join('') : '<div class="empty">No results for that filter</div>';
   } else {
     const soloNuevas = mode === "nuevas";
-    document.getElementById('longsTitle').textContent = soloNuevas ? 'New bullish · close of ' + (window.__cs||'') : 'Bullish earlier · inside their 5 sessions';
-    document.getElementById('shortsTitle').textContent = soloNuevas ? 'New bearish · close of ' + (window.__cs||'') : 'Bearish earlier · inside their 5 sessions';
+    document.getElementById('longsTitle').textContent = soloNuevas ? 'Bullish detected · close of ' + (window.__cs||'') : 'Bullish earlier · inside their 5 sessions';
+    document.getElementById('shortsTitle').textContent = soloNuevas ? 'Bearish detected · close of ' + (window.__cs||'') : 'Bearish earlier · inside their 5 sessions';
     document.getElementById('shortsTitle').style.display = '';
     shortsBox.style.display = '';
     const pick = s => match(s) && !(currentMarket === 'stocks' && s.atrPct < 0.4) && (soloNuevas ? s.nuevo : (!s.nuevo && s.ses != null && s.ses >= 1 && s.ses <= 5));
     const longs = active.longs.filter(pick);
     const shorts = active.shorts.filter(pick);
-    const vacio = soloNuevas ? 'None new in this close' : 'None inside their 5-session window';
+    const vacio = soloNuevas ? 'None detected in this close' : 'None inside their 5-session window';
     longsBox.innerHTML = longs.length ? longs.map(s => rowHtml(s, "long")).join('') : `<div class="empty">${vacio}</div>`;
     shortsBox.innerHTML = shorts.length ? shorts.map(s => rowHtml(s, "short")).join('') : `<div class="empty">${vacio}</div>`;
   }
@@ -305,7 +305,7 @@ function renderLists(){
 
 function rowHtml(s, type){
   return `<div class="scan-row" data-symbol="${s.symbol}">
-    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">NEW</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${trEn(s.trend)}${s.atrPct >= 8 ? ' · ⚠ very high volatility' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · day ' + s.ses + ' of 5' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ price almost frozen, unreliable signal' : ''}</div></div>
+    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">DETECTED</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${trEn(s.trend)}${s.atrPct >= 8 ? ' · ⚠ very high volatility' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · day ' + s.ses + ' of 5' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ price almost frozen, unreliable signal' : ''}</div></div>
     <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"WAIT"}</span>
   </div>`;
 }
