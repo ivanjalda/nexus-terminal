@@ -117,7 +117,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
 
 <header>
 <a href="./" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../logo.png" alt="Nexus Terminal" style="height:34px;width:34px;border-radius:9px;object-fit:cover" onerror="this.style.display='none'"><h1>Nexus <span>Terminal</span></h1></a>
-<div style="display:flex;gap:24px;align-items:center;"><a class="navlink" href="sesion.html">Forecasts</a><a class="navlink" href="como.html">How it works</a><a class="navlink" href="historico.html">Signal history</a><a class="navlink" href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener">Telegram alerts</a><span class="lang"><b>EN</b> | <a href="../escaner.html" hreflang="es">ES</a></span></div>
+<div style="display:flex;gap:24px;align-items:center;"><a class="navlink" href="./">Home</a><a class="navlink" href="sesion.html">Forecasts</a><a class="navlink" href="como.html">How it works</a><a class="navlink" href="historico.html">Signal history</a><a class="navlink" href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener">Telegram alerts</a><span class="lang"><b>EN</b> | <a href="../escaner.html" hreflang="es">ES</a></span></div>
 <div class="updated" id="updatedAt">Loading results…</div>
 </header>
 
@@ -131,7 +131,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
   <div class="col left">
     <div id="marketPulse" class="metric-card"></div>
     <input type="text" id="filterBox" placeholder="Filter by symbol..." oninput="renderLists()">
-    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas" id="btnNuevas">Detected</button><button class="modebtn" data-mode="activas">Earlier</button><button class="modebtn" data-mode="todos">All</button></div>
+    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="nuevas" id="btnNuevas">Detected</button><button class="modebtn" data-mode="activas">Tracking</button><button class="modebtn" data-mode="todos">All</button></div>
     <div id="modeNote" style="font-size:.75rem;color:var(--muted);margin-top:8px;line-height:1.45"></div>
     <div class="mobile-hint">Tap an asset to open its chart and analysis right below it.</div>
     <h2 id="longsTitle">Bullish-bias candidates</h2>
@@ -217,6 +217,32 @@ async function markNew(){
   }
 }
 
+let PRON = null;
+const NYHOL_S = ['2026-11-26','2026-12-25','2027-01-01','2027-01-18','2027-02-15','2027-03-26','2027-05-31','2027-06-18','2027-07-05','2027-09-06','2027-11-25','2027-12-24'];
+function nextSession(m, iso){
+  const d = new Date(iso + 'T12:00:00Z');
+  do{ d.setUTCDate(d.getUTCDate() + 1); const w = d.getUTCDay(); const t = d.toISOString().slice(0,10);
+      if(m === 'crypto') break;
+      if(w === 0 || w === 6) continue;
+      if(m === 'stocks' && NYHOL_S.includes(t)) continue;
+      break; }while(true);
+  return d.toISOString().slice(0,10);
+}
+async function markPron(){
+  PRON = {};
+  try{
+    const P = await (await fetch('../prediccion.json?v=' + Date.now())).json();
+    for(const m of Object.keys(data)){
+      const pm = P.mercados && P.mercados[m], d = data[m];
+      if(!pm || !d || pm.dataDate !== d.dataDate) continue;
+      PRON[m] = { fecha: nextSession(m, d.dataDate) };
+      const mp = new Map();
+      for(const side of ['long','short']) for(const c of ((pm.candidatos || {})[side] || [])){ const z = (c.hz || []).find(x => x.h === 5) || {}; mp.set(c.symbol, { pc: (z.pc != null ? z.pc : z.p), v: side }); }
+      for(const list of [d.longs || [], d.shorts || [], d.all || []]) for(const s of list){ const x = mp.get(s.symbol); s.pron = (x && x.v === s.verdict) ? x : null; }
+    }
+  }catch(e){}
+}
+
 async function loadResults(){
   try{
     const res = await fetch('../results.json');
@@ -225,7 +251,7 @@ async function loadResults(){
     document.getElementById('updatedAt').textContent = "Couldn't load the results.";
     return;
   }
-  await markNew();
+  await markNew(); await markPron();
   const active = data[currentMarket];
   document.getElementById('updatedAt').textContent = active
     ? `Close of ${active.dataDate ? new Date(active.dataDate + 'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}) : '—'} · not live · ${active.totalEligible} assets analyzed`
@@ -264,8 +290,10 @@ function refreshLabels(){
   const a = data[currentMarket]; const dd = a && a.dataDate; if(!dd) return;
   window.__cs = fmtD(dd,{day:'numeric',month:'short'});
   const l = fmtD(dd,{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('btnNuevas').textContent = 'Detected · ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = '<b>Detected</b>: signals appearing for the first time with the close of ' + l + ' (not forecasts for tomorrow: those are in «Today\'s session»). <b>Earlier</b>: signals detected in earlier closes. Each is tracked for 5 sessions from the day it was detected: “day 3 of 5” means 3 sessions have passed since that date. Afterwards they move to All. Prices are not live.';
+  const pr = PRON && PRON[currentMarket]; window.__nx = pr ? fmtD(pr.fecha,{weekday:'short',day:'numeric',month:'short'}) : null;
+  const nxl = pr ? fmtD(pr.fecha,{weekday:'long',day:'numeric',month:'long'}) : null;
+  document.getElementById('btnNuevas').textContent = 'Forecasts' + (window.__nx ? ' · ' + window.__nx : '');
+  document.getElementById('modeNote').innerHTML = (nxl ? '<b>Forecasts</b>: the assets for which our engine calculates the probability for the next session (' + nxl + '), using the data of the close of ' + l + '. Sorted from highest to lowest probability. ' : '<b>Forecasts</b>: the forecast for this close has not been published yet. ') + '<b>Tracking</b>: alerts from earlier days that are still being checked over 5 sessions (“day 3 of 5” = 3 sessions have passed since that date). <b>All</b>: every asset analysed. Prices are not live.';
 }
 function renderLists(){
   restoreDetail();
@@ -286,14 +314,15 @@ function renderLists(){
     longsBox.innerHTML = all.length ? all.map(s => rowHtml(s, s.verdict)).join('') : '<div class="empty">No results for that filter</div>';
   } else {
     const soloNuevas = mode === "nuevas";
-    document.getElementById('longsTitle').textContent = soloNuevas ? 'Bullish detected · close of ' + (window.__cs||'') : 'Bullish earlier · inside their 5 sessions';
-    document.getElementById('shortsTitle').textContent = soloNuevas ? 'Bearish detected · close of ' + (window.__cs||'') : 'Bearish earlier · inside their 5 sessions';
+    document.getElementById('longsTitle').textContent = soloNuevas ? 'Bullish · forecast for ' + (window.__nx||window.__cs||'') : 'Bullish tracking · inside their 5 sessions';
+    document.getElementById('shortsTitle').textContent = soloNuevas ? 'Bearish · forecast for ' + (window.__nx||window.__cs||'') : 'Bearish tracking · inside their 5 sessions';
     document.getElementById('shortsTitle').style.display = '';
     shortsBox.style.display = '';
-    const pick = s => match(s) && !(currentMarket === 'stocks' && s.atrPct < 0.4) && (soloNuevas ? s.nuevo : (!s.nuevo && s.ses != null && s.ses >= 1 && s.ses <= 5));
-    const longs = active.longs.filter(pick);
-    const shorts = active.shorts.filter(pick);
-    const vacio = soloNuevas ? 'None detected in this close' : 'None inside their 5-session window';
+    const pick = s => match(s) && !(currentMarket === 'stocks' && s.atrPct < 0.4) && (soloNuevas ? !!s.pron : (!s.nuevo && s.ses != null && s.ses >= 1 && s.ses <= 5));
+    const byP = (a, b) => ((b.pron && b.pron.pc) || 0) - ((a.pron && a.pron.pc) || 0);
+    const longs = soloNuevas ? (active.all || []).filter(x => x.verdict === 'long').filter(pick).sort(byP) : active.longs.filter(pick);
+    const shorts = soloNuevas ? (active.all || []).filter(x => x.verdict === 'short').filter(pick).sort(byP) : active.shorts.filter(pick);
+    const vacio = soloNuevas ? 'No forecasts published yet for this market' : 'None inside their 5-session window';
     longsBox.innerHTML = longs.length ? longs.map(s => rowHtml(s, "long")).join('') : `<div class="empty">${vacio}</div>`;
     shortsBox.innerHTML = shorts.length ? shorts.map(s => rowHtml(s, "short")).join('') : `<div class="empty">${vacio}</div>`;
   }
@@ -305,7 +334,7 @@ function renderLists(){
 
 function rowHtml(s, type){
   return `<div class="scan-row" data-symbol="${s.symbol}">
-    <div><div class="sym">${s.symbol}${s.nuevo ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">DETECTED</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${trEn(s.trend)}${s.atrPct >= 8 ? ' · ⚠ very high volatility' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · detected ' + fmtD(s.desde,{day:'numeric',month:'short'}) + ' · day ' + s.ses + ' of 5' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ price almost frozen, unreliable signal' : ''}</div></div>
+    <div><div class="sym">${s.symbol}${(s.pron && s.pron.pc != null) ? ' <span style="font-size:.66rem;color:var(--blue);font-weight:700;">' + Math.round(s.pron.pc) + '% · 5 ses.</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${trEn(s.trend)}${s.atrPct >= 8 ? ' · ⚠ very high volatility' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · detected ' + fmtD(s.desde,{day:'numeric',month:'short'}) + ' · day ' + s.ses + ' of 5' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ price almost frozen, unreliable signal' : ''}</div></div>
     <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"WAIT"}</span>
   </div>`;
 }
