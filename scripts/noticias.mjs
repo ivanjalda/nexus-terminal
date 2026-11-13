@@ -19,16 +19,18 @@ const FEEDS = {
   en: {
     a: [
       { s: "CNBC", u: "https://www.cnbc.com/id/15839069/device/rss/rss.html" },
-      { s: "MarketWatch", u: "https://feeds.content.dowjones.io/public/rss/mw_marketpulse" },
-      { s: "Yahoo Finance", u: "https://finance.yahoo.com/news/rssindex" },
+      { s: "CNBC", u: "https://www.cnbc.com/id/100003114/device/rss/rss.html" },
+      { s: "Investing.com", u: "https://www.investing.com/rss/news_25.rss" },
     ],
     b: [
       { s: "CNBC", u: "https://www.cnbc.com/id/20910258/device/rss/rss.html" },
       { s: "CNBC", u: "https://www.cnbc.com/id/10001147/device/rss/rss.html" },
+      { s: "CNBC", u: "https://www.cnbc.com/id/10000664/device/rss/rss.html" },
+      { s: "CNBC", u: "https://www.cnbc.com/id/15839135/device/rss/rss.html" },
     ],
   },
 };
-const MAX_AGE_DAYS = 4, PER_SOURCE = 4, TOTAL = 12;
+const MAX_AGE_DAYS = 4, PER_SOURCE = 6, TOTAL = 12;
 const OUT = process.argv[2] || "noticias.json";
 const OVERRIDE = process.env.NOTICIAS_FEEDS ? JSON.parse(process.env.NOTICIAS_FEEDS) : null; // solo para pruebas
 
@@ -46,6 +48,19 @@ function clean(x) {
   return s.replace(/\s+/g, " ").trim();
 }
 const tag = (blk, name) => { const m = blk.match(new RegExp(`<${name}(?:\\s[^>]*)?>([\\s\\S]*?)</${name}>`, "i")); return m ? m[1] : ""; };
+// imagen que el propio medio ofrece en su RSS (miniatura); solo https. Si no hay, la noticia va sin imagen.
+function image(b) {
+  let m = b.match(/<media:(?:content|thumbnail)[^>]*?\burl=["']([^"']+)["']/i)
+    || b.match(/<enclosure[^>]*?\burl=["']([^"']+)["'][^>]*?type=["']image/i)
+    || b.match(/<enclosure[^>]*?type=["']image[^>]*?\burl=["']([^"']+)["']/i);
+  if (!m) {
+    const raw = b.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+    m = raw.match(/<img[^>]*?\bsrc=["']([^"']+)["']/i);
+  }
+  if (!m) return undefined;
+  const u = m[1].replace(/&amp;/g, "&").trim();
+  return /^https:\/\/[^\s"'<>]+$/i.test(u) && u.length < 400 ? u : undefined;
+}
 function parse(xml) {
   const items = [];
   const blocks = xml.match(/<item[\s>][\s\S]*?<\/item>/gi) || xml.match(/<entry[\s>][\s\S]*?<\/entry>/gi) || [];
@@ -57,7 +72,7 @@ function parse(xml) {
     const d = clean(tag(b, "pubDate") || tag(b, "published") || tag(b, "updated") || tag(b, "dc:date"));
     const ms = Date.parse(d);
     if (!t || !/^https?:\/\//i.test(u) || !Number.isFinite(ms)) continue;
-    items.push({ t, u, ms });
+    items.push({ t, u, ms, i: image(b) });
   }
   return items;
 }
@@ -89,7 +104,7 @@ async function main() {
     for (const i of all) {
       const k = norm(i.t); if (seen.has(k)) continue;
       per[i.s] = (per[i.s] || 0) + 1; if (per[i.s] > PER_SOURCE) continue;
-      seen.add(k); pick.push({ t: i.t, u: i.u, s: i.s, d: new Date(i.ms).toISOString() });
+      seen.add(k); pick.push({ t: i.t, u: i.u, s: i.s, d: new Date(i.ms).toISOString(), ...(i.i ? { i: i.i } : {}) });
       if (pick.length >= TOTAL) break;
     }
     out[lang][col] = pick;
