@@ -47,20 +47,42 @@ nav a:hover{color:var(--gold2);}
 nav .lang{color:var(--muted);}
 nav .lang b{color:var(--text);}
 main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
-.shell{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;padding:0 24px;max-width:2400px;margin:0 auto;}
+.shell{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:0 24px;max-width:none;margin:0;}
 .side{min-width:0;}
 .shell>main{order:1;}
 #newsL{order:2;}
 #newsR{order:3;}
 .side h2{margin-top:44px;}
-.ni{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 13px;margin-bottom:9px;transition:border-color .15s;}
+.ni{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color .15s,transform .15s;}
+.ni .nb{padding:11px 14px 13px;}
+.ni-img{aspect-ratio:16/9;background:var(--bg);overflow:hidden;}
+.ni-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.ni:hover{transform:translateY(-1px);}
 .ni:hover{border-color:var(--gold);}
 .ni .nm{font-size:.72rem;color:var(--muted);margin-bottom:3px;}
 .ni .nm b{color:var(--gold);font-weight:700;}
-.ni .nt{font-size:.88rem;line-height:1.4;font-weight:600;}
+.ni .nt{font-size:.92rem;line-height:1.38;font-weight:600;}
+.mbar{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--border);background:var(--surface);font-size:.78rem;scrollbar-width:thin;}
+.mbar:empty{display:none;}
+.mbar .mi{display:flex;flex-direction:column;gap:1px;padding:7px 18px;border-right:1px solid var(--border);white-space:nowrap;min-width:max-content;}
+.mbar .mi b{font-weight:700;}
+.mbar .mi .mp{color:var(--muted);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.74rem;}
+.mbar .mi .mc{font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace;}
+.mbar .mi .mc.up{color:var(--green);}
+.mbar .mi .mc.dn{color:var(--red);}
+.mbar .mn{margin-left:auto;padding:7px 18px;color:var(--muted);font-size:.7rem;display:flex;align-items:center;white-space:nowrap;}
+.adc{position:relative;display:block;margin-bottom:12px;border:1px solid var(--gold);border-radius:14px;padding:20px 16px 16px;background:linear-gradient(160deg,var(--gold-bg),var(--surface));text-decoration:none;}
+.adc .adt{position:absolute;top:-9px;left:14px;background:var(--bg);color:var(--muted);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:0 7px;}
+.adc .adk{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px;}
+.adc .adh{font-family:Georgia,'Times New Roman',serif;font-size:1.12rem;font-weight:600;line-height:1.25;margin-bottom:8px;}
+.adc p{margin:0 0 12px;color:var(--muted);font-size:.84rem;}
+.adc .btn{padding:8px 16px;font-size:.84rem;}
+.adc .adf{margin-top:10px;font-size:.68rem;color:var(--muted);}
+.ni.none .nb{padding:12px 14px;}
 .ni.none{color:var(--muted);font-size:.84rem;font-weight:400;}
+@media (min-width:2300px){ .shell{grid-template-columns:380px minmax(0,1fr) 380px;} }
 @media (min-width:1500px){
-  .shell{grid-template-columns:270px minmax(0,1fr) 270px;}
+  .shell{grid-template-columns:330px minmax(0,1fr) 330px;}
   #newsL{order:0;}
   #newsR{order:2;}
   .side{position:sticky;top:66px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto;padding-bottom:20px;}
@@ -136,7 +158,7 @@ h2{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:var(--go
 .card h3{margin:0 0 6px;font-size:1.05rem;}
 .card p{margin:0 0 14px;color:var(--muted);font-size:.9rem;}
 .card span{color:var(--gold);font-weight:600;font-size:.88rem;}
-footer{margin:0 auto;padding:10px 24px 60px;max-width:2400px;color:var(--muted);font-size:.8rem;}
+footer{margin:0;padding:10px 24px 60px;max-width:none;color:var(--muted);font-size:.8rem;}
 footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
 @media (max-width:900px){.tl{grid-template-columns:1fr;}}
 @media (max-width:700px){
@@ -161,6 +183,7 @@ footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
     <button class="tbtn" id="themeBtn" type="button"></button>
   </nav>
 </header>
+<div class="mbar" id="mbar"></div>
 
 <div class="shell">
 <aside class="side" id="newsL"></aside>
@@ -218,7 +241,7 @@ footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
 
 <script>
 const T = {"TL1_S": "Updated {t}", "TL2_S1": "Signals calculated with the close of {d}", "TL2_S3": "Measured historical hit rate: {h} · by chance: {b} (over {n} closed signals)", "TL2_NOTE": "This is not a prediction: it is what the latest close data says.", "TL3_S": "Will analyze the close of {d}", "HRS_OPENS": "Opens", "HRS_CLOSES": "Closes", "OPEN_S": "Open", "CLOSED_S": "Closed", "BREAK_S": "Break", "HOLI_S": "Holiday", "HRS_CITY": "{c} time", "HRS_MINE": "In your time", "HRS_EARLY": "⚠ Early close", "HRS_COVER": "⚠ Holiday calendar needs updating", "PR_NOFILE": "No prediction published yet.", "PR_READY": "Calculated with the close of {d}", "PR_REL": "Measured hit rate when the forecast was favorable: {h} · by chance: {b}", "PR_ST_dem": "Edge over chance demonstrated", "PR_ST_sin": "Edge over chance not demonstrated yet", "PR_ST_ins": "Still too little data to measure reliability", "PR_STALE": "⚠ Not ready yet: the latest prediction is for {d}, which has already passed. It updates this morning around {t}.", "PR_LINK": "See the full prediction →", "TL3_DATA": "Close data: {t}", "TL3_PRED": "Prediction: {t}", "CLOSES_IN": "Closes in", "OPENS_IN": "Opens in", "ST_STALE": "Warning: the data has not been updated for {d} days.", "PAN_N": "{n} assets analyzed", "PAN_SIG": "{l} bullish candidates · {s} bearish", "PAN_NODATA": "Not enough data yet.", "PAN_UP": "In an uptrend", "PAN_DOWN": "In a downtrend", "PAN_FLAT": "No clear trend", "M_stocks": "US stocks", "M_crypto": "Crypto", "M_fx": "Forex", "REC_SMALL": "Small sample ({n} closed signals): with fewer than 30 the percentages are not reliable.", "REC_N": "closed signals", "REC_HIT": "overall hit rate", "REC_RAND": "by chance it would have been", "REC_EX": "average result vs the market average", "REC_NONE": "There are no closed signals to measure yet.", "REC_HONEST": "So far we have not shown that the signals beat the market. If they ever do, you will see it here with the numbers.", "REC_LINK": "See all the data →", "CITY_NY": "New York", "CITY_MAD": "Madrid", "CITY_LON": "London", "CITY_TYO": "Tokyo", "LOADING": "Loading…", "NOFILE": "The data could not be loaded."};
-const NT_L = "Market news", NT_R = "Economy and companies", NT_NONE = "No news loaded yet.", NT_NOTE = "Headlines from external outlets. Each link opens the original source.", NT_THEME = "Switch between light and dark mode";
+const NT_L = "Market news", NT_R = "Economy and companies", NT_NONE = "No news loaded yet.", NT_NOTE = "Headlines from external outlets. Each link opens the original source.", NT_THEME = "Switch between light and dark mode", NT_AD = {"tag": "Advertisement", "fine": "Valmont & Co. · Community16 LLC. Educational content, not financial advice.", "g": {"k": "Valmont & Co. · Academy", "h": "Stock market investing guides", "p": "Digital guides and books in English and Spanish to learn step by step.", "b": "View guides", "u": "https://www.valmontco.com/collections/complete-guides"}, "c": {"k": "Valmont & Co. · Academy", "h": "Trading and investing courses", "p": "Video courses, available in English.", "b": "View courses", "u": "https://www.valmontco.com/collections/courses"}}, NT_MB = {"note": "Latest close ({d}) · not live. Indices tracked with ETFs that replicate them.", "names": {"SPY": ["S&P 500", "ETF SPY"], "QQQ": ["Nasdaq 100", "ETF QQQ"], "DIA": ["Dow Jones", "ETF DIA"], "IWM": ["Russell 2000", "ETF IWM"], "GLD": ["Gold", "ETF GLD"], "TLT": ["US 20y Bonds", "ETF TLT"], "X:BTCUSD": ["Bitcoin", "BTC/USD"], "X:ETHUSD": ["Ethereum", "ETH/USD"], "C:EURUSD": ["EUR/USD", "Euro / dollar"], "C:USDJPY": ["USD/JPY", "Dollar / yen"], "C:GBPUSD": ["GBP/USD", "Pound / dollar"]}};
 const LOC = "en-GB";
 // Calendarios oficiales (festivos y cierres anticipados). Fuentes: NYSE (comunicado 2026-2028), BME (calendario 2026), LSE y JPX (calendarios publicados).
 const HOL = {
@@ -452,16 +475,39 @@ load();
   }
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const safe = u => /^https?:\/\//i.test(u) ? u : '#';
-  function draw(el, title, items){
+  function adCard(a){
+    return '<a class="adc" href="' + esc(a.u) + '" target="_blank" rel="sponsored noopener"><span class="adt">' + esc(NT_AD.tag) + '</span><div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(a.h) + '</div><p>' + esc(a.p) + '</p><span class="btn gold">' + esc(a.b) + '</span><div class="adf">' + esc(NT_AD.fine) + '</div></a>';
+  }
+  function card(n){
+    const img = (n.i && /^https:\/\//i.test(n.i)) ? '<div class="ni-img"><img src="' + esc(n.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>' : '';
+    return '<a class="ni" href="' + esc(safe(n.u)) + '" target="_blank" rel="noopener nofollow">' + img + '<div class="nb"><div class="nm"><b>' + esc(n.s) + '</b> · ' + esc(ago(n.d)) + '</div><div class="nt">' + esc(n.t) + '</div></div></a>';
+  }
+  function draw(el, title, items, ad, adPos){
     let h = '<h2>' + esc(title) + '</h2>';
-    if(!items || !items.length) h += '<div class="ni none">' + esc(NT_NONE) + '</div>';
-    else h += items.map(n => '<a class="ni" href="' + esc(safe(n.u)) + '" target="_blank" rel="noopener nofollow"><div class="nm"><b>' + esc(n.s) + '</b> · ' + esc(ago(n.d)) + '</div><div class="nt">' + esc(n.t) + '</div></a>').join('');
+    const list = (items || []).map(card);
+    if(!list.length) list.push('<div class="ni none"><div class="nb">' + esc(NT_NONE) + '</div></div>');
+    list.splice(Math.min(adPos, list.length), 0, adCard(ad));
+    h += list.join('');
     h += '<div class="note" style="margin-top:8px">' + esc(NT_NOTE) + '</div>';
     el.innerHTML = h;
   }
   fetch('../noticias.json?v=' + Date.now()).then(r => r.json()).then(j => {
-    const d = (j && j['en']) || {}; draw(L, NT_L, d.a); draw(R, NT_R, d.b);
-  }).catch(() => { draw(L, NT_L, []); draw(R, NT_R, []); });
+    const d = (j && j['en']) || {}; draw(L, NT_L, d.a, NT_AD.g, 2); draw(R, NT_R, d.b, NT_AD.c, 0);
+  }).catch(() => { draw(L, NT_L, [], NT_AD.g, 0); draw(R, NT_R, [], NT_AD.c, 0); });
+})();
+
+// ---- barra de mercado (último cierre; datos reales de la última descarga) ----
+(function(){
+  const el = document.getElementById('mbar'); if(!el) return;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  fetch('../barra.json?v=' + Date.now()).then(r => r.json()).then(j => {
+    const items = (j && j.items || []).filter(i => NT_MB.names[i.k] && typeof i.p === 'number' && typeof i.c === 'number');
+    if(!items.length) return;
+    const fmt = i => i.k.startsWith('C:') ? i.p.toFixed(i.p >= 50 ? 3 : 4) : i.p >= 1000 ? Math.round(i.p).toLocaleString('en-GB') : i.p.toFixed(2);
+    const dmax = items.filter(i => !i.k.startsWith('X:') && !i.k.startsWith('C:')).map(i => i.d).sort().pop() || items[0].d;
+    const dl = new Date(dmax + 'T12:00:00').toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+    el.innerHTML = items.map(i => '<div class="mi" title="' + esc(NT_MB.names[i.k][1]) + '"><b>' + esc(NT_MB.names[i.k][0]) + '</b><span class="mp">' + fmt(i) + '</span><span class="mc ' + (i.c >= 0 ? 'up' : 'dn') + '">' + (i.c > 0 ? '+' : '') + i.c.toLocaleString('en-GB', {minimumFractionDigits:2, maximumFractionDigits:2}) + '%</span></div>').join('') + '<div class="mn">' + esc(NT_MB.note.replace('{d}', dl)) + '</div>';
+  }).catch(() => {});
 })();
 
 </script>
