@@ -218,10 +218,12 @@ async function markPron(){
     for(const m of Object.keys(data)){
       const pm = P.mercados && P.mercados[m], d = data[m];
       if(!pm || !d || pm.dataDate !== d.dataDate) continue;
-      PRON[m] = { fecha: nextSession(m, d.dataDate) };
+      const nf = nextSession(m, d.dataDate);
+      const fin = m === 'crypto' ? Date.parse(nf + 'T00:00:00Z') + 864e5 : m === 'fx' ? Date.parse(nf + 'T22:00:00Z') : Date.parse(nf + 'T21:00:00Z');
+      PRON[m] = { fecha: nf, pasada: Date.now() > fin };
       const mp = new Map();
       for(const side of ['long','short']) for(const c of ((pm.candidatos || {})[side] || [])){ const z = (c.hz || []).find(x => x.h === 5) || {}; mp.set(c.symbol, { pc: (z.pc != null ? z.pc : z.p), v: side }); }
-      for(const list of [d.longs || [], d.shorts || [], d.all || []]) for(const s of list){ const x = mp.get(s.symbol); s.pron = (x && x.v === s.verdict) ? x : null; }
+      for(const list of [d.longs || [], d.shorts || [], d.all || []]) for(const s of list){ const x = mp.get(s.symbol); s.pron = (!PRON[m].pasada && x && x.v === s.verdict) ? x : null; }
     }
   }catch(e){}
 }
@@ -273,11 +275,11 @@ function refreshLabels(){
   const a = data[currentMarket]; const dd = a && a.dataDate; if(!dd) return;
   window.__cs = fmtD(dd,{day:'numeric',month:'short'});
   const l = fmtD(dd,{weekday:'long',day:'numeric',month:'long'});
-  const pr = PRON && PRON[currentMarket]; window.__nx = pr ? fmtD(pr.fecha,{weekday:'short',day:'numeric',month:'short'}) : null;
-  const nxl = pr ? fmtD(pr.fecha,{weekday:'long',day:'numeric',month:'long'}) : null;
-  document.getElementById('btnPron').textContent = 'Pronósticos' + (window.__nx ? ' · ' + window.__nx : '');
+  const pr = PRON && PRON[currentMarket]; window.__pas = !!(pr && pr.pasada); window.__nx = (pr && !pr.pasada) ? fmtD(pr.fecha,{weekday:'short',day:'numeric',month:'short'}) : null;
+  const nxl = (pr && !pr.pasada) ? fmtD(pr.fecha,{weekday:'long',day:'numeric',month:'long'}) : null;
+  document.getElementById('btnPron').textContent = 'Pronósticos' + (window.__nx ? ' · ' + window.__nx : ' · pendiente');
   document.getElementById('btnNuevas').textContent = 'Señales del ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = (nxl ? '<b>Pronósticos</b>: lo que nuestro motor calcula para la próxima sesión (la del ' + nxl + '), con los datos del cierre del ' + l + '. Ordenados de mayor a menor probabilidad. ' : '<b>Pronósticos</b>: todavía no se ha publicado el pronóstico de este cierre. ') + '<b>Detectadas</b>: señales que aparecieron con el cierre del ' + l + ' (ya pasó: no son pronósticos). <b>Anteriores</b>: señales detectadas en cierres anteriores. Se siguen 5 sesiones desde el día en que se detectaron: «día 3 de 5» significa que han pasado 3 sesiones desde esa fecha. Después pasan a Todos. Los precios no son en directo.';
+  document.getElementById('modeNote').innerHTML = (nxl ? '<b>Pronósticos</b>: lo que nuestro motor calcula para la próxima sesión (la del ' + nxl + '), con los datos del cierre del ' + l + '. Ordenados de mayor a menor probabilidad. ' : (window.__pas ? '<b>Pronósticos</b>: el pronóstico calculado con el cierre del ' + l + ' era para una sesión que ya terminó, así que no se muestra. El del próximo día de mercado aparece aquí en cuanto el motor procesa el último cierre (cada mañana, sobre las 8:30 en España). ' : '<b>Pronósticos</b>: todavía no se ha publicado el pronóstico de este cierre. ')) + '<b>Detectadas</b>: señales que aparecieron con el cierre del ' + l + ' (ya pasó: no son pronósticos). <b>Anteriores</b>: señales detectadas en cierres anteriores. Se siguen 5 sesiones desde el día en que se detectaron: «día 3 de 5» significa que han pasado 3 sesiones desde esa fecha. Después pasan a Todos. Los precios no son en directo.';
 }
 function renderLists(){
   restoreDetail();
@@ -307,7 +309,7 @@ function renderLists(){
     const byP = (a, b) => ((b.pron && b.pron.pc) || 0) - ((a.pron && a.pron.pc) || 0);
     const longs = esPron ? (active.all || []).filter(x => x.verdict === 'long').filter(pick).sort(byP) : active.longs.filter(pick);
     const shorts = esPron ? (active.all || []).filter(x => x.verdict === 'short').filter(pick).sort(byP) : active.shorts.filter(pick);
-    const vacio = esPron ? 'Todavía no hay pronósticos publicados para este mercado' : soloNuevas ? 'Ninguna detectada en este cierre' : 'Ninguna dentro de su ventana de 5 sesiones';
+    const vacio = esPron ? (window.__pas ? 'Pronóstico pendiente: la sesión del pronóstico anterior ya cerró' : 'Todavía no hay pronósticos publicados para este mercado') : soloNuevas ? 'Ninguna detectada en este cierre' : 'Ninguna dentro de su ventana de 5 sesiones';
     longsBox.innerHTML = longs.length ? longs.map(s => rowHtml(s, "long")).join('') : `<div class="empty">${vacio}</div>`;
     shortsBox.innerHTML = shorts.length ? shorts.map(s => rowHtml(s, "short")).join('') : `<div class="empty">${vacio}</div>`;
   }
