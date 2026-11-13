@@ -86,6 +86,32 @@ async function get(url) {
 }
 const norm = (t) => t.toLowerCase().replace(/[^a-z0-9áéíóúñ ]/g, "").slice(0, 60);
 
+
+// ---- Academia (Valmont & Co.): portadas, títulos y precios reales de TU tienda, para la publicidad ----
+const ACADEMIA = process.env.ACADEMIA_URLS ? JSON.parse(process.env.ACADEMIA_URLS) : {
+  guias: "https://www.valmontco.com/collections/complete-guides/products.json?limit=24",
+  cursos: "https://www.valmontco.com/collections/courses/products.json?limit=24",
+};
+async function academia() {
+  const out = { generado: new Date().toISOString() };
+  for (const [k, url] of Object.entries(ACADEMIA)) {
+    try {
+      const j = JSON.parse(await get(url));
+      const base = new URL(url).origin;
+      out[k] = (j.products || []).map((p) => ({
+        t: String(p.title || "").replace(/["“”]/g, "").trim(),
+        u: `${base}/products/${p.handle}`,
+        i: p.images && p.images[0] && /^https:\/\//.test(p.images[0].src) ? p.images[0].src : undefined,
+        p: p.variants && p.variants[0] && p.variants[0].price ? Number(p.variants[0].price) : undefined,
+      })).filter((x) => x.t && x.i);
+      console.log(`Academia ${k}: ${out[k].length} productos`);
+    } catch (e) { console.log(`Academia ${k}: no disponible (${e.message || e})`); }
+  }
+  if ((out.guias || []).length || (out.cursos || []).length) {
+    fs.writeFileSync(process.env.ACADEMIA_OUT || "academia.json", JSON.stringify(out));
+  }
+}
+
 async function main() {
   const feeds = OVERRIDE || FEEDS, ok = [], fail = [], now = Date.now();
   const out = { generado: new Date().toISOString(), es: { a: [], b: [] }, en: { a: [], b: [] } };
@@ -116,4 +142,4 @@ async function main() {
   fs.writeFileSync(OUT, JSON.stringify(out));
   console.log("noticias.json escrito: es " + out.es.a.length + "+" + out.es.b.length + ", en " + out.en.a.length + "+" + out.en.b.length);
 }
-main().catch((e) => { console.error(e); process.exit(0); });
+main().then(academia).catch((e) => { console.error(e); process.exit(0); });
