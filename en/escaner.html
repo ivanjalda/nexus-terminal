@@ -235,10 +235,12 @@ async function markPron(){
     for(const m of Object.keys(data)){
       const pm = P.mercados && P.mercados[m], d = data[m];
       if(!pm || !d || pm.dataDate !== d.dataDate) continue;
-      PRON[m] = { fecha: nextSession(m, d.dataDate) };
+      const nf = nextSession(m, d.dataDate);
+      const fin = m === 'crypto' ? Date.parse(nf + 'T00:00:00Z') + 864e5 : m === 'fx' ? Date.parse(nf + 'T22:00:00Z') : Date.parse(nf + 'T21:00:00Z');
+      PRON[m] = { fecha: nf, pasada: Date.now() > fin };
       const mp = new Map();
       for(const side of ['long','short']) for(const c of ((pm.candidatos || {})[side] || [])){ const z = (c.hz || []).find(x => x.h === 5) || {}; mp.set(c.symbol, { pc: (z.pc != null ? z.pc : z.p), v: side }); }
-      for(const list of [d.longs || [], d.shorts || [], d.all || []]) for(const s of list){ const x = mp.get(s.symbol); s.pron = (x && x.v === s.verdict) ? x : null; }
+      for(const list of [d.longs || [], d.shorts || [], d.all || []]) for(const s of list){ const x = mp.get(s.symbol); s.pron = (!PRON[m].pasada && x && x.v === s.verdict) ? x : null; }
     }
   }catch(e){}
 }
@@ -290,11 +292,11 @@ function refreshLabels(){
   const a = data[currentMarket]; const dd = a && a.dataDate; if(!dd) return;
   window.__cs = fmtD(dd,{day:'numeric',month:'short'});
   const l = fmtD(dd,{weekday:'long',day:'numeric',month:'long'});
-  const pr = PRON && PRON[currentMarket]; window.__nx = pr ? fmtD(pr.fecha,{weekday:'short',day:'numeric',month:'short'}) : null;
-  const nxl = pr ? fmtD(pr.fecha,{weekday:'long',day:'numeric',month:'long'}) : null;
-  document.getElementById('btnPron').textContent = 'Forecasts' + (window.__nx ? ' · ' + window.__nx : '');
+  const pr = PRON && PRON[currentMarket]; window.__pas = !!(pr && pr.pasada); window.__nx = (pr && !pr.pasada) ? fmtD(pr.fecha,{weekday:'short',day:'numeric',month:'short'}) : null;
+  const nxl = (pr && !pr.pasada) ? fmtD(pr.fecha,{weekday:'long',day:'numeric',month:'long'}) : null;
+  document.getElementById('btnPron').textContent = 'Forecasts' + (window.__nx ? ' · ' + window.__nx : ' · pending');
   document.getElementById('btnNuevas').textContent = 'Signals of ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = (nxl ? '<b>Forecasts</b>: what our engine calculates for the next session (' + nxl + '), using the data of the close of ' + l + '. Sorted from highest to lowest probability. ' : '<b>Forecasts</b>: the forecast for this close has not been published yet. ') + '<b>Detected</b>: signals that appeared with the close of ' + l + ' (already past: not forecasts). <b>Earlier</b>: signals detected in earlier closes. Each is tracked for 5 sessions from the day it was detected: “day 3 of 5” means 3 sessions have passed since that date. Afterwards they move to All. Prices are not live.';
+  document.getElementById('modeNote').innerHTML = (nxl ? '<b>Forecasts</b>: what our engine calculates for the next session (' + nxl + '), using the data of the close of ' + l + '. Sorted from highest to lowest probability. ' : (window.__pas ? '<b>Forecasts</b>: the forecast calculated with the close of ' + l + ' was for a session that has already ended, so it is not shown. The one for the next market day appears here as soon as the engine processes the latest close (every morning, around 8:30 Spain time). ' : '<b>Forecasts</b>: the forecast for this close has not been published yet. ')) + '<b>Detected</b>: signals that appeared with the close of ' + l + ' (already past: not forecasts). <b>Earlier</b>: signals detected in earlier closes. Each is tracked for 5 sessions from the day it was detected: “day 3 of 5” means 3 sessions have passed since that date. Afterwards they move to All. Prices are not live.';
 }
 function renderLists(){
   restoreDetail();
@@ -324,7 +326,7 @@ function renderLists(){
     const byP = (a, b) => ((b.pron && b.pron.pc) || 0) - ((a.pron && a.pron.pc) || 0);
     const longs = esPron ? (active.all || []).filter(x => x.verdict === 'long').filter(pick).sort(byP) : active.longs.filter(pick);
     const shorts = esPron ? (active.all || []).filter(x => x.verdict === 'short').filter(pick).sort(byP) : active.shorts.filter(pick);
-    const vacio = esPron ? 'No forecasts published yet for this market' : soloNuevas ? 'None detected in this close' : 'None inside their 5-session window';
+    const vacio = esPron ? (window.__pas ? 'Forecast pending: the session of the previous forecast has already closed' : 'No forecasts published yet for this market') : soloNuevas ? 'None detected in this close' : 'None inside their 5-session window';
     longsBox.innerHTML = longs.length ? longs.map(s => rowHtml(s, "long")).join('') : `<div class="empty">${vacio}</div>`;
     shortsBox.innerHTML = shorts.length ? shorts.map(s => rowHtml(s, "short")).join('') : `<div class="empty">${vacio}</div>`;
   }
