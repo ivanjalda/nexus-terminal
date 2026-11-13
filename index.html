@@ -56,6 +56,11 @@ main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
 .ni{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color .15s,transform .15s;}
 .ni .nb{padding:11px 14px 13px;}
 .ni-img{aspect-ratio:16/9;background:var(--bg);overflow:hidden;}
+.ni.sm{display:flex;align-items:stretch;}
+.ni.sm .ni-img{width:92px;flex:none;aspect-ratio:auto;min-height:74px;}
+.ni.sm .nb{padding:9px 12px;min-width:0;}
+.ni.sm .nt{font-size:.86rem;}
+.ni.big .nt{font-size:1rem;}
 .ni-img img{width:100%;height:100%;object-fit:cover;display:block;}
 .ni:hover{transform:translateY(-1px);}
 .ni:hover{border-color:var(--gold);}
@@ -77,6 +82,11 @@ main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
 .adc .adh{font-family:Georgia,'Times New Roman',serif;font-size:1.12rem;font-weight:600;line-height:1.25;margin-bottom:8px;}
 .adc p{margin:0 0 12px;color:var(--muted);font-size:.84rem;}
 .adc .btn{padding:8px 16px;font-size:.84rem;}
+.adc.has .adrow{display:flex;gap:14px;align-items:flex-start;}
+.adc .adimg{width:104px;flex:none;border-radius:8px;border:1px solid var(--border);display:block;}
+.adc .adtx{min-width:0;}
+.adc.has .adh{font-size:1rem;}
+.adc .adp{font-size:.78rem;color:var(--muted);margin:0 0 10px;}
 .adc .adf{margin-top:10px;font-size:.68rem;color:var(--muted);}
 .ni.none .nb{padding:12px 14px;}
 .ni.none{color:var(--muted);font-size:.84rem;font-weight:400;}
@@ -174,7 +184,8 @@ footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
 <header>
   <a class="brand" href="./"><img src="logo.png" alt="Nexus Terminal" onerror="this.style.display='none'">Nexus <span>Terminal</span></a>
   <nav>
-    <a href="sesion.html" style="color:var(--gold2)">Pronósticos</a>
+    <a href="./" style="color:var(--gold2)">Inicio</a>
+    <a href="sesion.html">Pronósticos</a>
     <a href="escaner.html">Escáner</a>
     <a href="historico.html">Histórico de señales</a>
     <a href="como.html">Cómo funciona</a>
@@ -241,7 +252,7 @@ footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
 
 <script>
 const T = {"TL1_S": "Actualizado {t}", "TL2_S1": "Señales calculadas con el cierre del {d}", "TL2_S3": "Acierto histórico medido: {h} · al azar: {b} (sobre {n} señales cerradas)", "TL2_NOTE": "No es una predicción: es lo que dicen los datos del último cierre.", "TL3_S": "Analizará el cierre del {d}", "HRS_OPENS": "Abre", "HRS_CLOSES": "Cierra", "OPEN_S": "Abierta", "CLOSED_S": "Cerrada", "BREAK_S": "Descanso", "HOLI_S": "Festivo", "HRS_CITY": "hora de {c}", "HRS_MINE": "En tu hora", "HRS_EARLY": "⚠ Cierre anticipado", "HRS_COVER": "⚠ Calendario de festivos pendiente de actualizar", "PR_NOFILE": "Todavía no hay predicción publicada.", "PR_READY": "Calculada con el cierre del {d}", "PR_REL": "Acierto medido cuando el pronóstico era favorable: {h} · al azar: {b}", "PR_ST_dem": "Ventaja sobre el azar demostrada", "PR_ST_sin": "Ventaja sobre el azar todavía no demostrada", "PR_ST_ins": "Aún hay pocos datos para medir la fiabilidad", "PR_STALE": "⚠ Todavía no está lista: la última predicción es para el {d}, que ya pasó. Se actualiza esta mañana sobre las {t}.", "PR_LINK": "Ver la predicción completa →", "TL3_DATA": "Datos del cierre: {t}", "TL3_PRED": "Predicción: {t}", "CLOSES_IN": "Cierra en", "OPENS_IN": "Abre en", "ST_STALE": "Aviso: los datos llevan {d} días sin actualizarse.", "PAN_N": "{n} activos analizados", "PAN_SIG": "{l} candidatos alcistas · {s} bajistas", "PAN_NODATA": "Aún sin datos suficientes.", "PAN_UP": "En tendencia alcista", "PAN_DOWN": "En tendencia bajista", "PAN_FLAT": "Sin tendencia clara", "M_stocks": "Acciones EEUU", "M_crypto": "Cripto", "M_fx": "Forex", "REC_SMALL": "Muestra pequeña ({n} señales cerradas): con menos de 30 los porcentajes no son fiables.", "REC_N": "señales cerradas", "REC_HIT": "acierto total", "REC_RAND": "al azar habría salido", "REC_EX": "resultado medio frente al promedio del mercado", "REC_NONE": "Todavía no hay señales cerradas para medir.", "REC_HONEST": "Por ahora no hemos demostrado que las señales superen al mercado. Si algún día lo hacen, lo verás aquí con sus números.", "REC_LINK": "Ver todos los datos →", "CITY_NY": "Nueva York", "CITY_MAD": "Madrid", "CITY_LON": "Londres", "CITY_TYO": "Tokio", "LOADING": "Cargando…", "NOFILE": "No se pudieron cargar los datos."};
-const NT_L = "Noticias de mercado", NT_R = "Economía y empresas", NT_NONE = "Todavía no hay noticias cargadas.", NT_NOTE = "Titulares de medios externos. Cada enlace abre la fuente original.", NT_THEME = "Cambiar entre modo claro y oscuro", NT_AD = {"tag": "Publicidad", "fine": "Valmont & Co. · Community16 LLC. Contenido educativo, no es asesoramiento financiero.", "g": {"k": "Valmont & Co. · Academia", "h": "Guías de inversión en bolsa", "p": "Guías digitales y libros en español e inglés para aprender paso a paso.", "b": "Ver guías", "u": "https://www.valmontco.com/collections/complete-guides"}, "c": {"k": "Valmont & Co. · Academia", "h": "Cursos de trading e inversión", "p": "Cursos en vídeo, disponibles en inglés.", "b": "Ver cursos (en inglés)", "u": "https://www.valmontco.com/collections/courses"}}, NT_MB = {"note": "Último cierre ({d}) · no es en directo. Índices medidos con ETF que los replican.", "names": {"SPY": ["S&P 500", "ETF SPY"], "QQQ": ["Nasdaq 100", "ETF QQQ"], "DIA": ["Dow Jones", "ETF DIA"], "IWM": ["Russell 2000", "ETF IWM"], "GLD": ["Oro", "ETF GLD"], "TLT": ["Bonos EEUU 20a", "ETF TLT"], "X:BTCUSD": ["Bitcoin", "BTC/USD"], "X:ETHUSD": ["Ethereum", "ETH/USD"], "C:EURUSD": ["EUR/USD", "Euro / dólar"], "C:USDJPY": ["USD/JPY", "Dólar / yen"], "C:GBPUSD": ["GBP/USD", "Libra / dólar"]}};
+const NT_L = "Noticias de mercado", NT_R = "Economía y empresas", NT_NONE = "Todavía no hay noticias cargadas.", NT_NOTE = "Titulares de medios externos. Cada enlace abre la fuente original.", NT_THEME = "Cambiar entre modo claro y oscuro", NT_AD = {"from": "Desde", "tag": "Publicidad", "fine": "Valmont & Co. · Community16 LLC. Contenido educativo, no es asesoramiento financiero.", "g": {"k": "Valmont & Co. · Academia", "h": "Guías de inversión en bolsa", "p": "Guías digitales y libros en español e inglés para aprender paso a paso.", "b": "Ver guías", "u": "https://www.valmontco.com/collections/complete-guides"}, "c": {"k": "Valmont & Co. · Academia", "h": "Cursos de trading e inversión", "p": "Cursos en vídeo, disponibles en inglés.", "b": "Ver cursos (en inglés)", "u": "https://www.valmontco.com/collections/courses"}}, NT_MB = {"note": "Último cierre ({d}) · no es en directo. Índices medidos con ETF que los replican.", "names": {"SPY": ["S&P 500", "ETF SPY"], "QQQ": ["Nasdaq 100", "ETF QQQ"], "DIA": ["Dow Jones", "ETF DIA"], "IWM": ["Russell 2000", "ETF IWM"], "GLD": ["Oro", "ETF GLD"], "TLT": ["Bonos EEUU 20a", "ETF TLT"], "X:BTCUSD": ["Bitcoin", "BTC/USD"], "X:ETHUSD": ["Ethereum", "ETH/USD"], "C:EURUSD": ["EUR/USD", "Euro / dólar"], "C:USDJPY": ["USD/JPY", "Dólar / yen"], "C:GBPUSD": ["GBP/USD", "Libra / dólar"]}};
 const LOC = "es-ES";
 // Calendarios oficiales (festivos y cierres anticipados). Fuentes: NYSE (comunicado 2026-2028), BME (calendario 2026), LSE y JPX (calendarios publicados).
 const HOL = {
@@ -475,27 +486,44 @@ load();
   }
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const safe = u => /^https?:\/\//i.test(u) ? u : '#';
-  function adCard(a){
-    return '<a class="adc" href="' + esc(a.u) + '" target="_blank" rel="sponsored noopener"><span class="adt">' + esc(NT_AD.tag) + '</span><div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(a.h) + '</div><p>' + esc(a.p) + '</p><span class="btn gold">' + esc(a.b) + '</span><div class="adf">' + esc(NT_AD.fine) + '</div></a>';
+  function adCard(a, prod){
+    const head = '<span class="adt">' + esc(NT_AD.tag) + '</span>';
+    const fine = '<div class="adf">' + esc(NT_AD.fine) + '</div>';
+    if(prod && prod.i){
+      const pr = (typeof prod.p === 'number' && prod.p > 0) ? '<div class="adp">' + esc(NT_AD.from) + ' $' + prod.p.toFixed(2) + ' USD</div>' : '';
+      return '<a class="adc has" href="' + esc(safe(prod.u)) + '" target="_blank" rel="sponsored noopener">' + head +
+        '<div class="adrow"><img class="adimg" src="' + esc(prod.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' +
+        '<div class="adtx"><div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(prod.t) + '</div>' + pr + '<span class="btn gold">' + esc(a.b) + '</span></div></div>' + fine + '</a>';
+    }
+    return '<a class="adc" href="' + esc(a.u) + '" target="_blank" rel="sponsored noopener">' + head + '<div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(a.h) + '</div><p>' + esc(a.p) + '</p><span class="btn gold">' + esc(a.b) + '</span>' + fine + '</a>';
   }
-  function card(n){
-    const img = (n.i && /^https:\/\//i.test(n.i)) ? '<div class="ni-img"><img src="' + esc(n.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>' : '';
-    return '<a class="ni" href="' + esc(safe(n.u)) + '" target="_blank" rel="noopener nofollow">' + img + '<div class="nb"><div class="nm"><b>' + esc(n.s) + '</b> · ' + esc(ago(n.d)) + '</div><div class="nt">' + esc(n.t) + '</div></div></a>';
+  function card(n, idx){
+    const ok = n.i && /^https:\/\//i.test(n.i);
+    const img = ok ? '<div class="ni-img"><img src="' + esc(n.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>' : '';
+    const big = ok && idx < 2;
+    const meta = '<div class="nm"><b>' + esc(n.s) + '</b> · ' + esc(ago(n.d)) + '</div><div class="nt">' + esc(n.t) + '</div>';
+    return '<a class="ni ' + (big ? 'big' : 'sm') + '" href="' + esc(safe(n.u)) + '" target="_blank" rel="noopener nofollow">' + img + '<div class="nb">' + meta + '</div></a>';
   }
-  function draw(el, title, items, ad, adPos){
+  function draw(el, title, items, ad, adPos, prod){
     let h = '<h2>' + esc(title) + '</h2>';
     const list = (items || []).map(card);
     if(!list.length) list.push('<div class="ni none"><div class="nb">' + esc(NT_NONE) + '</div></div>');
-    list.splice(Math.min(adPos, list.length), 0, adCard(ad));
+    list.splice(Math.min(adPos, list.length), 0, adCard(ad, prod));
     h += list.join('');
     h += '<div class="note" style="margin-top:8px">' + esc(NT_NOTE) + '</div>';
     el.innerHTML = h;
   }
-  fetch('noticias.json?v=' + Date.now()).then(r => r.json()).then(j => {
-    const d = (j && j['es']) || {}; draw(L, NT_L, d.a, NT_AD.g, 2); draw(R, NT_R, d.b, NT_AD.c, 0);
-  }).catch(() => { draw(L, NT_L, [], NT_AD.g, 0); draw(R, NT_R, [], NT_AD.c, 0); });
+  const day = Math.floor(Date.now() / 86400000);
+  const rot = (arr, off) => (arr && arr.length) ? arr[(day + off) % arr.length] : null;
+  Promise.all([
+    fetch('noticias.json?v=' + Date.now()).then(r => r.json()).catch(() => null),
+    fetch('academia.json?v=' + Math.floor(Date.now() / 600000)).then(r => r.json()).catch(() => null)
+  ]).then(([j, ac]) => {
+    const d = (j && j['es']) || {};
+    draw(L, NT_L, d.a, NT_AD.g, 2, rot(ac && ac.guias, 0));
+    draw(R, NT_R, d.b, NT_AD.c, 0, rot(ac && ac.cursos, 0));
+  });
 })();
-
 // ---- barra de mercado (último cierre; datos reales de la última descarga) ----
 (function(){
   const el = document.getElementById('mbar'); if(!el) return;
