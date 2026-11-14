@@ -533,7 +533,7 @@ function renderCalc(s){
 loadResults();
 
 /* ===== Vistas: mapa de calor y analizador ===== */
-const X = {"list": "List", "map": "Heat map", "az": "Analyzer", "loc": "en-US", "pfx": "../", "mk": {"EEUU": "US", "Madrid": "Madrid", "Londres": "London", "Alemania": "Germany", "Francia": "France", "Tokio": "Tokyo"}, "adv": "Stocks rising today", "up": "up", "down": "down", "s50": "Above their 50-session average", "s200": "Above their 200-session average", "of": "of", "hl": "20-session highs / lows", "hl2": "assets marking a high / low today", "amp": "Market breadth", "close": "close of", "heat": "Heat map: green up, red down", "hnote": "Each box is one asset (the {n} with most money traded). Size is the average money traded over 20 sessions, not company size. Colour is the change at the latest close. Click a box to see its analysis.", "nodata": "There is no data for this view yet.", "nomkt": "The heat map is not yet available for this market: we do not have its daily change downloaded.", "search": "Search symbol…", "f_sig": "Signal: all", "f_tr": "Trend: all", "f_rsi": "RSI: all", "r_ob": "Overbought (>70)", "r_os": "Oversold (<30)", "r_mid": "Normal (30–70)", "mine": "My list", "views": {"res": "Summary", "tec": "Technical", "act": "Activity"}, "none": "No asset matches those filters.", "count": "Showing {a} of {b} assets.", "nochg": "The daily change is not available for this market.", "wait": "WAIT", "c_sym": "Symbol", "c_price": "Price", "c_chg": "Day chg", "c_trend": "Trend", "c_sig": "Signal", "c_m20": "SMA 20", "c_m50": "SMA 50", "c_dh": "To 20-day high", "c_dl": "To 20-day low", "c_money": "Money traded", "c_str": "Trend strength", "tr": {"alcista": "Bullish", "bajista": "Bearish", "lateral": "Sideways"}};
+const X = {"list": "List", "map": "Heat map", "az": "Analyzer", "loc": "en-US", "pfx": "../", "cal": "Upcoming US economic releases", "caln": "Official dates from FRED (St. Louis Fed). They may change.", "mk": {"EEUU": "US", "Madrid": "Madrid", "Londres": "London", "Alemania": "Germany", "Francia": "France", "Tokio": "Tokyo"}, "adv": "Stocks rising today", "up": "up", "down": "down", "s50": "Above their 50-session average", "s200": "Above their 200-session average", "of": "of", "hl": "20-session highs / lows", "hl2": "assets marking a high / low today", "amp": "Market breadth", "close": "close of", "heat": "Heat map: green up, red down", "hnote": "Each box is one asset (the {n} with most money traded). Size is the average money traded over 20 sessions, not company size. Colour is the change at the latest close. Click a box to see its analysis.", "nodata": "There is no data for this view yet.", "nomkt": "The heat map is not yet available for this market: we do not have its daily change downloaded.", "search": "Search symbol…", "f_sig": "Signal: all", "f_tr": "Trend: all", "f_rsi": "RSI: all", "r_ob": "Overbought (>70)", "r_os": "Oversold (<30)", "r_mid": "Normal (30–70)", "mine": "My list", "views": {"res": "Summary", "tec": "Technical", "act": "Activity"}, "none": "No asset matches those filters.", "count": "Showing {a} of {b} assets.", "nochg": "The daily change is not available for this market.", "wait": "WAIT", "c_sym": "Symbol", "c_price": "Price", "c_chg": "Day chg", "c_trend": "Trend", "c_sig": "Signal", "c_m20": "SMA 20", "c_m50": "SMA 50", "c_dh": "To 20-day high", "c_dl": "To 20-day low", "c_money": "Money traded", "c_str": "Trend strength", "tr": {"alcista": "Bullish", "bajista": "Bearish", "lateral": "Sideways"}};
 let VIEW = 'list', MH = null, AZV = 'res', AZS = {k:'d', dir:-1}, AZF = {q:'', sig:'', tr:'', rsi:'', fav:false};
 const WK = 'nt_watch';
 const wlGet = () => { try { return JSON.parse(localStorage.getItem(WK) || '[]'); } catch(e) { return []; } };
@@ -576,7 +576,7 @@ function ampHtml(m){
 function renderMap(){
   const ov = document.getElementById('ov'); const m = mhm();
   if(!m){ ov.innerHTML = '<div class="hmnote">' + (MH ? X.nomkt : X.nodata) + '</div>'; return; }
-  ov.innerHTML = '<h3>' + X.amp + ' · ' + (X.mk[m.nombre] || m.nombre) + ' · ' + X.close + ' ' + fmtD(m.fecha, {day:'numeric', month:'long'}) + '</h3>' + ampHtml(m) + '<h3>' + X.heat + '</h3><div id="hm"></div><div class="hmnote">' + X.hnote.replace('{n}', Math.min(150, m.items.length)) + '</div>';
+  ov.innerHTML = '<h3>' + X.amp + ' · ' + (X.mk[m.nombre] || m.nombre) + ' · ' + X.close + ' ' + fmtD(m.fecha, {day:'numeric', month:'long'}) + '</h3>' + ampHtml(m) + '<h3>' + X.heat + '</h3><div id="hm"></div><div class="hmnote">' + X.hnote.replace('{n}', Math.min(150, m.items.length)) + '</div>' + calStrip();
   drawMap(m);
 }
 /* ----- Analizador ----- */
@@ -635,7 +635,14 @@ function renderAz(){
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([L.join('\n')], {type: 'text/csv'})); a.download = 'nexus-' + currentMarket + '-' + ((data[currentMarket] && data[currentMarket].dataDate) || '') + '.csv'; a.click();
   };
 }
-async function renderOv(){ await loadMH(); if(VIEW === 'map') renderMap(); else if(VIEW === 'az') renderAz(); }
+let CALD = null;
+const CALN = {empleo:['Informe de empleo','Jobs report'],ipc:['Inflación (IPC)','Inflation (CPI)'],pib:['PIB','GDP'],ipp:['Precios de producción','Producer prices'],ventas:['Ventas minoristas','Retail sales'],pce:['Ingresos y gasto personal','Personal income and spending'],fomc:['Reserva Federal (FOMC)','Federal Reserve (FOMC)'],jolts:['Ofertas de empleo (JOLTS)','Job openings (JOLTS)'],industria:['Producción industrial','Industrial production']};
+async function loadCal(){ if(CALD !== null) return; CALD = false; try { const r = await fetch(X.pfx + 'calendario.json?v=' + Date.now()); if(r.ok) CALD = await r.json(); } catch(e) {} }
+function calStrip(){
+  if(!CALD) return ''; const hoy = new Date().toISOString().slice(0, 10); const ev = (CALD.eventos || []).filter(e => e.fecha >= hoy).slice(0, 6); if(!ev.length) return '';
+  return '<h3 style="margin-top:20px">' + X.cal + '</h3><div class="am">' + ev.map(e => '<div><b style="font-size:.9rem">' + (CALN[e.clave] ? CALN[e.clave][X.pfx === '../' ? 1 : 0] : e.nombre) + '</b><div class="sub">' + fmtD(e.fecha, {weekday:'long', day:'numeric', month:'long'}) + '</div></div>').join('') + '</div><div class="hmnote">' + X.caln + '</div>';
+}
+async function renderOv(){ await loadMH(); await loadCal(); if(VIEW === 'map') renderMap(); else if(VIEW === 'az') renderAz(); }
 function setView(v){
   VIEW = v; document.querySelectorAll('#vbar button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   document.querySelector('.layout').style.display = v === 'list' ? '' : 'none';
