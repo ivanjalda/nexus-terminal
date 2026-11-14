@@ -109,7 +109,35 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
   .tab{padding:10px 12px;white-space:nowrap;}
   .col{padding:16px;}
 }
-.tabs{overflow-x:auto;white-space:nowrap;scrollbar-width:thin;}.tabs .tab{flex:0 0 auto;}</style>
+.tabs{overflow-x:auto;white-space:nowrap;scrollbar-width:thin;}.tabs .tab{flex:0 0 auto;}
+.vbar{display:flex;gap:8px;padding:12px 32px;border-bottom:1px solid var(--border);align-items:center;flex-wrap:wrap}
+.vbar button{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:8px 16px;border-radius:20px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit}
+.vbar button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+#ov{display:none;padding:18px 32px 40px}
+#ov h3{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px}
+.am{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:18px}
+.am>div{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;font-size:.82rem}
+.am b{font-size:1.05rem}.am .bar{height:7px;border-radius:4px;background:var(--red);margin:7px 0 5px;overflow:hidden}.am .bar i{display:block;height:100%;background:var(--green)}
+.am .sub{color:var(--muted);font-size:.74rem}
+#hm{position:relative;width:100%;height:460px;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+#hm a{position:absolute;box-sizing:border-box;border:1px solid var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;text-decoration:none;line-height:1.15;text-align:center}
+#hm a b{font-size:.8rem}#hm a span{font-size:.7rem}
+.hmnote{font-size:.76rem;color:var(--muted);margin-top:8px;line-height:1.45}
+.az{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.az input,.az select{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:.85rem;font-family:inherit;width:auto}
+.az .sp{flex:1}
+.az button{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:8px 14px;border-radius:10px;font-size:.82rem;cursor:pointer;font-family:inherit;font-weight:600}
+.az button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tw{overflow-x:auto;border:1px solid var(--border);border-radius:14px}
+table.az2{width:100%;border-collapse:collapse;font-size:.85rem;min-width:640px}
+.az2 th{background:var(--surface);color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;text-align:right;padding:10px 12px;cursor:pointer;white-space:nowrap;position:sticky;top:0}
+.az2 th:first-child,.az2 td:first-child{text-align:left}
+.az2 td{padding:9px 12px;border-top:1px solid var(--border);text-align:right;white-space:nowrap}
+.az2 tr.rw{cursor:pointer}.az2 tr.rw:hover{background:var(--surface)}
+.az2 .st{cursor:pointer;color:var(--muted);font-size:1rem;margin-right:6px}.az2 .st.on{color:#e0a800}
+.up{color:var(--green)}.dn{color:var(--red)}
+@media(max-width:700px){.vbar,#ov{padding-left:14px;padding-right:14px}#hm{height:380px}}
+</style>
 </head>
 <body>
 
@@ -130,6 +158,8 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
   <div class="tab" data-market="jp">Tokio</div>
 </div>
 
+<div class="vbar" id="vbar"><button class="on" data-v="list">Lista</button><button data-v="map">Mapa de calor</button><button data-v="az">Analizador</button></div>
+<div id="ov"></div>
 <div class="layout">
   <div class="col left">
     <div id="marketPulse" class="metric-card"></div>
@@ -484,6 +514,120 @@ function renderCalc(s){
   compute();
 }
 loadResults();
+
+/* ===== Vistas: mapa de calor y analizador ===== */
+const X = {"list": "Lista", "map": "Mapa de calor", "az": "Analizador", "loc": "es-ES", "pfx": "./", "mk": {}, "adv": "Valores que suben hoy", "up": "suben", "down": "bajan", "s50": "Sobre su media de 50 sesiones", "s200": "Sobre su media de 200 sesiones", "of": "de", "hl": "Máximos / mínimos de 20 sesiones", "hl2": "valores que hoy marcan máximo / mínimo", "amp": "Amplitud del mercado", "close": "cierre del", "heat": "Mapa de calor: verde sube, rojo baja", "hnote": "Cada cuadro es un valor ({n} con más dinero negociado). El tamaño es el dinero negociado de media en 20 sesiones, no el tamaño de la empresa. El color es la variación del último cierre. Pulsa un cuadro para ver su análisis.", "nodata": "Todavía no hay datos de esta vista.", "nomkt": "El mapa de calor aún no está disponible para este mercado: no tenemos su variación diaria descargada.", "search": "Buscar símbolo…", "f_sig": "Señal: todas", "f_tr": "Tendencia: todas", "f_rsi": "RSI: todos", "r_ob": "Sobrecompra (>70)", "r_os": "Sobreventa (<30)", "r_mid": "Normal (30–70)", "mine": "Mi lista", "views": {"res": "Resumen", "tec": "Técnico", "act": "Actividad"}, "none": "Ningún valor cumple esos filtros.", "count": "Mostrando {a} de {b} valores.", "nochg": "La variación del día no está disponible para este mercado.", "wait": "ESPERAR", "c_sym": "Símbolo", "c_price": "Precio", "c_chg": "Var. día", "c_trend": "Tendencia", "c_sig": "Señal", "c_m20": "Media 20", "c_m50": "Media 50", "c_dh": "A su máx. 20", "c_dl": "A su mín. 20", "c_money": "Dinero negociado", "c_str": "Fuerza tend.", "tr": {"alcista": "Alcista", "bajista": "Bajista", "lateral": "Lateral"}};
+let VIEW = 'list', MH = null, AZV = 'res', AZS = {k:'d', dir:-1}, AZF = {q:'', sig:'', tr:'', rsi:'', fav:false};
+const WK = 'nt_watch';
+const wlGet = () => { try { return JSON.parse(localStorage.getItem(WK) || '[]'); } catch(e) { return []; } };
+const wlSet = a => { try { localStorage.setItem(WK, JSON.stringify(a)); } catch(e) {} };
+const wlKey = s => currentMarket + ':' + s;
+const nfm = (x, d) => x == null || !isFinite(x) ? '—' : Number(x).toLocaleString(X.loc, {minimumFractionDigits: d, maximumFractionDigits: d});
+async function loadMH(){ if(MH !== null) return; MH = false; try { const r = await fetch(X.pfx + 'mercado_hoy.json?v=' + Date.now()); if(r.ok) MH = await r.json(); } catch(e) {} }
+function mhm(){ return MH && MH.mercados && MH.mercados[currentMarket] || null; }
+function colHm(c){ const a = Math.min(Math.abs(c) / 3, 1); if(Math.abs(c) < 0.05) return ['#d8d8dd', '#333']; return c > 0 ? ['rgba(29,122,60,' + (0.3 + 0.7 * a) + ')', a > 0.45 ? '#fff' : '#12331c'] : ['rgba(213,57,47,' + (0.3 + 0.7 * a) + ')', a > 0.45 ? '#fff' : '#4a1612']; }
+function squarify(items, x, y, w, h){
+  const out = []; let rest = items.slice(); const tot = rest.reduce((s, i) => s + i.v, 0); if(!tot) return out;
+  rest.forEach(i => i.a = i.v / tot * w * h);
+  const worst = (row, side) => { const s = row.reduce((t, i) => t + i.a, 0); const mx = Math.max(...row.map(i => i.a)), mn = Math.min(...row.map(i => i.a)); return Math.max(side * side * mx / (s * s), s * s / (side * side * mn)); };
+  while(rest.length){
+    const side = Math.min(w, h); let row = [rest[0]], k = 1;
+    while(k < rest.length && worst(row.concat(rest[k]), side) <= worst(row, side)){ row.push(rest[k]); k++; }
+    const s = row.reduce((t, i) => t + i.a, 0);
+    if(w >= h){ const rw = s / h; let yy = y; row.forEach(i => { const hh = i.a / rw; out.push({i, x, y: yy, w: rw, h: hh}); yy += hh; }); x += rw; w -= rw; }
+    else { const rh = s / w; let xx = x; row.forEach(i => { const ww = i.a / rh; out.push({i, x: xx, y, w: ww, h: rh}); xx += ww; }); y += rh; h -= rh; }
+    rest = rest.slice(row.length);
+  }
+  return out;
+}
+function drawMap(m){
+  const box = document.getElementById('hm'); const W = box.clientWidth, H = box.clientHeight;
+  const items = m.items.slice(0, 150).map(i => ({s: i.s, chg: i.chg, v: Math.max(i.d, 1)}));
+  const cells = squarify(items, 0, 0, W, H);
+  box.innerHTML = cells.map(c => { const [bg, fg] = colHm(c.i.chg); const big = c.w > 52 && c.h > 34;
+    return '<a data-s="' + c.i.s + '" title="' + c.i.s + ' ' + (c.i.chg > 0 ? '+' : '') + nfm(c.i.chg, 1) + '%" style="left:' + c.x + 'px;top:' + c.y + 'px;width:' + c.w + 'px;height:' + c.h + 'px;background:' + bg + ';color:' + fg + '">' + (big ? '<b>' + c.i.s + '</b><span>' + (c.i.chg > 0 ? '+' : '') + nfm(c.i.chg, 1) + '%</span>' : (c.w > 30 && c.h > 18 ? '<span>' + c.i.s + '</span>' : '')) + '</a>'; }).join('');
+  box.querySelectorAll('a').forEach(a => a.onclick = () => openSym(a.dataset.s));
+}
+function openSym(sym){ setView('list'); setTimeout(() => { const f = document.getElementById('filterBox'); if(f){ f.value = ''; } if(mode !== 'todos'){ const b = document.querySelector('.modebtn[data-mode="todos"]'); if(b) b.click(); } selectSymbol(sym); }, 30); }
+function ampHtml(m){
+  const a = m.amplitud, t1 = a.suben + a.bajan + a.igual, t50 = a.sobre50 + a.de50, t200 = a.sobre200 + a.de200;
+  const pct = (n, t) => t ? Math.round(n / t * 100) : 0;
+  const card = (title, n, t, txt) => '<div><div>' + title + '</div><b>' + pct(n, t) + '%</b><div class="bar"><i style="width:' + pct(n, t) + '%"></i></div><div class="sub">' + txt + '</div></div>';
+  return '<div class="am">' + card(X.adv, a.suben, t1, X.up + ' ' + a.suben + ' · ' + X.down + ' ' + a.bajan) + card(X.s50, a.sobre50, t50, a.sobre50 + ' ' + X.of + ' ' + t50) + (t200 ? card(X.s200, a.sobre200, t200, a.sobre200 + ' ' + X.of + ' ' + t200) : '') +
+    '<div><div>' + X.hl + '</div><b>' + a.max20 + ' / ' + a.min20 + '</b><div class="sub">' + X.hl2 + '</div></div></div>';
+}
+function renderMap(){
+  const ov = document.getElementById('ov'); const m = mhm();
+  if(!m){ ov.innerHTML = '<div class="hmnote">' + (MH ? X.nomkt : X.nodata) + '</div>'; return; }
+  ov.innerHTML = '<h3>' + X.amp + ' · ' + (X.mk[m.nombre] || m.nombre) + ' · ' + X.close + ' ' + fmtD(m.fecha, {day:'numeric', month:'long'}) + '</h3>' + ampHtml(m) + '<h3>' + X.heat + '</h3><div id="hm"></div><div class="hmnote">' + X.hnote.replace('{n}', Math.min(150, m.items.length)) + '</div>';
+  drawMap(m);
+}
+/* ----- Analizador ----- */
+function azRows(){
+  const act = data[currentMarket]; if(!act) return []; const m = mhm(); const chg = {}, din = {}; if(m) m.items.forEach(i => { chg[i.s] = i.chg; din[i.s] = i.d; });
+  const w = wlGet();
+  return (act.all || []).map(s => ({s: s.symbol, p: s.price, chg: chg[s.symbol] ?? null, rsi: s.rsi, tr: s.trend, fz: s.trendStrength, v: s.verdict, m20: s.sma20, m50: s.sma50, dh: s.distToHigh, dl: s.distToLow, atr: s.atrPct, d: din[s.symbol] ?? s.avgDollarVolume ?? null, fav: w.includes(wlKey(s.symbol))}));
+}
+function azFilter(rows){
+  const q = AZF.q.toLowerCase().trim(); const qt = (typeof NAME_MAP !== 'undefined' && NAME_MAP[q]) || q;
+  return rows.filter(r => (!q || r.s.toLowerCase().includes(qt)) && (!AZF.sig || r.v === AZF.sig) && (!AZF.tr || r.tr === AZF.tr) && (!AZF.fav || r.fav) &&
+    (!AZF.rsi || (AZF.rsi === 'ob' ? r.rsi > 70 : AZF.rsi === 'os' ? r.rsi < 30 : (r.rsi >= 30 && r.rsi <= 70)))).sort((a, b) => { const x = a[AZS.k], y = b[AZS.k]; if(x == null && y == null) return 0; if(x == null) return 1; if(y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * AZS.dir; });
+}
+const AZC = {
+  res: [['s', X.c_sym], ['p', X.c_price], ['chg', X.c_chg], ['rsi', 'RSI'], ['tr', X.c_trend], ['v', X.c_sig]],
+  tec: [['s', X.c_sym], ['rsi', 'RSI'], ['m20', X.c_m20], ['m50', X.c_m50], ['dh', X.c_dh], ['dl', X.c_dl], ['atr', 'ATR %']],
+  act: [['s', X.c_sym], ['chg', X.c_chg], ['d', X.c_money], ['atr', 'ATR %'], ['fz', X.c_str], ['v', X.c_sig]]
+};
+function cell(k, r){
+  if(k === 's') return '<td><span class="st' + (r.fav ? ' on' : '') + '" data-f="' + r.s + '">' + (r.fav ? '★' : '☆') + '</span><b>' + r.s + '</b></td>';
+  if(k === 'chg') return '<td class="' + (r.chg > 0 ? 'up' : r.chg < 0 ? 'dn' : '') + '">' + (r.chg == null ? '—' : (r.chg > 0 ? '+' : '') + nfm(r.chg, 1) + '%') + '</td>';
+  if(k === 'v') return '<td><span class="tag ' + (r.v === 'long' || r.v === 'short' ? r.v : '') + '">' + (r.v === 'long' ? 'LONG' : r.v === 'short' ? 'SHORT' : X.wait) + '</span></td>';
+  if(k === 'tr') return '<td>' + (X.tr[r.tr] || r.tr || '—') + '</td>';
+  if(k === 'd') return '<td>' + (r.d == null ? '—' : r.d >= 1e9 ? nfm(r.d / 1e9, 1) + ' B' : nfm(r.d / 1e6, 1) + ' M') + '</td>';
+  if(k === 'dh' || k === 'dl' || k === 'fz' || k === 'atr') return '<td>' + (r[k] == null ? '—' : nfm(r[k], 1) + '%') + '</td>';
+  if(k === 'rsi') return '<td class="' + (r.rsi > 70 ? 'dn' : r.rsi < 30 ? 'up' : '') + '">' + nfm(r.rsi, 0) + '</td>';
+  return '<td>' + nfm(r[k], 2) + '</td>';
+}
+function renderAz(){
+  const ov = document.getElementById('ov'); const act = data[currentMarket];
+  if(!act){ ov.innerHTML = '<div class="hmnote">' + X.nodata + '</div>'; return; }
+  const all = azRows(), rows = azFilter(all), cols = AZC[AZV], shown = rows.slice(0, 300);
+  const opt = (v, t, cur) => '<option value="' + v + '"' + (cur === v ? ' selected' : '') + '>' + t + '</option>';
+  ov.innerHTML = '<div class="az"><input id="azq" type="text" placeholder="' + X.search + '" value="' + AZF.q.replace(/"/g, '') + '" style="width:170px">' +
+    '<select id="azs">' + opt('', X.f_sig, AZF.sig) + opt('long', 'LONG', AZF.sig) + opt('short', 'SHORT', AZF.sig) + '</select>' +
+    '<select id="azt">' + opt('', X.f_tr, AZF.tr) + opt('alcista', X.tr.alcista, AZF.tr) + opt('bajista', X.tr.bajista, AZF.tr) + '</select>' +
+    '<select id="azr">' + opt('', X.f_rsi, AZF.rsi) + opt('ob', X.r_ob, AZF.rsi) + opt('os', X.r_os, AZF.rsi) + opt('mid', X.r_mid, AZF.rsi) + '</select>' +
+    '<button id="azf" class="' + (AZF.fav ? 'on' : '') + '">★ ' + X.mine + '</button><span class="sp"></span>' +
+    ['res', 'tec', 'act'].map(v => '<button data-av="' + v + '" class="' + (AZV === v ? 'on' : '') + '">' + X.views[v] + '</button>').join('') + '<button id="azc">⬇ CSV</button></div>' +
+    '<div class="tw"><table class="az2"><thead><tr>' + cols.map(c => '<th data-k="' + c[0] + '">' + c[1] + (AZS.k === c[0] ? (AZS.dir > 0 ? ' ▲' : ' ▼') : '') + '</th>').join('') + '</tr></thead><tbody>' +
+    (shown.map(r => '<tr class="rw" data-s="' + r.s + '">' + cols.map(c => cell(c[0], r)).join('') + '</tr>').join('') || '<tr><td colspan="' + cols.length + '" style="text-align:center;color:var(--muted);padding:22px">' + X.none + '</td></tr>') + '</tbody></table></div>' +
+    '<div class="hmnote">' + X.count.replace('{a}', shown.length).replace('{b}', rows.length) + (mhm() ? '' : ' ' + X.nochg) + '</div>';
+  const re = () => renderAz();
+  document.getElementById('azq').oninput = e => { AZF.q = e.target.value; const p = e.target.selectionStart; re(); const n = document.getElementById('azq'); n.focus(); n.setSelectionRange(p, p); };
+  document.getElementById('azs').onchange = e => { AZF.sig = e.target.value; re(); };
+  document.getElementById('azt').onchange = e => { AZF.tr = e.target.value; re(); };
+  document.getElementById('azr').onchange = e => { AZF.rsi = e.target.value; re(); };
+  document.getElementById('azf').onclick = () => { AZF.fav = !AZF.fav; re(); };
+  ov.querySelectorAll('[data-av]').forEach(b => b.onclick = () => { AZV = b.dataset.av; if(!AZC[AZV].some(c => c[0] === AZS.k)) AZS = {k: 's', dir: 1}; re(); });
+  ov.querySelectorAll('th').forEach(t => t.onclick = () => { const k = t.dataset.k; AZS = AZS.k === k ? {k, dir: -AZS.dir} : {k, dir: k === 's' || k === 'tr' ? 1 : -1}; re(); });
+  ov.querySelectorAll('.st').forEach(s => s.onclick = e => { e.stopPropagation(); const w = wlGet(), key = wlKey(s.dataset.f), i = w.indexOf(key); if(i >= 0) w.splice(i, 1); else w.push(key); wlSet(w); re(); });
+  ov.querySelectorAll('tr.rw').forEach(r => r.onclick = () => openSym(r.dataset.s));
+  document.getElementById('azc').onclick = () => {
+    const H = ['symbol', 'price', 'day_change_pct', 'rsi', 'trend', 'signal', 'trend_strength_pct', 'sma20', 'sma50', 'dist_to_high20_pct', 'dist_to_low20_pct', 'atr_pct', 'avg_dollar_volume'];
+    const L = [H.join(',')].concat(rows.map(r => [r.s, r.p, r.chg ?? '', r.rsi, r.tr, r.v, r.fz, r.m20, r.m50, r.dh, r.dl, r.atr, r.d ?? ''].join(',')));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([L.join('\n')], {type: 'text/csv'})); a.download = 'nexus-' + currentMarket + '-' + ((data[currentMarket] && data[currentMarket].dataDate) || '') + '.csv'; a.click();
+  };
+}
+async function renderOv(){ await loadMH(); if(VIEW === 'map') renderMap(); else if(VIEW === 'az') renderAz(); }
+function setView(v){
+  VIEW = v; document.querySelectorAll('#vbar button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  document.querySelector('.layout').style.display = v === 'list' ? '' : 'none';
+  document.getElementById('ov').style.display = v === 'list' ? 'none' : 'block';
+  if(v !== 'list') renderOv();
+}
+document.querySelectorAll('#vbar button').forEach(b => b.onclick = () => setView(b.dataset.v));
+const _renderLists = renderLists; renderLists = function(){ _renderLists(); if(VIEW !== 'list') renderOv(); };
+window.addEventListener('resize', () => { if(VIEW === 'map') renderOv(); });
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
