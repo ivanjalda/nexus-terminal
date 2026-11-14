@@ -3,210 +3,463 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexus Terminal — Signal history</title>
-<meta name="description" content="Public track record of every Nexus Terminal signal and what the price did afterwards, hits and misses included. Nothing is deleted or edited.">
+<title>Signal history — Nexus Terminal</title>
+<meta name="description" content="Public record of every signal Nexus Terminal generates and of the Engine 2 forecasts, with what happened afterwards. Hits and misses included.">
+<meta property="og:title" content="Signal history — Nexus Terminal">
+<meta property="og:description" content="Public record of every signal Nexus Terminal generates and of the Engine 2 forecasts, with what happened afterwards. Hits and misses included.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nexusterminalalerts.com/en/historico.html">
+<meta property="og:image" content="https://nexusterminalalerts.com/og-image.jpg">
 <link rel="canonical" href="https://nexusterminalalerts.com/en/historico.html">
 <link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/historico.html">
 <link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/historico.html">
 <link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/historico.html">
 <link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../logo.png">
+<script>(function(){var t='dark';try{t=localStorage.getItem('nx-theme')||'dark';}catch(e){}document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');})();</script>
 <style>
 :root{
-  --blue:#0071e3;
-  --green:#1d7a3c; --green-bg:#e8f8ee;
-  --red:#d5392f; --red-bg:#fdeceb;
-  --yellow:#b36a00; --yellow-bg:#fdf3e3;
-  --bg:#ffffff; --surface:#f5f5f7; --border:#e5e5ea;
-  --text:#1d1d1f; --muted:#86868b;
+  --bg:#0a0c10; --surface:#12151c; --surface2:#181c25; --border:#242a36;
+  --text:#eceef2; --muted:#8e97a7;
+  --gold:#d4af37; --gold2:#f0d27a; --gold-bg:rgba(212,175,55,.10);
+  --green:#35c98a; --red:#ff6159; --amber:#e8a93a;
+  --hdr:rgba(10,12,16,.88); --hover:rgba(255,255,255,.03); --band1:rgba(212,175,55,.16); --band2:rgba(212,175,55,.34); --on-gold:#1a1405;
+}
+:root[data-theme="light"]{
+  --bg:#ffffff; --surface:#f3f5f9; --surface2:#e9edf3; --border:#d8dde6;
+  --text:#131722; --muted:#5a6475;
+  --gold:#8a6d06; --gold2:#96730a; --gold-bg:rgba(138,109,6,.08);
+  --green:#067a67; --red:#c62f2f; --amber:#a86400;
+  --hdr:rgba(255,255,255,.92); --hover:rgba(0,0,0,.04); --band1:rgba(138,109,6,.14); --band2:rgba(138,109,6,.30); --on-gold:#ffffff;
 }
 *{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;}
-header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);}
-header .brand{font-size:1.3rem;font-weight:600;letter-spacing:-0.02em;}
-header .brand span{color:var(--blue);}
-header a{font-size:.9rem;color:var(--blue);text-decoration:none;font-weight:500;}
-header .lang{font-size:.85rem;color:var(--muted);margin-left:20px;}
-header .lang b{color:var(--text);}
-main{max-width:980px;margin:0 auto;padding:40px 24px 80px;}
-h1.title{font-size:2rem;font-weight:700;letter-spacing:-0.03em;margin:0 0 12px;}
-.lead{color:var(--muted);font-size:1rem;line-height:1.6;max-width:680px;margin:0 0 28px;}
-h2{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin:36px 0 12px;}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
-.pill{padding:8px 16px;border-radius:20px;background:var(--surface);border:none;font-size:.85rem;cursor:pointer;font-family:inherit;color:var(--text);}
-.pill.active{background:var(--text);color:#fff;}
-.warn{background:var(--yellow-bg);color:var(--yellow);border-radius:14px;padding:14px 18px;font-size:.88rem;line-height:1.5;margin-bottom:20px;}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
-.card{background:var(--surface);border-radius:18px;padding:20px;}
-.card .num{font-size:1.9rem;font-weight:700;letter-spacing:-0.02em;}
-.card .lbl{font-size:.78rem;color:var(--muted);margin-top:6px;line-height:1.4;}
-.table-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:.88rem;}
-th{text-align:left;color:var(--muted);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;border-bottom:1px solid var(--border);}
-td{padding:12px;border-bottom:1px solid var(--border);white-space:nowrap;}
-.pos{color:var(--green);font-weight:600;}
-.neg{color:var(--red);font-weight:600;}
-.muted{color:var(--muted);}
-.tag{font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:20px;letter-spacing:.02em;}
-.tag.long{background:var(--green-bg);color:var(--green);}
-.tag.short{background:var(--red-bg);color:var(--red);}
-.empty{color:var(--muted);text-align:center;padding:36px 12px;white-space:normal;}
-.method{background:var(--surface);border-radius:18px;padding:24px 28px;font-size:.92rem;line-height:1.7;}
-.method ul{margin:10px 0 0;padding-left:20px;}
-.method li{margin-bottom:6px;}
-.method a{color:var(--blue);}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55;}
+a{color:inherit;}
+header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 32px;background:var(--hdr);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-size:1.2rem;font-weight:600;letter-spacing:-.02em;}
+.brand img{height:34px;width:34px;border-radius:9px;object-fit:cover;}
+.brand span{color:var(--gold);}
+nav{display:flex;align-items:center;gap:22px;flex-wrap:wrap;font-size:.88rem;}
+nav a{color:var(--muted);text-decoration:none;font-weight:500;}
+nav a:hover{color:var(--gold2);}
+nav .lang{color:var(--muted);}
+nav .lang b{color:var(--text);}
+main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
+.shell{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:0 24px;max-width:none;margin:0;}
+.side{min-width:0;}
+.shell>main{order:1;}
+#newsL{order:2;}
+#newsR{order:3;}
+.side h2{margin-top:44px;}
+.ni{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color .15s,transform .15s;}
+.ni .nb{padding:11px 14px 13px;}
+.ni-img{aspect-ratio:16/9;background:var(--bg);overflow:hidden;}
+.ni.sm{display:flex;align-items:stretch;}
+.ni.sm .ni-img{width:92px;flex:none;aspect-ratio:auto;min-height:74px;}
+.ni.sm .nb{padding:9px 12px;min-width:0;}
+.ni.sm .nt{font-size:.86rem;}
+.ni.big .nt{font-size:1rem;}
+.ni-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.ni:hover{transform:translateY(-1px);}
+.ni:hover{border-color:var(--gold);}
+.ni .nm{font-size:.72rem;color:var(--muted);margin-bottom:3px;}
+.ni .nm b{color:var(--gold);font-weight:700;}
+.ni .nt{font-size:.92rem;line-height:1.38;font-weight:600;}
+.mbar{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--border);background:var(--surface);font-size:.78rem;scrollbar-width:thin;}
+.mbar:empty{display:none;}
+.mbar .mi{display:flex;flex-direction:column;align-items:center;flex:1 1 0;gap:1px;padding:7px 14px;border-right:1px solid var(--border);white-space:nowrap;min-width:max-content;}
+.mbar .mi b{font-weight:700;}
+.mbar .mi .mp{color:var(--muted);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.74rem;}
+.mbar .mi .mc{font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace;}
+.mbar .mi .mc.up{color:var(--green);}
+.mbar .mi .mc.dn{color:var(--red);}
+.mbar .mn{margin-left:0;flex:0 0 auto;padding:7px 18px;color:var(--muted);font-size:.7rem;display:flex;align-items:center;white-space:nowrap;}
+.adc{position:relative;display:block;margin-bottom:12px;border:1px solid var(--gold);border-radius:14px;padding:20px 16px 16px;background:linear-gradient(160deg,var(--gold-bg),var(--surface));text-decoration:none;}
+.adc .adt{position:absolute;top:-9px;left:14px;background:var(--bg);color:var(--muted);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:0 7px;}
+.adc .adk{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px;}
+.adc .adh{font-family:Georgia,'Times New Roman',serif;font-size:1.12rem;font-weight:600;line-height:1.25;margin-bottom:8px;}
+.adc p{margin:0 0 12px;color:var(--muted);font-size:.84rem;}
+.adc .btn{padding:8px 16px;font-size:.84rem;}
+.adc.has .adrow{display:flex;gap:14px;align-items:flex-start;}
+.adc .adimg{width:104px;flex:none;border-radius:8px;border:1px solid var(--border);display:block;}
+.adc .adtx{min-width:0;}
+.adc.has .adh{font-size:1rem;}
+.adc .adp{font-size:.78rem;color:var(--muted);margin:0 0 10px;}
+.adc .adf{margin-top:10px;font-size:.68rem;color:var(--muted);}
+.ni.none .nb{padding:12px 14px;}
+.ni.none{color:var(--muted);font-size:.84rem;font-weight:400;}
+@media (min-width:2300px){ .shell{grid-template-columns:380px minmax(0,1fr) 380px;} }
+@media (min-width:1500px){
+  .shell{grid-template-columns:330px minmax(0,1fr) 330px;}
+  #newsL{order:0;}
+  #newsR{order:2;}
+  .side{position:sticky;top:66px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto;padding-bottom:20px;}
+}
+.tbtn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:1rem;line-height:1.3;font-family:inherit;}
+.tbtn:hover{border-color:var(--gold);}
+.hero{padding:64px 0 36px;}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;letter-spacing:-.035em;margin:0 0 18px;font-weight:700;}
+.hero h1 em{font-style:normal;color:var(--gold);}
+.hero p{max-width:680px;color:var(--muted);font-size:1.08rem;margin:0 0 28px;}
+.btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{display:inline-block;padding:13px 24px;border-radius:12px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--border);}
+.btn.gold{background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--on-gold);border-color:transparent;}
+.btn.gold:hover{filter:brightness(1.07);}
+.btn.ghost{color:var(--text);background:var(--surface);}
+.btn.ghost:hover{border-color:var(--gold);}
+h2{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:700;margin:44px 0 14px;}
+.note{color:var(--muted);font-size:.8rem;margin-top:10px;}
+.clocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+.clock{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;}
+.clock .city{display:flex;justify-content:space-between;align-items:center;font-size:.86rem;color:var(--muted);font-weight:600;}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;}
+.badge.on{color:var(--green);background:rgba(53,201,138,.12);}
+.badge.on::before{animation:pulse 1.6s infinite;}
+.badge.off{color:var(--red);background:rgba(255,97,89,.12);}
+.badge.brk{color:var(--amber);background:rgba(232,169,58,.14);}
+.badge.hol{color:var(--amber);background:rgba(232,169,58,.14);}
+.clock .hrs small{color:var(--muted);}
+.clock .hrs .wn{color:var(--amber);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.clock .time{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:2rem;letter-spacing:.02em;margin:8px 0 2px;font-weight:600;}
+.clock .cd{font-size:.82rem;color:var(--muted);}
+.clock .cd b{color:var(--gold2);font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600;}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.pill{font-size:.78rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 14px;}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;}
+.kv .k{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;}
+.kv .v{font-size:1.1rem;font-weight:600;margin-top:4px;}
+.kv .v small{display:block;font-size:.78rem;color:var(--muted);font-weight:400;margin-top:2px;}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.tlc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;}
+.tlc.now{border-color:var(--gold);background:linear-gradient(180deg,rgba(212,175,55,.08),var(--surface));}
+.tlc .tk{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--muted);}
+.tlc.now .tk{color:var(--gold);}
+.tlc .tv{font-size:1.2rem;font-weight:700;margin:6px 0 8px;letter-spacing:-.01em;}
+.tlc .ts{font-size:.86rem;color:var(--muted);line-height:1.6;}
+.tlc .ts b{color:var(--text);font-weight:600;}
+.clock .hrs{font-size:.78rem;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
+.warn{margin-top:16px;background:rgba(232,169,58,.1);color:var(--amber);border:1px solid rgba(232,169,58,.3);border-radius:12px;padding:12px 16px;font-size:.88rem;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;}
+.bar{display:flex;height:8px;border-radius:6px;overflow:hidden;margin:14px 0 12px;background:var(--border);}
+.bar i{display:block;height:100%;}
+.row{display:flex;justify-content:space-between;font-size:.88rem;padding:3px 0;}
+.row b{font-weight:600;}
+.g{color:var(--green);} .r{color:var(--red);}
+.mname{font-weight:700;font-size:1rem;}
+.rec{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:16px;}
+.rec .n{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;}
+.rec .l{font-size:.8rem;color:var(--muted);margin-top:2px;}
+.ad{margin-top:44px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(135deg,var(--gold-bg),var(--surface));padding:24px 26px;position:relative;}
+.ad .tag{position:absolute;top:-10px;left:20px;background:var(--bg);color:var(--muted);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;padding:0 8px;}
+.ad .kick{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 6px;}
+.ad h3{margin:0 0 8px;font-size:1.3rem;font-family:Georgia,'Times New Roman',serif;font-weight:600;}
+.ad p{margin:0 0 16px;color:var(--muted);font-size:.95rem;max-width:62ch;}
+.ad .btns{display:flex;gap:10px;flex-wrap:wrap;}
+.ad .fine{margin-top:14px;font-size:.75rem;color:var(--muted);}
+.honest{margin-top:16px;border-left:3px solid var(--gold);background:var(--gold-bg);padding:12px 16px;border-radius:0 10px 10px 0;font-size:.92rem;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+.card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;transition:border-color .15s,transform .15s;}
+.card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.card h3{margin:0 0 6px;font-size:1.05rem;}
+.card p{margin:0 0 14px;color:var(--muted);font-size:.9rem;}
+.card span{color:var(--gold);font-weight:600;font-size:.88rem;}
+footer{margin:0;padding:10px 24px 60px;max-width:none;color:var(--muted);font-size:.8rem;}
+footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
+@media (max-width:900px){.tl{grid-template-columns:1fr;}}
+@media (max-width:700px){
+  header{padding:12px 16px;}
+  nav{gap:14px;font-size:.82rem;}
+  .shell{padding:0 16px;}
+  .hero{padding:40px 0 24px;}
+  .clock .time{font-size:1.7rem;}
+}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:14px 0 6px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;}
+.card .num{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;line-height:1.1;}
+.card .lbl{color:var(--muted);font-size:.82rem;margin-top:6px;}
+.pos{color:var(--green);} .neg{color:var(--red);} .muted{color:var(--muted);}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0 14px;}
+.pill{font-family:inherit;font-size:.88rem;font-weight:600;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;}
+.pill.active{color:var(--on-gold);background:linear-gradient(180deg,var(--gold2),var(--gold));border-color:transparent;}
+.dl{margin-left:auto;font-family:inherit;font-size:.85rem;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--gold2);cursor:pointer;}
+.warn{background:rgba(232,169,58,.12);border:1px solid rgba(232,169,58,.35);color:var(--amber);border-radius:12px;padding:12px 14px;font-size:.9rem;margin:8px 0;}
+.tag.long{background:rgba(53,201,138,.14);color:var(--green);} .tag.short{background:rgba(255,97,89,.14);color:var(--red);}
+.tag{display:inline-block;font-size:.66rem;font-weight:800;padding:2px 7px;border-radius:6px;}
+.method ul{margin:8px 0 12px;padding-left:20px;} .method li{margin-bottom:7px;}
+.empty{color:var(--muted);padding:22px;text-align:center;}
+
+.pgh{padding:48px 0 10px;}
+.pgh h1{font-size:clamp(1.8rem,4.4vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:0 0 14px;font-weight:700;}
+.pgh h1 em{font-style:normal;color:var(--gold);}
+.pgh p{max-width:760px;color:var(--muted);font-size:1.02rem;margin:0;}
+.verdict{display:flex;gap:14px;align-items:flex-start;}
+.verdict .ic{flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;}
+.verdict.sin .ic{background:rgba(232,169,58,.15);color:var(--amber);}
+.verdict.dem .ic{background:rgba(53,201,138,.15);color:var(--green);}
+.verdict.ins .ic{background:rgba(142,151,167,.15);color:var(--muted);}
+.verdict h3{margin:0 0 4px;font-size:1.1rem;}
+.verdict p{margin:0;color:var(--muted);font-size:.94rem;}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:.88rem;}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:600;}
+td{padding:9px 10px;border-bottom:1px solid var(--border);}
+td.num,th.num{text-align:right;}
+.tw{overflow-x:auto;}
+.two{display:grid;grid-template-columns:1.05fr 1fr;gap:14px;align-items:stretch;}
+.big{font-size:2.6rem;font-weight:700;letter-spacing:-.03em;line-height:1;}
+.big small{font-size:1rem;color:var(--muted);font-weight:500;letter-spacing:0;}
+.mtabs{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap;}
+.mtabs button,.tabs2 button{font-family:inherit;font-size:.92rem;font-weight:600;padding:9px 20px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;}
+.mtabs button.on,.tabs2 button.on{color:var(--on-gold);background:linear-gradient(180deg,var(--gold2),var(--gold));border-color:transparent;}
+.mtabs button:disabled{opacity:.45;cursor:default;}
+.tabs2{display:flex;gap:8px;margin:0 0 12px;}
+.tabs2 button{padding:7px 14px;font-size:.84rem;}
+.banner{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px;}
+.banner .verdict{flex:1;min-width:260px;}
+.banner a{color:var(--gold2);font-size:.85rem;text-decoration:none;white-space:nowrap;}
+.desk{display:grid;grid-template-columns:270px 1fr 330px;gap:14px;align-items:start;}
+.lst{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;max-height:640px;overflow-y:auto;}
+.it{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:11px 12px;border-radius:12px;cursor:pointer;border:1px solid transparent;}
+.it:hover{background:var(--hover);}
+.it.on{background:var(--gold-bg);border-color:var(--gold);}
+.it .sy{font-weight:700;}
+.it .pr{font-weight:700;text-align:right;}
+.it small{color:var(--muted);font-size:.74rem;}
+.it small:last-child{text-align:right;}
+.cen,.rt{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;}
+.dh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.dh .sy{font-size:1.5rem;font-weight:700;}
+.dh .px{color:var(--muted);font-size:.9rem;}
+.rt h4,.cen h4{margin:0 0 8px;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);}
+.rt ul{margin:0 0 14px;padding-left:18px;font-size:.88rem;}
+.rt li{margin-bottom:6px;}
+.rt .lim{font-size:.8rem;color:var(--muted);border-left:3px solid var(--border);padding-left:12px;}
+svg.fan{width:100%;height:auto;display:block;}
+.fanleg{display:flex;gap:14px;flex-wrap:wrap;font-size:.74rem;color:var(--muted);margin-top:6px;}
+.fanleg i{display:inline-block;width:12px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle;}
+.empty{color:var(--muted);padding:30px;text-align:center;}
+.tag{display:inline-block;font-size:.66rem;font-weight:800;padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:middle;}
+.tag.long{background:rgba(53,201,138,.14);color:var(--green);}
+.tag.short{background:rgba(255,97,89,.14);color:var(--red);}
+.rng td,.rng th{padding:7px 8px;font-size:.82rem;}
+@media (max-width:980px){.two{grid-template-columns:1fr;}.desk{grid-template-columns:1fr;}.cen{order:1}.rt{order:2}.lstw{order:0}.lst{max-height:260px;}}
 </style>
 </head>
 <body>
 <header>
-  <a href="./" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><div class="brand">Nexus <span>Terminal</span></div></a>
-  <div><a href="./">← Home</a> &nbsp;·&nbsp; <a href="escaner.html">Scanner</a><span class="lang"><b>EN</b> | <a href="../historico.html" hreflang="es" style="font-size:.85rem;">ES</a></span></div>
+  <a class="brand" href="./"><img src="../logo.png" alt="Nexus Terminal" onerror="this.style.display='none'">Nexus <span>Terminal</span></a>
+  <nav>
+    <a href="./">Home</a>
+    <a href="escaner.html">Scanner</a>
+    <a href="historico.html" style="color:var(--gold2)">Signal history</a>
+    <a href="como.html">How it works</a>
+    <a href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener">Telegram alerts</a>
+    <span class="lang"><b>EN</b> | <a href="../historico.html" hreflang="ES">ES</a></span>
+    <button class="tbtn" id="themeBtn" type="button"></button>
+  </nav>
 </header>
+<div class="mbar" id="mbar"></div>
+
+<div class="shell">
+<aside class="side" id="newsL"></aside>
 <main>
-  <h1 class="title">Signal history</h1>
-  <p class="lead">Here we record every signal the system generates and what the price did afterwards, hits and misses included. Nothing is deleted or edited.</p>
 
-  <div class="filters">
-    <button class="pill active" data-f="all">All</button>
-    <button class="pill" data-f="stocks">US Stocks</button>
-    <button class="pill" data-f="crypto">Crypto</button>
-    <button class="pill" data-f="fx">Forex</button>
-    <button id="dlBtn" style="margin-left:auto;padding:8px 16px;border-radius:20px;background:var(--surface);border:none;font-size:.85rem;cursor:pointer;font-family:inherit;color:var(--blue);">Download full log (CSV)</button>
-  </div>
-
+  <section class="pgh">
+    <h1>Signal history</h1>
+    <p>Here we record every signal the system generates and what the price did afterwards, hits and misses included. Nothing is deleted or touched up. We also log the signals of Madrid, London, Germany, France and Tokyo, and the forecasts of Engine 2.</p>
+  </section>
+  <div class="filters" id="filters"></div>
   <div id="warn"></div>
   <div class="cards" id="cards"></div>
 
-  <h2>Latest signals</h2>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>Signal date</th><th>Market</th><th>Asset</th><th>Direction</th><th>Strength</th><th>Entry</th><th>Result after 5 sessions</th></tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
+  <h2>Results by market</h2>
+  <div class="panel tw"><table><thead><tr><th>Market</th><th class="num">Signals</th><th class="num">Closed</th><th class="num">Hit rate</th><th class="num">By chance</th><th class="num">Versus the market</th></tr></thead><tbody id="bymkt"></tbody></table></div>
 
-  <h2>How it's measured</h2>
-  <div class="method">
-    <ul>
-      <li><b>What a signal is:</b> an asset that enters the bullish or bearish list when it wasn't on either before.</li>
-      <li><b>Entry:</b> the close of the session after the signal, which is when you could actually act.</li>
-      <li><b>Exit:</b> the close 5 sessions after entry. Always 5, fixed in advance.</li>
-      <li><b>Result:</b> change in %. For bearish signals the sign is flipped (you gain if the price falls).</li>
-      <li><b>Forward tracking:</b> only signals recorded since the system started are counted; nothing is computed with past data.</li>
-    </ul>
-    <p><b>What this history does NOT include:</b> commissions or price differences when trading. To avoid mistaking a general market rise for skill, each signal is compared with the average of the same market over the same dates. With few closed signals the percentages don't mean anything. Past performance does not guarantee future results and this is not financial advice.</p>
-<p>Recorded signals are not deleted or modified: only their result is filled in once the 5-session period is over.</p>  </div>
+  <h2>Engine 2: published forecasts and what happened</h2>
+  <div class="panel"><p class="muted" style="margin:0 0 8px">Every opening forecast published by Engine 2 is logged the same day, with the reliability it had measured in testing, and then we check what the market did. This shows whether what it promised in testing holds up in real life.</p><div class="cards" id="m2cards"></div><div class="tw"><table><thead><tr><th>Date</th><th>Market</th><th>What it predicts</th><th>Direction</th><th class="num">Measured reliability</th><th class="num">Result</th></tr></thead><tbody id="m2body"></tbody></table></div></div>
+
+  <h2>Latest signals</h2>
+  <div class="panel tw"><table><thead><tr><th>Signal date</th><th>Market</th><th>Asset</th><th>Direction</th><th class="num">Strength</th><th class="num">Entry</th><th class="num">Result after 5 sessions</th></tr></thead><tbody id="tbody"></tbody></table></div>
+
+  <h2>How it is measured</h2>
+  <div class="panel method"><ul>
+<li><b>What a signal is:</b> an asset that enters the bullish or bearish list when it was on neither before.</li>
+<li><b>Entry:</b> close of the session after the signal, which is when you could actually act.</li>
+<li><b>Exit:</b> close 5 sessions after the entry. Always 5, fixed in advance.</li>
+<li><b>Result:</b> change in %. For bearish signals the sign is flipped (you gain if the price falls).</li>
+<li><b>Forward tracking:</b> only signals since the system started are recorded (for the other exchanges, since their first recorded close); nothing is ever computed with past data.</li>
+<li><b>Engine 2:</b> every published forecast is logged with its measured reliability. "Open" means whether the market will open above or below the previous close; "Day close", whether it will close above or below the previous close. It counts as a hit if the average of the market's stocks moved in that direction.</li>
+</ul>
+<p><b>What this history does NOT include:</b> commissions or price differences when trading. To avoid confusing a general market rise with merit, we compare each signal with the average of the same market on the same dates. With few closed signals the percentages mean nothing. Past performance does not guarantee future results and this is not financial advice.</p>
+<p>Recorded signals are never deleted or modified: only their result is filled in when the deadline is reached.</p></div>
+
 </main>
+<aside class="side" id="newsR"></aside>
+</div>
+<footer><div class="d">Nexus Terminal provides automatic technical and statistical analysis for informational purposes only. It is not financial advice or a recommendation to buy or sell. Every investment carries a risk of loss and past performance does not guarantee future results.<br><br>Nexus Terminal is a service of Community16 LLC, a New Mexico (USA) limited liability company.</div></footer>
 
 <script>
-const LABELS = { stocks:"US Stocks", crypto:"Crypto", fx:"Forex" };
-let signals = [];
-let filter = "all";
+const T = {"DEC": ".", "ALL": "All", "CSV": "Download the full record (CSV)", "L": {"stocks": "US stocks", "crypto": "Crypto", "fx": "Forex", "es": "Madrid", "gb": "London", "de": "Germany", "fr": "France", "jp": "Tokyo"}, "WARN": "Small sample: {n} closed signals. With fewer than 30 the percentages are not reliable; they will become more meaningful over time.", "SINCE": "Record started on {d}.", "OF": "of", "K_REG": "signals recorded<br>{c} closed · {o} in progress", "K_LONG": "times we said it would rise and it did (over 5 sessions)", "K_SHORT": "times we said it would fall and it did (over 5 sessions)", "K_HIT": "overall hit rate · by chance it would have been {b}", "K_EX": "average result versus the market average on the same dates", "K_EXL": "buys only, versus the market average", "K_EXS": "sells only, versus the market average", "K_AVG": "average result", "K_MED": "median result (less sensitive to extreme cases)", "M2_PUB": "forecasts published<br>{r} already with a result.", "M2_HIT": "times the direction was right", "M2_REAL": "real hit rate so far", "M2_MEAS": "hit rate they had measured in testing (average)", "UP": "up", "DOWN": "down", "HITW": "hit", "MISS": "miss", "PEND": "pending", "OPEN": "Open", "CLOSE": "Day close", "IN": "in", "DAYS": "days", "M2_EMPTY": "There are no Engine 2 forecasts logged yet. They will appear here from the first published forecast.", "NODATA": "no data", "RUN": "in progress", "WAIT": "waiting for entry", "NOSIG": "There are no recorded signals yet. They will appear here as the system detects new ones."};
+const NT_L = "Market news", NT_R = "Economy and companies", NT_NONE = "No news loaded yet.", NT_NOTE = "Headlines from external outlets. Each link opens the original source.", NT_THEME = "Switch between light and dark mode", NT_AD = {"from": "From", "tag": "Advertisement", "fine": "Valmont & Co. · Community16 LLC. Educational content, not financial advice.", "g": {"k": "Valmont & Co. · Academy", "h": "Stock market investing guides", "p": "Digital guides and books in English and Spanish to learn step by step.", "b": "View guides", "u": "https://www.valmontco.com/collections/complete-guides"}, "c": {"k": "Valmont & Co. · Academy", "h": "Trading and investing courses", "p": "Video courses, taught in Spanish.", "b": "View courses (in Spanish)", "u": "https://www.valmontco.com/collections/courses"}, "f": {"k": "Valmont & Co. · Academy", "h": "Free previews of our books and guides", "p": "Read the free introduction of our books and guides before you decide.", "b": "Read for free", "u": "https://www.valmontco.com/collections/free-introductions"}, "l": {"k": "Valmont & Co. · Academy", "h": "Investing books", "p": "Books to understand the markets and manage risk, in English and Spanish.", "b": "View books", "u": "https://www.valmontco.com/collections/books"}}, NT_MB = {"note": "Latest close ({d}) · not live. Indices tracked with ETFs that replicate them.", "names": {"SPY": ["S&P 500", "ETF SPY"], "QQQ": ["Nasdaq 100", "ETF QQQ"], "DIA": ["Dow Jones", "ETF DIA"], "IWM": ["Russell 2000", "ETF IWM"], "GLD": ["Gold", "ETF GLD"], "TLT": ["US 20y Bonds", "ETF TLT"], "X:BTCUSD": ["Bitcoin", "BTC/USD"], "X:ETHUSD": ["Ethereum", "ETH/USD"], "C:EURUSD": ["EUR/USD", "Euro / dollar"], "C:USDJPY": ["USD/JPY", "Dollar / yen"], "C:GBPUSD": ["GBP/USD", "Pound / dollar"]}};
+const LOC = "en-GB";
 
-function fmtPct(n){
-  if(n === null || n === undefined) return "—";
-  return (n > 0 ? "+" : "") + n.toFixed(2) + "%";
-}
-function cls(n){ return n > 0 ? "pos" : n < 0 ? "neg" : ""; }
-function median(arr){
-  if(!arr.length) return null;
-  const a = [...arr].sort((x,y)=>x-y);
-  const m = Math.floor(a.length/2);
-  return a.length % 2 ? a[m] : (a[m-1] + a[m]) / 2;
-}
-
-async function load(){
-  try{
-    const res = await fetch('../data/signals.json?v=' + Date.now());
-    if(!res.ok) throw new Error('no file');
-    signals = await res.json();
-  }catch(e){ signals = []; }
-  render();
-}
-
-function render(){
-  const list = signals.filter(s => filter === "all" || s.market === filter);
+const MK = ["stocks","crypto","fx","es","gb","de","fr","jp"];
+let signals = [], reg = null, filter = "all";
+const fmtPct = n => (n === null || n === undefined) ? "—" : (n > 0 ? "+" : "") + n.toFixed(2).replace(".", T.DEC) + "%";
+const cls = n => n > 0 ? "pos" : n < 0 ? "neg" : "";
+const median = arr => { if(!arr.length) return null; const a = [...arr].sort((x,y)=>x-y), m = Math.floor(a.length/2); return a.length % 2 ? a[m] : (a[m-1] + a[m]) / 2; };
+const nf = (x, d=1) => Number(x).toFixed(d).replace(".", T.DEC);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function stats(list){
   const closed = list.filter(s => s.status === "closed");
   const open = list.filter(s => s.status !== "closed" && s.status !== "unverified");
-  const returns = closed.map(s => s.returnPct);
-  const wins = closed.filter(s => s.returnPct > 0).length;
-  const hit = closed.length ? (wins / closed.length * 100) : null;
-  const avg = closed.length ? returns.reduce((a,b)=>a+b,0) / closed.length : null;
-  const med = median(returns);
-  const since = signals.length ? signals.map(s => s.signalDate).sort()[0] : null;
-
-  document.getElementById('warn').innerHTML = closed.length < 30
-    ? `<div class="warn">Small sample: ${closed.length} closed signal${closed.length === 1 ? "" : "s"}. With fewer than 30 the percentages are not reliable; they will become more meaningful over time.${since ? " Tracking started on " + since + "." : ""}</div>`
-    : "";
+  const returns = closed.map(s => s.returnPct), wins = closed.filter(s => s.returnPct > 0).length;
   const withBase = closed.filter(s => s.baseRet !== null && s.baseRet !== undefined);
+  const ex = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
   const exAll = withBase.map(s => s.returnPct - (s.verdict === "long" ? 1 : -1) * s.baseRet);
-  const exMean = exAll.length ? exAll.reduce((a, b) => a + b, 0) / exAll.length : null;
-  const baseHit = withBase.length ? withBase.reduce((a, s) => a + (s.verdict === "long" ? s.baseUp : 100 - s.baseUp), 0) / withBase.length : null;
-  const exSide = side => { const a = withBase.filter(s => s.verdict === side).map(s => s.returnPct - (side === "long" ? 1 : -1) * s.baseRet); return a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; };
-  const exLong = exSide("long"), exShort = exSide("short");
-  document.getElementById('cards').innerHTML = `
-    <div class="card"><div class="num">${list.length}</div><div class="lbl">signals recorded<br>${closed.length} closed · ${open.length} in progress</div></div>
-    <div class="card"><div class="num">${closed.filter(s => s.verdict === "long" && s.returnPct > 0).length} of ${closed.filter(s => s.verdict === "long").length}</div><div class="lbl">times we said it would rise and it rose (after 5 sessions)</div></div>
-    <div class="card"><div class="num">${closed.filter(s => s.verdict === "short" && s.returnPct > 0).length} of ${closed.filter(s => s.verdict === "short").length}</div><div class="lbl">times we said it would fall and it fell (after 5 sessions)</div></div>
-    <div class="card"><div class="num">${hit === null ? "—" : hit.toFixed(0) + "%"}</div><div class="lbl">overall hit rate · by pure chance it would have been ${baseHit === null ? "—" : baseHit.toFixed(0) + "%"}</div></div>
-    <div class="card"><div class="num ${cls(exMean)}">${exMean === null ? "—" : fmtPct(exMean)}</div><div class="lbl">average result vs. the market average over the same dates</div></div>
-    <div class="card"><div class="num ${cls(exLong)}">${exLong === null ? "—" : fmtPct(exLong)}</div><div class="lbl">bullish signals only, vs. the market average</div></div>
-    <div class="card"><div class="num ${cls(exShort)}">${exShort === null ? "—" : fmtPct(exShort)}</div><div class="lbl">bearish signals only, vs. the market average</div></div>
-    <div class="card"><div class="num ${cls(avg)}">${fmtPct(avg)}</div><div class="lbl">average result</div></div>
-    <div class="card"><div class="num ${cls(med)}">${fmtPct(med)}</div><div class="lbl">median result (less sensitive to extreme cases)</div></div>
-  `;
-
-  const rows = [...list]
-    .sort((a,b) => b.signalDate.localeCompare(a.signalDate) || a.symbol.localeCompare(b.symbol))
-    .slice(0,150);
-
+  const side = v => ex(withBase.filter(s => s.verdict === v).map(s => s.returnPct - (v === "long" ? 1 : -1) * s.baseRet));
+  return { n: list.length, closed, open, hit: closed.length ? wins / closed.length * 100 : null,
+    avg: ex(returns), med: median(returns), exMean: ex(exAll), exLong: side("long"), exShort: side("short"),
+    baseHit: withBase.length ? withBase.reduce((a, s) => a + (s.verdict === "long" ? s.baseUp : 100 - s.baseUp), 0) / withBase.length : null };
+}
+async function getJSON(u){ try{ const r = await fetch(u + '?v=' + Date.now()); if(!r.ok) return null; return await r.json(); }catch(e){ return null; } }
+async function load(){
+  const [a, b, c] = await Promise.all([getJSON('../data/signals.json'), getJSON('../data/signals_mundo.json'), getJSON('../motor2_registro.json')]);
+  signals = [].concat(Array.isArray(a) ? a : [], Array.isArray(b) ? b : []); reg = c; render();
+}
+function render(){
+  document.getElementById('filters').innerHTML = '<button class="pill' + (filter==='all'?' active':'') + '" data-f="all">' + T.ALL + '</button>' +
+    MK.map(m => '<button class="pill' + (filter===m?' active':'') + '" data-f="' + m + '">' + T.L[m] + '</button>').join('') +
+    '<button class="dl" id="dlBtn">' + T.CSV + '</button>';
+  document.querySelectorAll('.pill').forEach(p => p.onclick = () => { filter = p.dataset.f; render(); });
+  document.getElementById('dlBtn').onclick = csv;
+  const list = signals.filter(s => filter === "all" || s.market === filter), S = stats(list);
+  const since = signals.length ? signals.map(s => s.signalDate).sort()[0] : null;
+  document.getElementById('warn').innerHTML = S.closed.length < 30 ? '<div class="warn">' + T.WARN.replace('{n}', S.closed.length) + (since ? ' ' + T.SINCE.replace('{d}', since) : '') + '</div>' : '';
+  const cnt = (v) => S.closed.filter(s => s.verdict === v && s.returnPct > 0).length + ' ' + T.OF + ' ' + S.closed.filter(s => s.verdict === v).length;
+  document.getElementById('cards').innerHTML =
+    '<div class="card"><div class="num">' + S.n + '</div><div class="lbl">' + T.K_REG.replace('{c}', S.closed.length).replace('{o}', S.open.length) + '</div></div>' +
+    '<div class="card"><div class="num">' + cnt("long") + '</div><div class="lbl">' + T.K_LONG + '</div></div>' +
+    '<div class="card"><div class="num">' + cnt("short") + '</div><div class="lbl">' + T.K_SHORT + '</div></div>' +
+    '<div class="card"><div class="num">' + (S.hit === null ? "—" : Math.round(S.hit) + "%") + '</div><div class="lbl">' + T.K_HIT.replace('{b}', S.baseHit === null ? "—" : Math.round(S.baseHit) + "%") + '</div></div>' +
+    '<div class="card"><div class="num ' + cls(S.exMean) + '">' + fmtPct(S.exMean) + '</div><div class="lbl">' + T.K_EX + '</div></div>' +
+    '<div class="card"><div class="num ' + cls(S.exLong) + '">' + fmtPct(S.exLong) + '</div><div class="lbl">' + T.K_EXL + '</div></div>' +
+    '<div class="card"><div class="num ' + cls(S.exShort) + '">' + fmtPct(S.exShort) + '</div><div class="lbl">' + T.K_EXS + '</div></div>' +
+    '<div class="card"><div class="num ' + cls(S.avg) + '">' + fmtPct(S.avg) + '</div><div class="lbl">' + T.K_AVG + '</div></div>' +
+    '<div class="card"><div class="num ' + cls(S.med) + '">' + fmtPct(S.med) + '</div><div class="lbl">' + T.K_MED + '</div></div>';
+  // por mercado
+  document.getElementById('bymkt').innerHTML = MK.map(m => { const s = stats(signals.filter(x => x.market === m));
+    return '<tr><td><b>' + T.L[m] + '</b></td><td class="num">' + s.n + '</td><td class="num">' + s.closed.length + '</td><td class="num">' + (s.hit === null ? '—' : Math.round(s.hit) + '%') + '</td><td class="num">' + (s.baseHit === null ? '—' : Math.round(s.baseHit) + '%') + '</td><td class="num ' + cls(s.exMean) + '">' + fmtPct(s.exMean) + '</td></tr>'; }).join('');
+  // Motor 2
+  const P = (reg && reg.pronosticos) || [], R = P.filter(p => p.resultado), A = R.filter(p => p.resultado === 'acierto');
+  const meas = R.length ? R.reduce((a, p) => a + p.aciertoMedido, 0) / R.length : null;
+  document.getElementById('m2cards').innerHTML = P.length ?
+    '<div class="card"><div class="num">' + P.length + '</div><div class="lbl">' + T.M2_PUB.replace('{r}', R.length) + (reg.desde ? ' ' + T.SINCE.replace('{d}', reg.desde) : '') + '</div></div>' +
+    '<div class="card"><div class="num">' + (R.length ? A.length + ' ' + T.OF + ' ' + R.length : '—') + '</div><div class="lbl">' + T.M2_HIT + '</div></div>' +
+    '<div class="card"><div class="num">' + (R.length ? Math.round(A.length / R.length * 100) + '%' : '—') + '</div><div class="lbl">' + T.M2_REAL + '</div></div>' +
+    '<div class="card"><div class="num">' + (meas === null ? '—' : Math.round(meas) + '%') + '</div><div class="lbl">' + T.M2_MEAS + '</div></div>' : '';
+  document.getElementById('m2body').innerHTML = P.length ? [...P].sort((a, b) => b.fecha.localeCompare(a.fecha) || a.nombre.localeCompare(b.nombre)).slice(0, 30).map(p => {
+    const dir = p.direccion === 'alza' ? T.UP : T.DOWN;
+    const res = p.resultado ? '<span class="' + (p.resultado === 'acierto' ? 'pos' : 'neg') + '">' + (p.resultado === 'acierto' ? T.HITW : T.MISS) + ' (' + fmtPct(p.movimiento) + ')</span>' : '<span class="muted">' + T.PEND + '</span>';
+    return '<tr><td>' + p.fecha + '</td><td>' + esc(p.nombre) + '</td><td>' + (p.objetivo === 'gap' ? T.OPEN : T.CLOSE) + '</td><td>' + dir + '</td><td class="num">' + nf(p.aciertoMedido) + '% ' + T.IN + ' ' + p.diasMedidos + ' ' + T.DAYS + '</td><td class="num">' + res + '</td></tr>'; }).join('')
+    : '<tr><td colspan="6" class="empty">' + T.M2_EMPTY + '</td></tr>';
+  // últimas señales
+  const rows = [...list].sort((a,b) => b.signalDate.localeCompare(a.signalDate) || a.symbol.localeCompare(b.symbol)).slice(0, 150);
   document.getElementById('tbody').innerHTML = rows.length ? rows.map(s => {
     let res;
-    if(s.status === "closed") res = `<span class="${cls(s.returnPct)}">${fmtPct(s.returnPct)}</span>`;
-    else if(s.status === "unverified") res = `<span class="muted">no data</span>`;
-    else if(s.currentReturnPct !== null && s.currentReturnPct !== undefined) res = `<span class="muted">in progress (${fmtPct(s.currentReturnPct)})</span>`;
-    else res = `<span class="muted">awaiting entry</span>`;
+    if(s.status === "closed") res = '<span class="' + cls(s.returnPct) + '">' + fmtPct(s.returnPct) + '</span>';
+    else if(s.status === "unverified") res = '<span class="muted">' + T.NODATA + '</span>';
+    else if(s.currentReturnPct !== null && s.currentReturnPct !== undefined) res = '<span class="muted">' + T.RUN + ' (' + fmtPct(s.currentReturnPct) + ')</span>';
+    else res = '<span class="muted">' + T.WAIT + '</span>';
     const entry = (s.entryPrice === null || s.entryPrice === undefined) ? "—" : s.entryPrice;
-    return `<tr>
-      <td>${s.signalDate}</td>
-      <td>${LABELS[s.market] || s.market}</td>
-      <td><b>${s.symbol}</b></td>
-      <td><span class="tag ${s.verdict}">${s.verdict === "long" ? "LONG" : "SHORT"}</span></td>
-      <td>${s.trendStrength}%</td>
-      <td>${entry}</td>
-      <td>${res}</td>
-    </tr>`;
-  }).join('') : `<tr><td colspan="7" class="empty">No signals recorded yet. They will appear here as the system detects new ones.</td></tr>`;
+    return '<tr><td>' + s.signalDate + '</td><td>' + (T.L[s.market] || s.market) + '</td><td><b>' + esc(s.symbol) + '</b></td><td><span class="tag ' + s.verdict + '">' + (s.verdict === "long" ? "LONG" : "SHORT") + '</span></td><td class="num">' + s.trendStrength + '%</td><td class="num">' + entry + '</td><td class="num">' + res + '</td></tr>';
+  }).join('') : '<tr><td colspan="7" class="empty">' + T.NOSIG + '</td></tr>';
 }
-
-document.querySelectorAll('.pill').forEach(p => {
-  p.onclick = () => {
-    document.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
-    p.classList.add('active');
-    filter = p.dataset.f;
-    render();
-  };
-});
-document.getElementById('dlBtn').onclick = () => {
-  const head = ["signal_date","market","asset","direction","strength_pct","entry_date","entry_price","exit_date","exit_price","result_5_sessions_pct","status"];
-  const lines = [head.join(",")];
-  signals.forEach(s => {
-    lines.push([
-      s.signalDate, s.market, s.symbol, s.verdict, s.trendStrength,
-      s.entryDate ?? "", s.entryPrice ?? "", s.exitDate ?? "", s.exitPrice ?? "",
-      s.returnPct ?? "", s.status
-    ].join(","));
-  });
-  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "nexus-terminal-signal-log.csv";
-  a.click();
-  URL.revokeObjectURL(a.href);
-};
-
+function csv(){
+  const lines = [["fecha_senal","mercado","activo","direccion","fuerza_pct","fecha_entrada","precio_entrada","fecha_salida","precio_salida","resultado_5_sesiones_pct","estado"].join(",")];
+  signals.forEach(s => lines.push([s.signalDate, s.market, s.symbol, s.verdict, s.trendStrength, s.entryDate ?? "", s.entryPrice ?? "", s.exitDate ?? "", s.exitPrice ?? "", s.returnPct ?? "", s.status].join(",")));
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" })); a.download = "nexus-terminal-registro-senales.csv"; a.click(); URL.revokeObjectURL(a.href);
+}
 load();
+
+// ---- tema claro / oscuro ----
+(function(){
+  const b = document.getElementById('themeBtn'); if(!b) return;
+  const cur = () => document.documentElement.getAttribute('data-theme') || 'dark';
+  const paint = () => { b.textContent = cur()==='dark' ? '☀' : '☾'; b.setAttribute('aria-label', NT_THEME); b.title = NT_THEME; };
+  b.onclick = () => { const n = cur()==='dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', n); try{ localStorage.setItem('nx-theme', n); }catch(e){} paint(); if(window.__redraw) window.__redraw(); };
+  paint();
+})();
+// ---- noticias a los lados (solo titulares y enlace a la fuente original) ----
+(function(){
+  const L = document.getElementById('newsL'), R = document.getElementById('newsR');
+  if(!L || !R) return;
+  const rtf = new Intl.RelativeTimeFormat("en-GB", {numeric:'auto'});
+  function ago(iso){
+    const m = Math.round((Date.parse(iso) - Date.now())/60000); if(!isFinite(m)) return '';
+    if(Math.abs(m) < 60) return rtf.format(Math.min(m,-1), 'minute');
+    const h = Math.round(m/60); if(Math.abs(h) < 48) return rtf.format(h, 'hour');
+    return rtf.format(Math.round(h/24), 'day');
+  }
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const safe = u => /^https?:\/\//i.test(u) ? u : '#';
+  function adCard(a, prod){
+    const head = '<span class="adt">' + esc(NT_AD.tag) + '</span>';
+    const fine = '<div class="adf">' + esc(NT_AD.fine) + '</div>';
+    if(prod && prod.i){
+      const pr = (typeof prod.p === 'number' && prod.p > 0) ? '<div class="adp">' + esc(NT_AD.from) + ' $' + prod.p.toFixed(2) + ' USD</div>' : '';
+      return '<a class="adc has" href="' + esc(safe(prod.u)) + '" target="_blank" rel="sponsored noopener">' + head +
+        '<div class="adrow"><img class="adimg" src="' + esc(prod.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' +
+        '<div class="adtx"><div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(prod.t) + '</div>' + pr + '<span class="btn gold">' + esc(a.b) + '</span></div></div>' + fine + '</a>';
+    }
+    return '<a class="adc" href="' + esc(a.u) + '" target="_blank" rel="sponsored noopener">' + head + '<div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(a.h) + '</div><p>' + esc(a.p) + '</p><span class="btn gold">' + esc(a.b) + '</span>' + fine + '</a>';
+  }
+  function card(n, idx){
+    const ok = n.i && /^https:\/\//i.test(n.i);
+    const img = ok ? '<div class="ni-img"><img src="' + esc(n.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>' : '';
+    const big = ok && idx < 2;
+    const meta = '<div class="nm"><b>' + esc(n.s) + '</b> · ' + esc(ago(n.d)) + '</div><div class="nt">' + esc(n.t) + '</div>';
+    return '<a class="ni ' + (big ? 'big' : 'sm') + '" href="' + esc(safe(n.u)) + '" target="_blank" rel="noopener nofollow">' + img + '<div class="nb">' + meta + '</div></a>';
+  }
+  function draw(el, title, items, ad, adPos, prod){
+    let h = '<h2>' + esc(title) + '</h2>';
+    const list = (items || []).map(card);
+    if(!list.length) list.push('<div class="ni none"><div class="nb">' + esc(NT_NONE) + '</div></div>');
+    list.splice(Math.min(adPos, list.length), 0, adCard(ad, prod));
+    h += list.join('');
+    h += '<div class="note" style="margin-top:8px">' + esc(NT_NOTE) + '</div>';
+    el.innerHTML = h;
+  }
+  const day = Math.floor(Date.now() / 86400000);
+  const rot = (arr, off) => (arr && arr.length) ? arr[(day + off) % arr.length] : null;
+  Promise.all([
+    fetch('../noticias.json?v=' + Date.now()).then(r => r.json()).catch(() => null),
+    fetch('../academia.json?v=' + Math.floor(Date.now() / 600000)).then(r => r.json()).catch(() => null)
+  ]).then(([j, ac]) => {
+    const d = (j && j['en']) || {};
+    const alt = [NT_AD.g, NT_AD.f, NT_AD.l].filter(Boolean), pick = alt[day % alt.length];
+    draw(L, NT_L, d.a, pick, 2, pick === NT_AD.g ? rot(ac && ac.guias, 0) : null);
+    draw(R, NT_R, d.b, NT_AD.c, 0, rot(ac && ac.cursos, 0));
+  });
+})();
+// ---- barra de mercado (último cierre; datos reales de la última descarga) ----
+(function(){
+  const el = document.getElementById('mbar'); if(!el) return;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  fetch('../barra.json?v=' + Date.now()).then(r => r.json()).then(j => {
+    const items = (j && j.items || []).filter(i => NT_MB.names[i.k] && typeof i.p === 'number' && typeof i.c === 'number');
+    if(!items.length) return;
+    const fmt = i => i.k.startsWith('C:') ? i.p.toFixed(i.p >= 50 ? 3 : 4) : i.p >= 1000 ? Math.round(i.p).toLocaleString('en-GB') : i.p.toFixed(2);
+    const dmax = items.filter(i => !i.k.startsWith('X:') && !i.k.startsWith('C:')).map(i => i.d).sort().pop() || items[0].d;
+    const dl = new Date(dmax + 'T12:00:00').toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+    el.innerHTML = items.map(i => '<div class="mi" title="' + esc(NT_MB.names[i.k][1]) + '"><b>' + esc(NT_MB.names[i.k][0]) + '</b><span class="mp">' + fmt(i) + '</span><span class="mc ' + (i.c >= 0 ? 'up' : 'dn') + '">' + (i.c > 0 ? '+' : '') + i.c.toLocaleString('en-GB', {minimumFractionDigits:2, maximumFractionDigits:2}) + '%</span></div>').join('') + '<div class="mn">' + esc(NT_MB.note.replace('{d}', dl)) + '</div>';
+  }).catch(() => {});
+})();
+
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
 </body>

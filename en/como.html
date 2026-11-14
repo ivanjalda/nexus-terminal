@@ -4,96 +4,440 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How it works — Nexus Terminal</title>
-<meta name="description" content="What Nexus Terminal does every day, what each data point in the analysis means and what its limits are. No jargon and no promises of returns.">
+<meta name="description" content="What Nexus Terminal does, how to read signals and forecasts, what Engine 2 is and how reliability is measured. Explained without jargon.">
+<meta property="og:title" content="How it works — Nexus Terminal">
+<meta property="og:description" content="What Nexus Terminal does, how to read signals and forecasts, what Engine 2 is and how reliability is measured. Explained without jargon.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nexusterminalalerts.com/en/como.html">
+<meta property="og:image" content="https://nexusterminalalerts.com/og-image.jpg">
 <link rel="canonical" href="https://nexusterminalalerts.com/en/como.html">
 <link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/como.html">
 <link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/como.html">
 <link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/como.html">
 <link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../logo.png">
+<script>(function(){var t='dark';try{t=localStorage.getItem('nx-theme')||'dark';}catch(e){}document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');})();</script>
 <style>
 :root{
-  --blue:#0071e3;
-  --bg:#ffffff; --surface:#f5f5f7; --border:#e5e5ea;
-  --text:#1d1d1f; --muted:#86868b;
-  --yellow:#b36a00; --yellow-bg:#fdf3e3;
+  --bg:#0a0c10; --surface:#12151c; --surface2:#181c25; --border:#242a36;
+  --text:#eceef2; --muted:#8e97a7;
+  --gold:#d4af37; --gold2:#f0d27a; --gold-bg:rgba(212,175,55,.10);
+  --green:#35c98a; --red:#ff6159; --amber:#e8a93a;
+  --hdr:rgba(10,12,16,.88); --hover:rgba(255,255,255,.03); --band1:rgba(212,175,55,.16); --band2:rgba(212,175,55,.34); --on-gold:#1a1405;
+}
+:root[data-theme="light"]{
+  --bg:#ffffff; --surface:#f3f5f9; --surface2:#e9edf3; --border:#d8dde6;
+  --text:#131722; --muted:#5a6475;
+  --gold:#8a6d06; --gold2:#96730a; --gold-bg:rgba(138,109,6,.08);
+  --green:#067a67; --red:#c62f2f; --amber:#a86400;
+  --hdr:rgba(255,255,255,.92); --hover:rgba(0,0,0,.04); --band1:rgba(138,109,6,.14); --band2:rgba(138,109,6,.30); --on-gold:#ffffff;
 }
 *{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.7;}
-header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);}
-header .brand{font-size:1.3rem;font-weight:600;letter-spacing:-0.02em;}
-header .brand span{color:var(--blue);}
-header a{font-size:.9rem;color:var(--blue);text-decoration:none;font-weight:500;}
-header .lang{font-size:.85rem;color:var(--muted);margin-left:20px;}
-header .lang b{color:var(--text);}
-main{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
-h1{font-size:2rem;font-weight:700;letter-spacing:-0.03em;margin:0 0 12px;}
-.lead{color:var(--muted);font-size:1.05rem;margin:0 0 32px;}
-h2{font-size:1.2rem;font-weight:600;letter-spacing:-0.02em;margin:36px 0 10px;}
-p{margin:0 0 14px;}
-dl{margin:0;}
-dt{font-weight:600;margin-top:14px;}
-dd{margin:2px 0 0;color:var(--muted);}
-ul{padding-left:20px;margin:0 0 14px;}
-li{margin-bottom:8px;}
-a.enlace{color:var(--blue);}
-.aviso{background:var(--yellow-bg);color:var(--yellow);border-radius:14px;padding:16px 20px;margin-top:36px;font-size:.92rem;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55;}
+a{color:inherit;}
+header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 32px;background:var(--hdr);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-size:1.2rem;font-weight:600;letter-spacing:-.02em;}
+.brand img{height:34px;width:34px;border-radius:9px;object-fit:cover;}
+.brand span{color:var(--gold);}
+nav{display:flex;align-items:center;gap:22px;flex-wrap:wrap;font-size:.88rem;}
+nav a{color:var(--muted);text-decoration:none;font-weight:500;}
+nav a:hover{color:var(--gold2);}
+nav .lang{color:var(--muted);}
+nav .lang b{color:var(--text);}
+main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
+.shell{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:0 24px;max-width:none;margin:0;}
+.side{min-width:0;}
+.shell>main{order:1;}
+#newsL{order:2;}
+#newsR{order:3;}
+.side h2{margin-top:44px;}
+.ni{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color .15s,transform .15s;}
+.ni .nb{padding:11px 14px 13px;}
+.ni-img{aspect-ratio:16/9;background:var(--bg);overflow:hidden;}
+.ni.sm{display:flex;align-items:stretch;}
+.ni.sm .ni-img{width:92px;flex:none;aspect-ratio:auto;min-height:74px;}
+.ni.sm .nb{padding:9px 12px;min-width:0;}
+.ni.sm .nt{font-size:.86rem;}
+.ni.big .nt{font-size:1rem;}
+.ni-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.ni:hover{transform:translateY(-1px);}
+.ni:hover{border-color:var(--gold);}
+.ni .nm{font-size:.72rem;color:var(--muted);margin-bottom:3px;}
+.ni .nm b{color:var(--gold);font-weight:700;}
+.ni .nt{font-size:.92rem;line-height:1.38;font-weight:600;}
+.mbar{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--border);background:var(--surface);font-size:.78rem;scrollbar-width:thin;}
+.mbar:empty{display:none;}
+.mbar .mi{display:flex;flex-direction:column;align-items:center;flex:1 1 0;gap:1px;padding:7px 14px;border-right:1px solid var(--border);white-space:nowrap;min-width:max-content;}
+.mbar .mi b{font-weight:700;}
+.mbar .mi .mp{color:var(--muted);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.74rem;}
+.mbar .mi .mc{font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace;}
+.mbar .mi .mc.up{color:var(--green);}
+.mbar .mi .mc.dn{color:var(--red);}
+.mbar .mn{margin-left:0;flex:0 0 auto;padding:7px 18px;color:var(--muted);font-size:.7rem;display:flex;align-items:center;white-space:nowrap;}
+.adc{position:relative;display:block;margin-bottom:12px;border:1px solid var(--gold);border-radius:14px;padding:20px 16px 16px;background:linear-gradient(160deg,var(--gold-bg),var(--surface));text-decoration:none;}
+.adc .adt{position:absolute;top:-9px;left:14px;background:var(--bg);color:var(--muted);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:0 7px;}
+.adc .adk{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px;}
+.adc .adh{font-family:Georgia,'Times New Roman',serif;font-size:1.12rem;font-weight:600;line-height:1.25;margin-bottom:8px;}
+.adc p{margin:0 0 12px;color:var(--muted);font-size:.84rem;}
+.adc .btn{padding:8px 16px;font-size:.84rem;}
+.adc.has .adrow{display:flex;gap:14px;align-items:flex-start;}
+.adc .adimg{width:104px;flex:none;border-radius:8px;border:1px solid var(--border);display:block;}
+.adc .adtx{min-width:0;}
+.adc.has .adh{font-size:1rem;}
+.adc .adp{font-size:.78rem;color:var(--muted);margin:0 0 10px;}
+.adc .adf{margin-top:10px;font-size:.68rem;color:var(--muted);}
+.ni.none .nb{padding:12px 14px;}
+.ni.none{color:var(--muted);font-size:.84rem;font-weight:400;}
+@media (min-width:2300px){ .shell{grid-template-columns:380px minmax(0,1fr) 380px;} }
+@media (min-width:1500px){
+  .shell{grid-template-columns:330px minmax(0,1fr) 330px;}
+  #newsL{order:0;}
+  #newsR{order:2;}
+  .side{position:sticky;top:66px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto;padding-bottom:20px;}
+}
+.tbtn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:1rem;line-height:1.3;font-family:inherit;}
+.tbtn:hover{border-color:var(--gold);}
+.hero{padding:64px 0 36px;}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;letter-spacing:-.035em;margin:0 0 18px;font-weight:700;}
+.hero h1 em{font-style:normal;color:var(--gold);}
+.hero p{max-width:680px;color:var(--muted);font-size:1.08rem;margin:0 0 28px;}
+.btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{display:inline-block;padding:13px 24px;border-radius:12px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--border);}
+.btn.gold{background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--on-gold);border-color:transparent;}
+.btn.gold:hover{filter:brightness(1.07);}
+.btn.ghost{color:var(--text);background:var(--surface);}
+.btn.ghost:hover{border-color:var(--gold);}
+h2{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:700;margin:44px 0 14px;}
+.note{color:var(--muted);font-size:.8rem;margin-top:10px;}
+.clocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+.clock{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;}
+.clock .city{display:flex;justify-content:space-between;align-items:center;font-size:.86rem;color:var(--muted);font-weight:600;}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;}
+.badge.on{color:var(--green);background:rgba(53,201,138,.12);}
+.badge.on::before{animation:pulse 1.6s infinite;}
+.badge.off{color:var(--red);background:rgba(255,97,89,.12);}
+.badge.brk{color:var(--amber);background:rgba(232,169,58,.14);}
+.badge.hol{color:var(--amber);background:rgba(232,169,58,.14);}
+.clock .hrs small{color:var(--muted);}
+.clock .hrs .wn{color:var(--amber);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.clock .time{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:2rem;letter-spacing:.02em;margin:8px 0 2px;font-weight:600;}
+.clock .cd{font-size:.82rem;color:var(--muted);}
+.clock .cd b{color:var(--gold2);font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600;}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.pill{font-size:.78rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 14px;}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;}
+.kv .k{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;}
+.kv .v{font-size:1.1rem;font-weight:600;margin-top:4px;}
+.kv .v small{display:block;font-size:.78rem;color:var(--muted);font-weight:400;margin-top:2px;}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.tlc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;}
+.tlc.now{border-color:var(--gold);background:linear-gradient(180deg,rgba(212,175,55,.08),var(--surface));}
+.tlc .tk{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--muted);}
+.tlc.now .tk{color:var(--gold);}
+.tlc .tv{font-size:1.2rem;font-weight:700;margin:6px 0 8px;letter-spacing:-.01em;}
+.tlc .ts{font-size:.86rem;color:var(--muted);line-height:1.6;}
+.tlc .ts b{color:var(--text);font-weight:600;}
+.clock .hrs{font-size:.78rem;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
+.warn{margin-top:16px;background:rgba(232,169,58,.1);color:var(--amber);border:1px solid rgba(232,169,58,.3);border-radius:12px;padding:12px 16px;font-size:.88rem;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;}
+.bar{display:flex;height:8px;border-radius:6px;overflow:hidden;margin:14px 0 12px;background:var(--border);}
+.bar i{display:block;height:100%;}
+.row{display:flex;justify-content:space-between;font-size:.88rem;padding:3px 0;}
+.row b{font-weight:600;}
+.g{color:var(--green);} .r{color:var(--red);}
+.mname{font-weight:700;font-size:1rem;}
+.rec{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:16px;}
+.rec .n{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;}
+.rec .l{font-size:.8rem;color:var(--muted);margin-top:2px;}
+.ad{margin-top:44px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(135deg,var(--gold-bg),var(--surface));padding:24px 26px;position:relative;}
+.ad .tag{position:absolute;top:-10px;left:20px;background:var(--bg);color:var(--muted);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;padding:0 8px;}
+.ad .kick{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 6px;}
+.ad h3{margin:0 0 8px;font-size:1.3rem;font-family:Georgia,'Times New Roman',serif;font-weight:600;}
+.ad p{margin:0 0 16px;color:var(--muted);font-size:.95rem;max-width:62ch;}
+.ad .btns{display:flex;gap:10px;flex-wrap:wrap;}
+.ad .fine{margin-top:14px;font-size:.75rem;color:var(--muted);}
+.honest{margin-top:16px;border-left:3px solid var(--gold);background:var(--gold-bg);padding:12px 16px;border-radius:0 10px 10px 0;font-size:.92rem;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+.card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;transition:border-color .15s,transform .15s;}
+.card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.card h3{margin:0 0 6px;font-size:1.05rem;}
+.card p{margin:0 0 14px;color:var(--muted);font-size:.9rem;}
+.card span{color:var(--gold);font-weight:600;font-size:.88rem;}
+footer{margin:0;padding:10px 24px 60px;max-width:none;color:var(--muted);font-size:.8rem;}
+footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
+@media (max-width:900px){.tl{grid-template-columns:1fr;}}
+@media (max-width:700px){
+  header{padding:12px 16px;}
+  nav{gap:14px;font-size:.82rem;}
+  .shell{padding:0 16px;}
+  .hero{padding:40px 0 24px;}
+  .clock .time{font-size:1.7rem;}
+}
+
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:12px 0;}
+.box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;}
+.box h3{margin:0 0 8px;font-size:1.05rem;}
+.box p,.box li{color:var(--muted);font-size:.93rem;margin:0 0 8px;}
+.box ul{margin:6px 0 0;padding-left:18px;}
+.box .k{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.ex{border-left:3px solid var(--gold);padding:4px 0 4px 14px;margin:12px 0;color:var(--muted);font-size:.93rem;}
+dl.gl{margin:6px 0 0;} dl.gl dt{font-weight:700;margin-top:12px;} dl.gl dd{margin:3px 0 0;color:var(--muted);font-size:.93rem;}
+details{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin:8px 0;}
+details summary{cursor:pointer;font-weight:600;} details p{color:var(--muted);font-size:.93rem;margin:8px 0 2px;}
+.how h2{margin-top:34px;}
+
+.pgh{padding:48px 0 10px;}
+.pgh h1{font-size:clamp(1.8rem,4.4vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:0 0 14px;font-weight:700;}
+.pgh h1 em{font-style:normal;color:var(--gold);}
+.pgh p{max-width:760px;color:var(--muted);font-size:1.02rem;margin:0;}
+.verdict{display:flex;gap:14px;align-items:flex-start;}
+.verdict .ic{flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;}
+.verdict.sin .ic{background:rgba(232,169,58,.15);color:var(--amber);}
+.verdict.dem .ic{background:rgba(53,201,138,.15);color:var(--green);}
+.verdict.ins .ic{background:rgba(142,151,167,.15);color:var(--muted);}
+.verdict h3{margin:0 0 4px;font-size:1.1rem;}
+.verdict p{margin:0;color:var(--muted);font-size:.94rem;}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:.88rem;}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:600;}
+td{padding:9px 10px;border-bottom:1px solid var(--border);}
+td.num,th.num{text-align:right;}
+.tw{overflow-x:auto;}
+.two{display:grid;grid-template-columns:1.05fr 1fr;gap:14px;align-items:stretch;}
+.big{font-size:2.6rem;font-weight:700;letter-spacing:-.03em;line-height:1;}
+.big small{font-size:1rem;color:var(--muted);font-weight:500;letter-spacing:0;}
+.mtabs{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap;}
+.mtabs button,.tabs2 button{font-family:inherit;font-size:.92rem;font-weight:600;padding:9px 20px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;}
+.mtabs button.on,.tabs2 button.on{color:var(--on-gold);background:linear-gradient(180deg,var(--gold2),var(--gold));border-color:transparent;}
+.mtabs button:disabled{opacity:.45;cursor:default;}
+.tabs2{display:flex;gap:8px;margin:0 0 12px;}
+.tabs2 button{padding:7px 14px;font-size:.84rem;}
+.banner{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px;}
+.banner .verdict{flex:1;min-width:260px;}
+.banner a{color:var(--gold2);font-size:.85rem;text-decoration:none;white-space:nowrap;}
+.desk{display:grid;grid-template-columns:270px 1fr 330px;gap:14px;align-items:start;}
+.lst{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;max-height:640px;overflow-y:auto;}
+.it{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:11px 12px;border-radius:12px;cursor:pointer;border:1px solid transparent;}
+.it:hover{background:var(--hover);}
+.it.on{background:var(--gold-bg);border-color:var(--gold);}
+.it .sy{font-weight:700;}
+.it .pr{font-weight:700;text-align:right;}
+.it small{color:var(--muted);font-size:.74rem;}
+.it small:last-child{text-align:right;}
+.cen,.rt{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;}
+.dh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.dh .sy{font-size:1.5rem;font-weight:700;}
+.dh .px{color:var(--muted);font-size:.9rem;}
+.rt h4,.cen h4{margin:0 0 8px;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);}
+.rt ul{margin:0 0 14px;padding-left:18px;font-size:.88rem;}
+.rt li{margin-bottom:6px;}
+.rt .lim{font-size:.8rem;color:var(--muted);border-left:3px solid var(--border);padding-left:12px;}
+svg.fan{width:100%;height:auto;display:block;}
+.fanleg{display:flex;gap:14px;flex-wrap:wrap;font-size:.74rem;color:var(--muted);margin-top:6px;}
+.fanleg i{display:inline-block;width:12px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle;}
+.empty{color:var(--muted);padding:30px;text-align:center;}
+.tag{display:inline-block;font-size:.66rem;font-weight:800;padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:middle;}
+.tag.long{background:rgba(53,201,138,.14);color:var(--green);}
+.tag.short{background:rgba(255,97,89,.14);color:var(--red);}
+.rng td,.rng th{padding:7px 8px;font-size:.82rem;}
+@media (max-width:980px){.two{grid-template-columns:1fr;}.desk{grid-template-columns:1fr;}.cen{order:1}.rt{order:2}.lstw{order:0}.lst{max-height:260px;}}
 </style>
 </head>
 <body>
 <header>
-  <a href="./" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><div class="brand">Nexus <span>Terminal</span></div></a>
-  <div><a href="./">← Home</a> &nbsp;·&nbsp; <a href="escaner.html">Scanner</a><span class="lang"><b>EN</b> | <a href="../como.html" hreflang="es" style="font-size:.85rem;">ES</a></span></div>
+  <a class="brand" href="./"><img src="../logo.png" alt="Nexus Terminal" onerror="this.style.display='none'">Nexus <span>Terminal</span></a>
+  <nav>
+    <a href="./">Home</a>
+    <a href="escaner.html">Scanner</a>
+    <a href="historico.html">Signal history</a>
+    <a href="como.html" style="color:var(--gold2)">How it works</a>
+    <a href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener">Telegram alerts</a>
+    <span class="lang"><b>EN</b> | <a href="../como.html" hreflang="ES">ES</a></span>
+    <button class="tbtn" id="themeBtn" type="button"></button>
+  </nav>
 </header>
+<div class="mbar" id="mbar"></div>
+
+<div class="shell">
+<aside class="side" id="newsL"></aside>
 <main>
-  <h1>How Nexus Terminal works</h1>
-  <p class="lead">A plain-language explanation of what we do every day, what each data point means and what its limits are.</p>
 
-  <h2>What we do every day</h2>
-  <p>Every trading day we download the closing prices and volume of thousands of US stocks, cryptocurrencies and currency pairs. We keep the ones with enough trading volume and, for each one, we calculate three things: which way its trend is heading, whether it has risen or fallen too fast, and how much it usually moves in a day.</p>
+  <section class="pgh">
+    <h1>How <em>Nexus Terminal</em> works</h1>
+    <p>What we do, how we read the market and what everything you see on the site means, explained without jargon. If you are new to trading, start here.</p>
+  </section>
+  <div class="how">
+  <h2>What Nexus Terminal does</h2>
+  <p style="max-width:860px;color:var(--muted)">Every day we analyse the latest close of thousands of US stocks, the main companies of Madrid, London, Germany, France and Tokyo, cryptocurrencies and currency pairs. We show you what each chart says, calculate forecasts for the next open and measure in public whether we are right. The data is from the latest close, not live.</p>
+  <div class="grid3">
+    <div class="box"><span class="k">Scanner</span><h3>The signals of the day</h3><p>A list of assets with a clear technical situation: those that could rise (LONG) and those that could fall (SHORT), with the chart and the reasons.</p></div>
+    <div class="box"><span class="k">Forecasts</span><h3>The next open</h3><p>Before each market opens we calculate where the data points and how reliable that has been in the past. They reach the site and a single Telegram message every morning.</p></div>
+    <div class="box"><span class="k">History</span><h3>The truth, measured</h3><p>We log every signal and every forecast on the day it is published and check what happened afterwards. Hits and misses. Nothing is deleted.</p></div>
+  </div>
 
-  <h2>How we decide whether a signal is bullish, bearish or a wait</h2>
-  <ul>
-    <li><b>Bullish bias:</b> the recent trend is up, the price is close to its 20-session high and it has not risen in an exaggerated way.</li>
-    <li><b>Bearish bias:</b> the trend is down, the price is close to its 20-session low and it has not fallen in an exaggerated way.</li>
-    <li><b>Wait:</b> neither of the two situations applies.</li>
-  </ul>
-  <p>The lists show the assets with the strongest trend in each direction. The “All” button also shows the ones on hold.</p>
+  <h2>Trading basics</h2>
+  <div class="panel"><dl class="gl">
+    <dt>Session, open and close</dt><dd>A session is an exchange's trading day. The open is the first price of the day and the close is the last. Each exchange has its own hours: Tokyo opens first, then Europe and finally New York.</dd>
+    <dt>Opening gap</dt><dd>The difference between yesterday's close and today's open. If an exchange opens above where it closed, there is a gap up.</dd>
+    <dt>Bullish and bearish</dt><dd>An asset is in an uptrend (bullish) when it generally rises over time; bearish when it falls. If it does neither, we talk about a range or sideways trend.</dd>
+    <dt>LONG and SHORT</dt><dd>LONG is betting that the price rises (buying). SHORT is betting that it falls (short selling). A SHORT carries different risks and requirements than buying, and not every broker allows it.</dd>
+    <dt>Volatility</dt><dd>How much an asset moves on a normal day. The more it moves, the more you can gain and the more you can lose.</dd>
+    <dt>Stop</dt><dd>An exit price you set in advance to limit the loss if the market goes against you. We suggest one based on volatility, but the decision is yours.</dd>
+  </dl></div>
 
-  <h2>What each data point in the analysis means</h2>
-  <dl>
-    <dt>Price</dt>
-    <dd>The latest closing price.</dd>
-    <dt>SMA 20 / SMA 50</dt>
-    <dd>The average price over the last 20 and 50 sessions. If the 20 is above the 50, the trend is up.</dd>
-    <dt>Trend</dt>
-    <dd>Bullish or bearish, and the distance between those two averages as a percentage. The bigger it is, the stronger the trend.</dd>
-    <dt>RSI (14)</dt>
-    <dd>A scale from 0 to 100 that measures whether the price has risen or fallen very fast over the last 14 sessions. Above 70 is usually called “overbought”, and below 30, “oversold”.</dd>
-    <dt>20-session high / low</dt>
-    <dd>The highest and lowest price of the last 20 sessions.</dd>
-    <dt>ATR (14)</dt>
-    <dd>How much the price moves on a normal day, in the asset's currency and as a percentage. Higher means more volatility and therefore more risk.</dd>
-    <dt>Suggested risk</dt>
-    <dd>An indicative distance (1.5 times the ATR) for placing a protective stop, calculated from that volatility.</dd>
-    <dt>Indicative horizon</dt>
-    <dd>A rough reference in sessions, calculated with a simple rule based on trend strength and volatility. It has not been shown to hold true.</dd>
-  </dl>
+  <h2>How we read a chart</h2>
+  <div class="grid3">
+    <div class="box"><span class="k">Trend</span><h3>20- and 50-session moving average</h3><p>A moving average is the average price of the last 20 (or 50) sessions. If the 20 is above the 50, the price has been rising: uptrend. If it is below, downtrend. The "strength" is the distance between the two.</p></div>
+    <div class="box"><span class="k">RSI</span><h3>Has it gone too fast?</h3><p>A number from 0 to 100 measuring the speed of the last 14 sessions. Above 70 is called overbought (it may pull back); below 30, oversold (it may bounce). We avoid signals when it is at an extreme.</p></div>
+    <div class="box"><span class="k">ATR</span><h3>The normal daily move</h3><p>The average range an asset covers in a session. It tells you whether a move is normal or unusual and suggests a reasonable stop (1.5 times the ATR).</p></div>
+    <div class="box"><span class="k">Highs and lows</span><h3>Recent ceilings and floors</h3><p>We look at the highest and lowest price of the last 20 sessions. An asset near its high in an uptrend is a classic setup; near its low in a downtrend, the opposite.</p></div>
+  </div>
 
-  <h2>What you should keep in mind</h2>
-  <ul>
-    <li><b>This is not financial advice</b> or a recommendation to buy or sell.</li>
-    <li><b>It is not a prediction.</b> It describes how the price has behaved; we don't know what will happen.</li>
-    <li><b>We don't yet have enough data</b> to claim these signals beat the market. That's why we measure them in public and publish the results, good or bad.</li>
-    <li><b>The data is end-of-day</b>, not real time.</li>
-    <li><b>Some assets can give misleading signals</b>, for example leveraged funds, which move enormously, or companies being acquired, whose price sits almost still after a jump. Those with very high volatility carry a warning.</li>
-    <li><b>Commissions and trading costs are not included.</b></li>
-  </ul>
+  <h2>What a signal is</h2>
+  <div class="panel">
+    <p style="margin-top:0"><b>LONG:</b> uptrend, RSI without an extreme overbought reading (below 68) and price within 3% of its 20-session high.<br><b>SHORT:</b> downtrend, RSI without an extreme oversold reading (above 32) and price within 3% of its 20-session low.</p>
+    <div class="ex">A signal is not an order or a promise: it is a specific technical situation, measured with fixed rules applied equally to every asset. That is why we can honestly check afterwards how many times it worked. For each one we give an indicative horizon (1 to 10 sessions) based on its strength and volatility.</div>
+  </div>
 
-  <h2>Transparency</h2>
-  <p>Every new signal is recorded with its date and, five sessions after entry, we note what happened. You can see it all in the <a class="enlace" href="historico.html">Signal history</a> and download it to analyze it yourself.</p>
+  <h2>Forecasts for the next open</h2>
+  <div class="panel">
+    <p style="margin-top:0">For each asset we search the history for similar situations (same trend, same RSI, same volatility) and look at what happened next. With that we give a probability and a probable range of movement. Then we correct it with what actually worked in the past, so that "60%" means something.</p>
+    <p>In the Scanner, the <b>"Forecasts · date"</b> tab is the next session, the one that has not opened yet. The other tabs are signals from days that have already passed, kept to measure results.</p>
+    <p style="margin-bottom:0">The measurement result, with the hit rate against chance, is always visible on the Forecasts page. If it does not beat chance yet, we say so.</p>
+  </div>
 
-  <div class="aviso">Nexus Terminal provides automatic technical analysis for informational purposes only. Investment decisions are yours, and every investment carries a risk of loss.</div>
+  <h2>The chain of markets</h2>
+  <div class="panel">
+    <p style="margin-top:0">Markets move in a chain because the world never sleeps: Tokyo opens first, then Europe and finally New York, and what one does influences the next. We measure it with real data:</p>
+    <ul style="color:var(--muted)">
+      <li><b>Tokyo → Madrid, London, Germany and France (same day):</b> in the history, the open of each European exchange followed Tokyo's direction between 63% and 67% of days. On days with a strong move, considerably more.</li>
+      <li><b>New York → Tokyo (next day):</b> what the US does into the close shows in Tokyo's open.</li>
+    </ul>
+    <div class="ex">Important: the edge is mostly in <b>how the market opens</b>, not in what it does afterwards. From open to close, the hit rate is almost that of chance. That is why we talk about an "opening forecast" and do not promise profits.</div>
+  </div>
+
+  <h2>Engine 2: a mix of signals with measured reliability</h2>
+  <div class="panel">
+    <p style="margin-top:0">Engine 2 combines several real signals into a single probability: the chain of markets, the momentum of the last 5 days, the volatility of the last 20 sessions and the calendar (day of the week, turn of the month). It uses nothing that cannot be measured.</p>
+    <p><b>How it is checked:</b> the model is trained only on what came before each date and then predicts days it has never seen ("walk-forward" validation). That measures, for each confidence level, how many days it was really right.</p>
+    <p><b>What we publish:</b> only forecasts whose "safe floor" (see below) beats "always saying the same thing". If on a given day there are none, the message says so and forces nothing. If a market the engine needs is missing its latest close, it calculates nothing.</p>
+    <p style="margin-bottom:0"><b>How to read it:</b> "at this confidence (70% or more) it hit 79% of 211 days (safe floor 73%)" means that, in the past, when the engine was this sure, it got the direction right on 79% of 211 days it had not seen.</p>
+  </div>
+
+  <h2>How to read reliability: the "safe floor"</h2>
+  <div class="panel">
+    <p style="margin-top:0">With few days, a high hit rate can be luck. The "safe floor" is the reasonable minimum: with 95% statistical confidence, the real hit rate should not be lower than that figure. The more days measured, the closer it gets to the observed hit rate.</p>
+    <div class="ex">Example: being right 9 times out of 10 sounds great, but with so few days the safe floor would be low. Being right 160 out of 211 (76%) has a much higher safe floor, because there is more data.</div>
+    <p style="margin-bottom:0">Always compare the hit rate with "always saying the same thing": if a market rises 58% of days, guessing "up" every time is already right 58% of the time. Only what clearly beats that is worth it.</p>
+  </div>
+
+  <h2>When it updates and where the data comes from</h2>
+  <div class="panel">
+    <ul style="margin:0;padding-left:20px;color:var(--muted)">
+      <li>The Scanner updates every night with the previous day's close. Forecasts are calculated every morning (around 8:30 Spanish time) and a single message is sent to Telegram.</li>
+      <li>US stocks, crypto and forex: daily data from Polygon.io (Massive). Madrid, London, Germany, France and Tokyo: each exchange's daily closes downloaded from Yahoo Finance. It is an unofficial source and does not guarantee accuracy.</li>
+      <li>Before calculating, the robot checks that it has the latest close of every market it uses. If one is missing, that forecast is not published.</li>
+      <li>Sessions that have already closed are not sent: a forecast is only valid while its session has not started to pass.</li>
+    </ul>
+  </div>
+
+  <h2>Frequently asked questions</h2>
+  <details><summary>Is the data live?</summary><p>No. It is from the latest close. This is an analysis and preparation tool, not a trading terminal.</p></details>
+  <details><summary>Does it tell me what to buy and when to sell?</summary><p>No. It shows you the technical situation of each asset and what has historically happened in similar situations. The decision and the risk are yours.</p></details>
+  <details><summary>Does it guarantee results?</summary><p>No. Nobody can. We measure how many times it was right in the past and show it as it is, misses included. Past performance does not guarantee future results.</p></details>
+  <details><summary>Why is there sometimes no forecast for a market?</summary><p>Because some recent data is missing, because the session has already closed or because the measured reliability does not clearly beat chance. We prefer not to publish rather than publish something weak.</p></details>
+  <details><summary>What does "no proven edge" mean?</summary><p>That, with the data measured so far, the forecast's hit rate is not yet statistically distinguishable from chance. We say it instead of hiding it.</p></details>
+  <p class="note" style="margin-top:18px">Educational and informational content. It is not financial advice or a recommendation to buy or sell. Every investment carries a risk of loss.</p>
+  </div>
+
 </main>
+<aside class="side" id="newsR"></aside>
+</div>
+<footer><div class="d">Nexus Terminal provides automatic technical and statistical analysis for informational purposes only. It is not financial advice or a recommendation to buy or sell. Every investment carries a risk of loss and past performance does not guarantee future results.<br><br>Nexus Terminal is a service of Community16 LLC, a New Mexico (USA) limited liability company.</div></footer>
+
+<script>
+const T = {};
+const NT_L = "Market news", NT_R = "Economy and companies", NT_NONE = "No news loaded yet.", NT_NOTE = "Headlines from external outlets. Each link opens the original source.", NT_THEME = "Switch between light and dark mode", NT_AD = {"from": "From", "tag": "Advertisement", "fine": "Valmont & Co. · Community16 LLC. Educational content, not financial advice.", "g": {"k": "Valmont & Co. · Academy", "h": "Stock market investing guides", "p": "Digital guides and books in English and Spanish to learn step by step.", "b": "View guides", "u": "https://www.valmontco.com/collections/complete-guides"}, "c": {"k": "Valmont & Co. · Academy", "h": "Trading and investing courses", "p": "Video courses, taught in Spanish.", "b": "View courses (in Spanish)", "u": "https://www.valmontco.com/collections/courses"}, "f": {"k": "Valmont & Co. · Academy", "h": "Free previews of our books and guides", "p": "Read the free introduction of our books and guides before you decide.", "b": "Read for free", "u": "https://www.valmontco.com/collections/free-introductions"}, "l": {"k": "Valmont & Co. · Academy", "h": "Investing books", "p": "Books to understand the markets and manage risk, in English and Spanish.", "b": "View books", "u": "https://www.valmontco.com/collections/books"}}, NT_MB = {"note": "Latest close ({d}) · not live. Indices tracked with ETFs that replicate them.", "names": {"SPY": ["S&P 500", "ETF SPY"], "QQQ": ["Nasdaq 100", "ETF QQQ"], "DIA": ["Dow Jones", "ETF DIA"], "IWM": ["Russell 2000", "ETF IWM"], "GLD": ["Gold", "ETF GLD"], "TLT": ["US 20y Bonds", "ETF TLT"], "X:BTCUSD": ["Bitcoin", "BTC/USD"], "X:ETHUSD": ["Ethereum", "ETH/USD"], "C:EURUSD": ["EUR/USD", "Euro / dollar"], "C:USDJPY": ["USD/JPY", "Dollar / yen"], "C:GBPUSD": ["GBP/USD", "Pound / dollar"]}};
+const LOC = "en-GB";
+
+// ---- tema claro / oscuro ----
+(function(){
+  const b = document.getElementById('themeBtn'); if(!b) return;
+  const cur = () => document.documentElement.getAttribute('data-theme') || 'dark';
+  const paint = () => { b.textContent = cur()==='dark' ? '☀' : '☾'; b.setAttribute('aria-label', NT_THEME); b.title = NT_THEME; };
+  b.onclick = () => { const n = cur()==='dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', n); try{ localStorage.setItem('nx-theme', n); }catch(e){} paint(); if(window.__redraw) window.__redraw(); };
+  paint();
+})();
+// ---- noticias a los lados (solo titulares y enlace a la fuente original) ----
+(function(){
+  const L = document.getElementById('newsL'), R = document.getElementById('newsR');
+  if(!L || !R) return;
+  const rtf = new Intl.RelativeTimeFormat("en-GB", {numeric:'auto'});
+  function ago(iso){
+    const m = Math.round((Date.parse(iso) - Date.now())/60000); if(!isFinite(m)) return '';
+    if(Math.abs(m) < 60) return rtf.format(Math.min(m,-1), 'minute');
+    const h = Math.round(m/60); if(Math.abs(h) < 48) return rtf.format(h, 'hour');
+    return rtf.format(Math.round(h/24), 'day');
+  }
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const safe = u => /^https?:\/\//i.test(u) ? u : '#';
+  function adCard(a, prod){
+    const head = '<span class="adt">' + esc(NT_AD.tag) + '</span>';
+    const fine = '<div class="adf">' + esc(NT_AD.fine) + '</div>';
+    if(prod && prod.i){
+      const pr = (typeof prod.p === 'number' && prod.p > 0) ? '<div class="adp">' + esc(NT_AD.from) + ' $' + prod.p.toFixed(2) + ' USD</div>' : '';
+      return '<a class="adc has" href="' + esc(safe(prod.u)) + '" target="_blank" rel="sponsored noopener">' + head +
+        '<div class="adrow"><img class="adimg" src="' + esc(prod.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' +
+        '<div class="adtx"><div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(prod.t) + '</div>' + pr + '<span class="btn gold">' + esc(a.b) + '</span></div></div>' + fine + '</a>';
+    }
+    return '<a class="adc" href="' + esc(a.u) + '" target="_blank" rel="sponsored noopener">' + head + '<div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(a.h) + '</div><p>' + esc(a.p) + '</p><span class="btn gold">' + esc(a.b) + '</span>' + fine + '</a>';
+  }
+  function card(n, idx){
+    const ok = n.i && /^https:\/\//i.test(n.i);
+    const img = ok ? '<div class="ni-img"><img src="' + esc(n.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>' : '';
+    const big = ok && idx < 2;
+    const meta = '<div class="nm"><b>' + esc(n.s) + '</b> · ' + esc(ago(n.d)) + '</div><div class="nt">' + esc(n.t) + '</div>';
+    return '<a class="ni ' + (big ? 'big' : 'sm') + '" href="' + esc(safe(n.u)) + '" target="_blank" rel="noopener nofollow">' + img + '<div class="nb">' + meta + '</div></a>';
+  }
+  function draw(el, title, items, ad, adPos, prod){
+    let h = '<h2>' + esc(title) + '</h2>';
+    const list = (items || []).map(card);
+    if(!list.length) list.push('<div class="ni none"><div class="nb">' + esc(NT_NONE) + '</div></div>');
+    list.splice(Math.min(adPos, list.length), 0, adCard(ad, prod));
+    h += list.join('');
+    h += '<div class="note" style="margin-top:8px">' + esc(NT_NOTE) + '</div>';
+    el.innerHTML = h;
+  }
+  const day = Math.floor(Date.now() / 86400000);
+  const rot = (arr, off) => (arr && arr.length) ? arr[(day + off) % arr.length] : null;
+  Promise.all([
+    fetch('../noticias.json?v=' + Date.now()).then(r => r.json()).catch(() => null),
+    fetch('../academia.json?v=' + Math.floor(Date.now() / 600000)).then(r => r.json()).catch(() => null)
+  ]).then(([j, ac]) => {
+    const d = (j && j['en']) || {};
+    const alt = [NT_AD.g, NT_AD.f, NT_AD.l].filter(Boolean), pick = alt[day % alt.length];
+    draw(L, NT_L, d.a, pick, 2, pick === NT_AD.g ? rot(ac && ac.guias, 0) : null);
+    draw(R, NT_R, d.b, NT_AD.c, 0, rot(ac && ac.cursos, 0));
+  });
+})();
+// ---- barra de mercado (último cierre; datos reales de la última descarga) ----
+(function(){
+  const el = document.getElementById('mbar'); if(!el) return;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  fetch('../barra.json?v=' + Date.now()).then(r => r.json()).then(j => {
+    const items = (j && j.items || []).filter(i => NT_MB.names[i.k] && typeof i.p === 'number' && typeof i.c === 'number');
+    if(!items.length) return;
+    const fmt = i => i.k.startsWith('C:') ? i.p.toFixed(i.p >= 50 ? 3 : 4) : i.p >= 1000 ? Math.round(i.p).toLocaleString('en-GB') : i.p.toFixed(2);
+    const dmax = items.filter(i => !i.k.startsWith('X:') && !i.k.startsWith('C:')).map(i => i.d).sort().pop() || items[0].d;
+    const dl = new Date(dmax + 'T12:00:00').toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+    el.innerHTML = items.map(i => '<div class="mi" title="' + esc(NT_MB.names[i.k][1]) + '"><b>' + esc(NT_MB.names[i.k][0]) + '</b><span class="mp">' + fmt(i) + '</span><span class="mc ' + (i.c >= 0 ? 'up' : 'dn') + '">' + (i.c > 0 ? '+' : '') + i.c.toLocaleString('en-GB', {minimumFractionDigits:2, maximumFractionDigits:2}) + '%</span></div>').join('') + '<div class="mn">' + esc(NT_MB.note.replace('{d}', dl)) + '</div>';
+  }).catch(() => {});
+})();
+
+</script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
