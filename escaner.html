@@ -215,6 +215,18 @@ function cadTxt(m){
   const d = iso => new Date(iso + 'T12:00:00').toLocaleDateString('es-ES', {weekday:'short', day:'numeric', month:'short'});
   return '<b>Cadena de bolsas</b>: ' + e.deNombre + (alza ? ' subió ' : ' bajó ') + f(r) + ' (' + d(e.fechaOrigen) + ') y ' + e.aNombre + ' abre el ' + d(e.objetivo) + '. Tras días parecidos (' + pr.dias + ' en el historial), la apertura fue ' + (alza ? 'al alza' : 'a la baja') + ' el ' + Math.round(pr.hueco) + '% de las veces y la sesión completa terminó ' + (alza ? 'al alza' : 'a la baja') + ' el ' + Math.round(pr.sesion) + '%. Medido sobre el pasado, sin garantía. ';
 }
+let MOT = [];
+function motTxt(m){
+  const e = (MOT || []).find(x => x.mercado === m && new Date(x.validoHasta).getTime() > Date.now()); if(!e) return '';
+  const o = e.objetivos || {}, parts = [];
+  const dir = x => x.direccion === 'alza' ? 'al alza' : 'a la baja';
+  const nf = x => Number(x).toLocaleString('es-ES', {maximumFractionDigits:1});
+  const fr = x => 'con esta confianza (≥' + Math.round(x.fiabilidad.desde*100) + '%) acertó el ' + nf(x.fiabilidad.acierto) + '% de ' + x.fiabilidad.dias + ' días (mínimo seguro ' + nf(x.fiabilidad.minimo95) + '%)';
+  if (o.gap && o.gap.publicable) parts.push('Apertura <b>' + dir(o.gap) + '</b>: ' + fr(o.gap));
+  if (o.cc && o.cc.publicable) parts.push('Cierre del día <b>' + dir(o.cc) + '</b>: ' + fr(o.cc));
+  if (!parts.length) return '';
+  return '<b>Motor 2</b>: ' + parts.join('; ') + '. Medido en días que el motor no había visto; sin garantía. ';
+}
 const FIN_UTC = { es: '16:30', gb: '16:30', de: '16:30', fr: '16:30', jp: '06:00' };
 const NYHOL_S = ['2026-11-26','2026-12-25','2027-01-01','2027-01-18','2027-02-15','2027-03-26','2027-05-31','2027-06-18','2027-07-05','2027-09-06','2027-11-25','2027-12-24'];
 function nextSession(m, iso){
@@ -249,6 +261,7 @@ async function loadResults(){
     data = await res.json();
     try { const rm = await fetch('./results_mundo.json?v=' + Date.now()); if (rm.ok) Object.assign(data, await rm.json()); } catch (e) {}
     try { const rc = await fetch('./cadena.json?v=' + Date.now()); if (rc.ok) CAD = (await rc.json()).enlaces || []; } catch (e) {}
+    try { const rmo = await fetch('./motor2.json?v=' + Date.now()); if (rmo.ok) MOT = (await rmo.json()).pronosticos || []; } catch (e) {}
   }catch(e){
     document.getElementById('updatedAt').textContent = "No se pudieron cargar los resultados.";
     return;
@@ -296,7 +309,7 @@ function refreshLabels(){
   const nxl = (pr && !pr.pasada) ? fmtD(pr.fecha,{weekday:'long',day:'numeric',month:'long'}) : null;
   document.getElementById('btnPron').textContent = 'Pronósticos' + (window.__nx ? ' · ' + window.__nx : ' · pendiente');
   document.getElementById('btnNuevas').textContent = 'Señales del ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = cadTxt(currentMarket) + (nxl ? '<b>Pronósticos</b>: lo que nuestro motor calcula para la próxima sesión (la del ' + nxl + '), con los datos del cierre del ' + l + '. Ordenados de mayor a menor probabilidad. ' : (window.__pas ? '<b>Pronósticos</b>: el pronóstico calculado con el cierre del ' + l + ' era para una sesión que ya terminó, así que no se muestra. El del próximo día de mercado aparece aquí en cuanto el motor procesa el último cierre (cada mañana, sobre las 8:30 en España). ' : '<b>Pronósticos</b>: todavía no se ha publicado el pronóstico de este cierre. ')) + '<b>Detectadas</b>: señales que aparecieron con el cierre del ' + l + ' (ya pasó: no son pronósticos). <b>Anteriores</b>: señales detectadas en cierres anteriores. Se siguen 5 sesiones desde el día en que se detectaron: «día 3 de 5» significa que han pasado 3 sesiones desde esa fecha. Después pasan a Todos. Los precios no son en directo.';
+  document.getElementById('modeNote').innerHTML = cadTxt(currentMarket) + motTxt(currentMarket) + (nxl ? '<b>Pronósticos</b>: lo que nuestro motor calcula para la próxima sesión (la del ' + nxl + '), con los datos del cierre del ' + l + '. Ordenados de mayor a menor probabilidad. ' : (window.__pas ? '<b>Pronósticos</b>: el pronóstico calculado con el cierre del ' + l + ' era para una sesión que ya terminó, así que no se muestra. El del próximo día de mercado aparece aquí en cuanto el motor procesa el último cierre (cada mañana, sobre las 8:30 en España). ' : '<b>Pronósticos</b>: todavía no se ha publicado el pronóstico de este cierre. ')) + '<b>Detectadas</b>: señales que aparecieron con el cierre del ' + l + ' (ya pasó: no son pronósticos). <b>Anteriores</b>: señales detectadas en cierres anteriores. Se siguen 5 sesiones desde el día en que se detectaron: «día 3 de 5» significa que han pasado 3 sesiones desde esa fecha. Después pasan a Todos. Los precios no son en directo.';
 }
 function renderLists(){
   restoreDetail();
