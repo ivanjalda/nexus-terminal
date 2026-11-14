@@ -4,94 +4,440 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cómo funciona — Nexus Terminal</title>
-<meta name="description" content="Qué hace Nexus Terminal cada día, qué significa cada dato del análisis y qué límites tiene. Sin tecnicismos y sin promesas de rentabilidad.">
+<meta name="description" content="Qué hace Nexus Terminal, cómo se leen las señales y los pronósticos, qué es Motor 2 y cómo se mide la fiabilidad. Explicado sin tecnicismos.">
+<meta property="og:title" content="Cómo funciona — Nexus Terminal">
+<meta property="og:description" content="Qué hace Nexus Terminal, cómo se leen las señales y los pronósticos, qué es Motor 2 y cómo se mide la fiabilidad. Explicado sin tecnicismos.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nexusterminalalerts.com/como.html">
+<meta property="og:image" content="https://nexusterminalalerts.com/og-image.jpg">
 <link rel="canonical" href="https://nexusterminalalerts.com/como.html">
 <link rel="alternate" hreflang="es" href="https://nexusterminalalerts.com/como.html">
 <link rel="alternate" hreflang="en" href="https://nexusterminalalerts.com/en/como.html">
 <link rel="alternate" hreflang="x-default" href="https://nexusterminalalerts.com/como.html">
 <link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="logo.png">
+<script>(function(){var t='dark';try{t=localStorage.getItem('nx-theme')||'dark';}catch(e){}document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');})();</script>
 <style>
 :root{
-  --blue:#0071e3;
-  --bg:#ffffff; --surface:#f5f5f7; --border:#e5e5ea;
-  --text:#1d1d1f; --muted:#86868b;
-  --yellow:#b36a00; --yellow-bg:#fdf3e3;
+  --bg:#0a0c10; --surface:#12151c; --surface2:#181c25; --border:#242a36;
+  --text:#eceef2; --muted:#8e97a7;
+  --gold:#d4af37; --gold2:#f0d27a; --gold-bg:rgba(212,175,55,.10);
+  --green:#35c98a; --red:#ff6159; --amber:#e8a93a;
+  --hdr:rgba(10,12,16,.88); --hover:rgba(255,255,255,.03); --band1:rgba(212,175,55,.16); --band2:rgba(212,175,55,.34); --on-gold:#1a1405;
+}
+:root[data-theme="light"]{
+  --bg:#ffffff; --surface:#f3f5f9; --surface2:#e9edf3; --border:#d8dde6;
+  --text:#131722; --muted:#5a6475;
+  --gold:#8a6d06; --gold2:#96730a; --gold-bg:rgba(138,109,6,.08);
+  --green:#067a67; --red:#c62f2f; --amber:#a86400;
+  --hdr:rgba(255,255,255,.92); --hover:rgba(0,0,0,.04); --band1:rgba(138,109,6,.14); --band2:rgba(138,109,6,.30); --on-gold:#ffffff;
 }
 *{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.7;}
-header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);}
-header .brand{font-size:1.3rem;font-weight:600;letter-spacing:-0.02em;}
-header .brand span{color:var(--blue);}
-header a{font-size:.9rem;color:var(--blue);text-decoration:none;font-weight:500;}
-main{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
-h1{font-size:2rem;font-weight:700;letter-spacing:-0.03em;margin:0 0 12px;}
-.lead{color:var(--muted);font-size:1.05rem;margin:0 0 32px;}
-h2{font-size:1.2rem;font-weight:600;letter-spacing:-0.02em;margin:36px 0 10px;}
-p{margin:0 0 14px;}
-dl{margin:0;}
-dt{font-weight:600;margin-top:14px;}
-dd{margin:2px 0 0;color:var(--muted);}
-ul{padding-left:20px;margin:0 0 14px;}
-li{margin-bottom:8px;}
-a.enlace{color:var(--blue);}
-.aviso{background:var(--yellow-bg);color:var(--yellow);border-radius:14px;padding:16px 20px;margin-top:36px;font-size:.92rem;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55;}
+a{color:inherit;}
+header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 32px;background:var(--hdr);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-size:1.2rem;font-weight:600;letter-spacing:-.02em;}
+.brand img{height:34px;width:34px;border-radius:9px;object-fit:cover;}
+.brand span{color:var(--gold);}
+nav{display:flex;align-items:center;gap:22px;flex-wrap:wrap;font-size:.88rem;}
+nav a{color:var(--muted);text-decoration:none;font-weight:500;}
+nav a:hover{color:var(--gold2);}
+nav .lang{color:var(--muted);}
+nav .lang b{color:var(--text);}
+main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
+.shell{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:0 24px;max-width:none;margin:0;}
+.side{min-width:0;}
+.shell>main{order:1;}
+#newsL{order:2;}
+#newsR{order:3;}
+.side h2{margin-top:44px;}
+.ni{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color .15s,transform .15s;}
+.ni .nb{padding:11px 14px 13px;}
+.ni-img{aspect-ratio:16/9;background:var(--bg);overflow:hidden;}
+.ni.sm{display:flex;align-items:stretch;}
+.ni.sm .ni-img{width:92px;flex:none;aspect-ratio:auto;min-height:74px;}
+.ni.sm .nb{padding:9px 12px;min-width:0;}
+.ni.sm .nt{font-size:.86rem;}
+.ni.big .nt{font-size:1rem;}
+.ni-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.ni:hover{transform:translateY(-1px);}
+.ni:hover{border-color:var(--gold);}
+.ni .nm{font-size:.72rem;color:var(--muted);margin-bottom:3px;}
+.ni .nm b{color:var(--gold);font-weight:700;}
+.ni .nt{font-size:.92rem;line-height:1.38;font-weight:600;}
+.mbar{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--border);background:var(--surface);font-size:.78rem;scrollbar-width:thin;}
+.mbar:empty{display:none;}
+.mbar .mi{display:flex;flex-direction:column;align-items:center;flex:1 1 0;gap:1px;padding:7px 14px;border-right:1px solid var(--border);white-space:nowrap;min-width:max-content;}
+.mbar .mi b{font-weight:700;}
+.mbar .mi .mp{color:var(--muted);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.74rem;}
+.mbar .mi .mc{font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace;}
+.mbar .mi .mc.up{color:var(--green);}
+.mbar .mi .mc.dn{color:var(--red);}
+.mbar .mn{margin-left:0;flex:0 0 auto;padding:7px 18px;color:var(--muted);font-size:.7rem;display:flex;align-items:center;white-space:nowrap;}
+.adc{position:relative;display:block;margin-bottom:12px;border:1px solid var(--gold);border-radius:14px;padding:20px 16px 16px;background:linear-gradient(160deg,var(--gold-bg),var(--surface));text-decoration:none;}
+.adc .adt{position:absolute;top:-9px;left:14px;background:var(--bg);color:var(--muted);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:0 7px;}
+.adc .adk{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px;}
+.adc .adh{font-family:Georgia,'Times New Roman',serif;font-size:1.12rem;font-weight:600;line-height:1.25;margin-bottom:8px;}
+.adc p{margin:0 0 12px;color:var(--muted);font-size:.84rem;}
+.adc .btn{padding:8px 16px;font-size:.84rem;}
+.adc.has .adrow{display:flex;gap:14px;align-items:flex-start;}
+.adc .adimg{width:104px;flex:none;border-radius:8px;border:1px solid var(--border);display:block;}
+.adc .adtx{min-width:0;}
+.adc.has .adh{font-size:1rem;}
+.adc .adp{font-size:.78rem;color:var(--muted);margin:0 0 10px;}
+.adc .adf{margin-top:10px;font-size:.68rem;color:var(--muted);}
+.ni.none .nb{padding:12px 14px;}
+.ni.none{color:var(--muted);font-size:.84rem;font-weight:400;}
+@media (min-width:2300px){ .shell{grid-template-columns:380px minmax(0,1fr) 380px;} }
+@media (min-width:1500px){
+  .shell{grid-template-columns:330px minmax(0,1fr) 330px;}
+  #newsL{order:0;}
+  #newsR{order:2;}
+  .side{position:sticky;top:66px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto;padding-bottom:20px;}
+}
+.tbtn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:1rem;line-height:1.3;font-family:inherit;}
+.tbtn:hover{border-color:var(--gold);}
+.hero{padding:64px 0 36px;}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;letter-spacing:-.035em;margin:0 0 18px;font-weight:700;}
+.hero h1 em{font-style:normal;color:var(--gold);}
+.hero p{max-width:680px;color:var(--muted);font-size:1.08rem;margin:0 0 28px;}
+.btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{display:inline-block;padding:13px 24px;border-radius:12px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--border);}
+.btn.gold{background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--on-gold);border-color:transparent;}
+.btn.gold:hover{filter:brightness(1.07);}
+.btn.ghost{color:var(--text);background:var(--surface);}
+.btn.ghost:hover{border-color:var(--gold);}
+h2{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:700;margin:44px 0 14px;}
+.note{color:var(--muted);font-size:.8rem;margin-top:10px;}
+.clocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+.clock{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;}
+.clock .city{display:flex;justify-content:space-between;align-items:center;font-size:.86rem;color:var(--muted);font-weight:600;}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;}
+.badge.on{color:var(--green);background:rgba(53,201,138,.12);}
+.badge.on::before{animation:pulse 1.6s infinite;}
+.badge.off{color:var(--red);background:rgba(255,97,89,.12);}
+.badge.brk{color:var(--amber);background:rgba(232,169,58,.14);}
+.badge.hol{color:var(--amber);background:rgba(232,169,58,.14);}
+.clock .hrs small{color:var(--muted);}
+.clock .hrs .wn{color:var(--amber);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.clock .time{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:2rem;letter-spacing:.02em;margin:8px 0 2px;font-weight:600;}
+.clock .cd{font-size:.82rem;color:var(--muted);}
+.clock .cd b{color:var(--gold2);font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600;}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.pill{font-size:.78rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 14px;}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;}
+.kv .k{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;}
+.kv .v{font-size:1.1rem;font-weight:600;margin-top:4px;}
+.kv .v small{display:block;font-size:.78rem;color:var(--muted);font-weight:400;margin-top:2px;}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.tlc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;}
+.tlc.now{border-color:var(--gold);background:linear-gradient(180deg,rgba(212,175,55,.08),var(--surface));}
+.tlc .tk{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--muted);}
+.tlc.now .tk{color:var(--gold);}
+.tlc .tv{font-size:1.2rem;font-weight:700;margin:6px 0 8px;letter-spacing:-.01em;}
+.tlc .ts{font-size:.86rem;color:var(--muted);line-height:1.6;}
+.tlc .ts b{color:var(--text);font-weight:600;}
+.clock .hrs{font-size:.78rem;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
+.warn{margin-top:16px;background:rgba(232,169,58,.1);color:var(--amber);border:1px solid rgba(232,169,58,.3);border-radius:12px;padding:12px 16px;font-size:.88rem;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;}
+.bar{display:flex;height:8px;border-radius:6px;overflow:hidden;margin:14px 0 12px;background:var(--border);}
+.bar i{display:block;height:100%;}
+.row{display:flex;justify-content:space-between;font-size:.88rem;padding:3px 0;}
+.row b{font-weight:600;}
+.g{color:var(--green);} .r{color:var(--red);}
+.mname{font-weight:700;font-size:1rem;}
+.rec{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:16px;}
+.rec .n{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;}
+.rec .l{font-size:.8rem;color:var(--muted);margin-top:2px;}
+.ad{margin-top:44px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(135deg,var(--gold-bg),var(--surface));padding:24px 26px;position:relative;}
+.ad .tag{position:absolute;top:-10px;left:20px;background:var(--bg);color:var(--muted);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;padding:0 8px;}
+.ad .kick{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 6px;}
+.ad h3{margin:0 0 8px;font-size:1.3rem;font-family:Georgia,'Times New Roman',serif;font-weight:600;}
+.ad p{margin:0 0 16px;color:var(--muted);font-size:.95rem;max-width:62ch;}
+.ad .btns{display:flex;gap:10px;flex-wrap:wrap;}
+.ad .fine{margin-top:14px;font-size:.75rem;color:var(--muted);}
+.honest{margin-top:16px;border-left:3px solid var(--gold);background:var(--gold-bg);padding:12px 16px;border-radius:0 10px 10px 0;font-size:.92rem;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+.card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;transition:border-color .15s,transform .15s;}
+.card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.card h3{margin:0 0 6px;font-size:1.05rem;}
+.card p{margin:0 0 14px;color:var(--muted);font-size:.9rem;}
+.card span{color:var(--gold);font-weight:600;font-size:.88rem;}
+footer{margin:0;padding:10px 24px 60px;max-width:none;color:var(--muted);font-size:.8rem;}
+footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
+@media (max-width:900px){.tl{grid-template-columns:1fr;}}
+@media (max-width:700px){
+  header{padding:12px 16px;}
+  nav{gap:14px;font-size:.82rem;}
+  .shell{padding:0 16px;}
+  .hero{padding:40px 0 24px;}
+  .clock .time{font-size:1.7rem;}
+}
+
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:12px 0;}
+.box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;}
+.box h3{margin:0 0 8px;font-size:1.05rem;}
+.box p,.box li{color:var(--muted);font-size:.93rem;margin:0 0 8px;}
+.box ul{margin:6px 0 0;padding-left:18px;}
+.box .k{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.ex{border-left:3px solid var(--gold);padding:4px 0 4px 14px;margin:12px 0;color:var(--muted);font-size:.93rem;}
+dl.gl{margin:6px 0 0;} dl.gl dt{font-weight:700;margin-top:12px;} dl.gl dd{margin:3px 0 0;color:var(--muted);font-size:.93rem;}
+details{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin:8px 0;}
+details summary{cursor:pointer;font-weight:600;} details p{color:var(--muted);font-size:.93rem;margin:8px 0 2px;}
+.how h2{margin-top:34px;}
+
+.pgh{padding:48px 0 10px;}
+.pgh h1{font-size:clamp(1.8rem,4.4vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:0 0 14px;font-weight:700;}
+.pgh h1 em{font-style:normal;color:var(--gold);}
+.pgh p{max-width:760px;color:var(--muted);font-size:1.02rem;margin:0;}
+.verdict{display:flex;gap:14px;align-items:flex-start;}
+.verdict .ic{flex:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;}
+.verdict.sin .ic{background:rgba(232,169,58,.15);color:var(--amber);}
+.verdict.dem .ic{background:rgba(53,201,138,.15);color:var(--green);}
+.verdict.ins .ic{background:rgba(142,151,167,.15);color:var(--muted);}
+.verdict h3{margin:0 0 4px;font-size:1.1rem;}
+.verdict p{margin:0;color:var(--muted);font-size:.94rem;}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:.88rem;}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:600;}
+td{padding:9px 10px;border-bottom:1px solid var(--border);}
+td.num,th.num{text-align:right;}
+.tw{overflow-x:auto;}
+.two{display:grid;grid-template-columns:1.05fr 1fr;gap:14px;align-items:stretch;}
+.big{font-size:2.6rem;font-weight:700;letter-spacing:-.03em;line-height:1;}
+.big small{font-size:1rem;color:var(--muted);font-weight:500;letter-spacing:0;}
+.mtabs{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap;}
+.mtabs button,.tabs2 button{font-family:inherit;font-size:.92rem;font-weight:600;padding:9px 20px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;}
+.mtabs button.on,.tabs2 button.on{color:var(--on-gold);background:linear-gradient(180deg,var(--gold2),var(--gold));border-color:transparent;}
+.mtabs button:disabled{opacity:.45;cursor:default;}
+.tabs2{display:flex;gap:8px;margin:0 0 12px;}
+.tabs2 button{padding:7px 14px;font-size:.84rem;}
+.banner{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px;}
+.banner .verdict{flex:1;min-width:260px;}
+.banner a{color:var(--gold2);font-size:.85rem;text-decoration:none;white-space:nowrap;}
+.desk{display:grid;grid-template-columns:270px 1fr 330px;gap:14px;align-items:start;}
+.lst{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;max-height:640px;overflow-y:auto;}
+.it{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:11px 12px;border-radius:12px;cursor:pointer;border:1px solid transparent;}
+.it:hover{background:var(--hover);}
+.it.on{background:var(--gold-bg);border-color:var(--gold);}
+.it .sy{font-weight:700;}
+.it .pr{font-weight:700;text-align:right;}
+.it small{color:var(--muted);font-size:.74rem;}
+.it small:last-child{text-align:right;}
+.cen,.rt{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;}
+.dh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.dh .sy{font-size:1.5rem;font-weight:700;}
+.dh .px{color:var(--muted);font-size:.9rem;}
+.rt h4,.cen h4{margin:0 0 8px;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);}
+.rt ul{margin:0 0 14px;padding-left:18px;font-size:.88rem;}
+.rt li{margin-bottom:6px;}
+.rt .lim{font-size:.8rem;color:var(--muted);border-left:3px solid var(--border);padding-left:12px;}
+svg.fan{width:100%;height:auto;display:block;}
+.fanleg{display:flex;gap:14px;flex-wrap:wrap;font-size:.74rem;color:var(--muted);margin-top:6px;}
+.fanleg i{display:inline-block;width:12px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle;}
+.empty{color:var(--muted);padding:30px;text-align:center;}
+.tag{display:inline-block;font-size:.66rem;font-weight:800;padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:middle;}
+.tag.long{background:rgba(53,201,138,.14);color:var(--green);}
+.tag.short{background:rgba(255,97,89,.14);color:var(--red);}
+.rng td,.rng th{padding:7px 8px;font-size:.82rem;}
+@media (max-width:980px){.two{grid-template-columns:1fr;}.desk{grid-template-columns:1fr;}.cen{order:1}.rt{order:2}.lstw{order:0}.lst{max-height:260px;}}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">Nexus <span>Terminal</span></div>
-  <div><a href="./">← Inicio</a> &nbsp;·&nbsp; <a href="escaner.html">Escáner</a><span style="font-size:.85rem;color:var(--muted);margin-left:20px;"><b style="color:var(--text);">ES</b> | <a href="en/como.html" hreflang="en" style="font-size:.85rem;">EN</a></span></div>
+  <a class="brand" href="./"><img src="logo.png" alt="Nexus Terminal" onerror="this.style.display='none'">Nexus <span>Terminal</span></a>
+  <nav>
+    <a href="./">Inicio</a>
+    <a href="escaner.html">Escáner</a>
+    <a href="historico.html">Histórico de señales</a>
+    <a href="como.html" style="color:var(--gold2)">Cómo funciona</a>
+    <a href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener">Avisos en Telegram</a>
+    <span class="lang"><b>ES</b> | <a href="en/como.html" hreflang="EN">EN</a></span>
+    <button class="tbtn" id="themeBtn" type="button"></button>
+  </nav>
 </header>
+<div class="mbar" id="mbar"></div>
+
+<div class="shell">
+<aside class="side" id="newsL"></aside>
 <main>
-  <h1>Cómo funciona Nexus Terminal</h1>
-  <p class="lead">Una explicación sin tecnicismos de lo que hacemos cada día, qué significa cada dato y qué límites tiene.</p>
 
-  <h2>Qué hacemos cada día</h2>
-  <p>Cada día laborable descargamos los precios y el volumen de cierre de miles de acciones de EEUU, criptomonedas y pares de divisas. Nos quedamos con los que tienen suficiente volumen de negociación y, para cada uno, calculamos tres cosas: hacia dónde va su tendencia, si ha subido o bajado demasiado rápido y cuánto suele moverse en un día.</p>
+  <section class="pgh">
+    <h1>Cómo funciona <em>Nexus Terminal</em></h1>
+    <p>Lo que hacemos, cómo leemos el mercado y qué significa cada cosa que ves en la web, explicado sin tecnicismos. Si eres nuevo en el trading, empieza por aquí.</p>
+  </section>
+  <div class="how">
+  <h2>Qué hace Nexus Terminal</h2>
+  <p style="max-width:860px;color:var(--muted)">Cada día analizamos el último cierre de miles de acciones de EEUU, de las principales empresas de Madrid, Londres, Alemania, Francia y Tokio, de criptomonedas y de pares de divisas. Te enseñamos lo que dice cada gráfico, calculamos pronósticos para la próxima apertura y medimos en público si acertamos. Los datos son del último cierre, no en directo.</p>
+  <div class="grid3">
+    <div class="box"><span class="k">Escáner</span><h3>Las señales del día</h3><p>Lista de valores con una situación técnica clara: los que podrían subir (LONG) y los que podrían bajar (SHORT), con el gráfico y los motivos.</p></div>
+    <div class="box"><span class="k">Pronósticos</span><h3>La próxima apertura</h3><p>Antes de que abra cada mercado, calculamos hacia dónde apuntan los datos y cuánta fiabilidad ha tenido eso en el pasado. Llegan a la web y a un único mensaje de Telegram cada mañana.</p></div>
+    <div class="box"><span class="k">Histórico</span><h3>La verdad, medida</h3><p>Apuntamos cada señal y cada pronóstico el día que se publica y comprobamos qué pasó después. Aciertos y fallos. Nada se borra.</p></div>
+  </div>
 
-  <h2>Cómo decidimos si una señal es alcista, bajista o de espera</h2>
-  <ul>
-    <li><b>Sesgo alcista:</b> la tendencia reciente es al alza, el precio está cerca de su máximo de las últimas 20 sesiones y no ha subido de forma exagerada.</li>
-    <li><b>Sesgo bajista:</b> la tendencia es a la baja, el precio está cerca de su mínimo de las últimas 20 sesiones y no ha caído de forma exagerada.</li>
-    <li><b>Esperar:</b> no se da ninguna de las dos situaciones.</li>
-  </ul>
-  <p>Las listas muestran los activos con la tendencia más marcada en cada sentido. El botón «Ver todos los activos» enseña también los que están en espera.</p>
+  <h2>Las ideas básicas del trading</h2>
+  <div class="panel"><dl class="gl">
+    <dt>Sesión, apertura y cierre</dt><dd>Una sesión es el día de negociación de una bolsa. La apertura es el primer precio del día y el cierre es el último. Cada bolsa tiene su horario: Tokio abre primero, después Europa y por último Nueva York.</dd>
+    <dt>Hueco de apertura (gap)</dt><dd>La diferencia entre el cierre de ayer y la apertura de hoy. Si una bolsa abre más arriba de donde cerró, hay un hueco al alza.</dd>
+    <dt>Alcista y bajista</dt><dd>Un valor está en tendencia alcista cuando, en general, sube con el tiempo; bajista cuando baja. Si no hace ninguna de las dos cosas, hablamos de rango o tendencia lateral.</dd>
+    <dt>LONG y SHORT</dt><dd>LONG es apostar a que el precio sube (comprar). SHORT es apostar a que baja (vender en corto). Un SHORT conlleva riesgos y requisitos distintos a comprar, y no todos los brokers lo permiten.</dd>
+    <dt>Volatilidad</dt><dd>Cuánto se mueve un valor en un día normal. Cuanto más se mueve, más puedes ganar y más puedes perder.</dd>
+    <dt>Stop</dt><dd>Un precio de salida que fijas de antemano para limitar la pérdida si el mercado va en tu contra. Te sugerimos uno basado en la volatilidad, pero decides tú.</dd>
+  </dl></div>
 
-  <h2>Qué significa cada dato del análisis</h2>
-  <dl>
-    <dt>Precio</dt>
-    <dd>El último precio de cierre.</dd>
-    <dt>SMA 20 / SMA 50</dt>
-    <dd>La media del precio en las últimas 20 y 50 sesiones. Si la de 20 está por encima de la de 50, la tendencia es al alza.</dd>
-    <dt>Tendencia</dt>
-    <dd>Alcista o bajista, y la distancia entre esas dos medias en porcentaje. Cuanto mayor, más marcada.</dd>
-    <dt>RSI (14)</dt>
-    <dd>Una escala de 0 a 100 que mide si el precio ha subido o bajado muy rápido en las últimas 14 sesiones. Por encima de 70 se suele hablar de «sobrecompra», y por debajo de 30, de «sobreventa».</dd>
-    <dt>Máx / Mín 20 sesiones</dt>
-    <dd>El precio más alto y el más bajo de las últimas 20 sesiones.</dd>
-    <dt>ATR (14)</dt>
-    <dd>Lo que se mueve el precio en un día normal, en la moneda del activo y en porcentaje. Más alto significa más volatilidad y, por tanto, más riesgo.</dd>
-    <dt>Riesgo sugerido</dt>
-    <dd>Una distancia orientativa (1,5 veces el ATR) para situar una protección, calculada con esa volatilidad.</dd>
-    <dt>Horizonte orientativo</dt>
-    <dd>Una referencia aproximada de sesiones, calculada con una regla sencilla según la fuerza de la tendencia y la volatilidad. No está demostrado que se cumpla.</dd>
-  </dl>
+  <h2>Cómo leemos un gráfico</h2>
+  <div class="grid3">
+    <div class="box"><span class="k">Tendencia</span><h3>Media móvil de 20 y de 50 sesiones</h3><p>La media móvil es el precio medio de las últimas 20 (o 50) sesiones. Si la de 20 está por encima de la de 50, el precio viene subiendo: tendencia alcista. Si está por debajo, bajista. La "fuerza" es la distancia entre las dos.</p></div>
+    <div class="box"><span class="k">RSI</span><h3>¿Ha ido demasiado rápido?</h3><p>Un número de 0 a 100 que mide la velocidad de las últimas 14 sesiones. Por encima de 70 se habla de sobrecompra (puede corregir); por debajo de 30, de sobreventa (puede rebotar). Evitamos señales cuando está en extremos.</p></div>
+    <div class="box"><span class="k">ATR</span><h3>El movimiento normal diario</h3><p>El rango medio que recorre un valor en una sesión. Sirve para saber si un movimiento es normal o raro y para sugerir un stop razonable (1,5 veces el ATR).</p></div>
+    <div class="box"><span class="k">Máximos y mínimos</span><h3>Techos y suelos recientes</h3><p>Miramos el precio más alto y más bajo de las últimas 20 sesiones. Un valor cerca de su máximo en tendencia alcista es una situación clásica; cerca de su mínimo en tendencia bajista, la contraria.</p></div>
+  </div>
 
-  <h2>Lo que debes tener en cuenta</h2>
-  <ul>
-    <li><b>No es asesoramiento financiero</b> ni una recomendación de comprar o vender.</li>
-    <li><b>No es una predicción.</b> Describe cómo se ha comportado el precio; no sabemos qué pasará.</li>
-    <li><b>Todavía no tenemos datos suficientes</b> para afirmar que estas señales superen al mercado. Por eso las medimos en público y publicamos los resultados, sean buenos o malos.</li>
-    <li><b>Los datos son de cierre de sesión</b>, no en tiempo real.</li>
-    <li><b>Algunos activos pueden dar señales engañosas</b>, por ejemplo fondos apalancados, que se mueven muchísimo, o empresas en proceso de compra, cuyo precio queda casi quieto tras un salto. Los de volatilidad muy alta llevan un aviso.</li>
-    <li><b>No se incluyen comisiones ni costes de operar.</b></li>
-  </ul>
+  <h2>Qué es una señal</h2>
+  <div class="panel">
+    <p style="margin-top:0"><b>LONG:</b> tendencia alcista, RSI sin sobrecompra extrema (menos de 68) y precio a menos de un 3 % de su máximo de 20 sesiones.<br><b>SHORT:</b> tendencia bajista, RSI sin sobreventa extrema (más de 32) y precio a menos de un 3 % de su mínimo de 20 sesiones.</p>
+    <div class="ex">Una señal no es una orden ni una promesa: es una situación técnica concreta, medida con reglas fijas que se aplican igual a todos los valores. Por eso podemos comprobar después, de forma honesta, cuántas veces funcionó. Para cada una indicamos un horizonte orientativo (de 1 a 10 sesiones) según su fuerza y su volatilidad.</div>
+  </div>
 
-  <h2>Transparencia</h2>
-  <p>Cada señal nueva se registra con su fecha y, cinco sesiones después de la entrada, se anota qué pasó. Puedes verlo todo en el <a class="enlace" href="historico.html">Histórico de señales</a> y descargarlo para analizarlo por tu cuenta.</p>
+  <h2>Pronósticos para la próxima apertura</h2>
+  <div class="panel">
+    <p style="margin-top:0">Para cada valor buscamos en el historial situaciones parecidas (misma tendencia, mismo RSI, misma volatilidad) y miramos qué pasó después. Con eso damos una probabilidad y un rango de movimiento probable. Después la corregimos con lo que de verdad acertó en el pasado, para que "60 %" signifique algo.</p>
+    <p>En el Escáner, la pestaña <b>"Pronósticos · fecha"</b> es la de la próxima sesión, la que todavía no ha abierto. Las otras pestañas son señales de días que ya pasaron, y se conservan para medir resultados.</p>
+    <p style="margin-bottom:0">El resultado de la medición, con el acierto frente al azar, está siempre a la vista en la página de Pronósticos. Si todavía no supera al azar, lo decimos tal cual.</p>
+  </div>
 
-  <div class="aviso">Nexus Terminal ofrece análisis técnico automático con fines informativos. Las decisiones de inversión son tuyas, y toda inversión implica riesgo de pérdida.</div>
+  <h2>La cadena de bolsas</h2>
+  <div class="panel">
+    <p style="margin-top:0">Los mercados se mueven en cadena porque el mundo no duerme: Tokio abre primero, luego Europa y por último Nueva York, y lo que hace uno influye en el siguiente. Lo medimos con datos reales:</p>
+    <ul style="color:var(--muted)">
+      <li><b>Tokio → Madrid, Londres, Alemania y Francia (mismo día):</b> en el historial, la apertura de cada bolsa europea ha seguido la dirección de Tokio entre el 63 % y el 67 % de los días. Los días con movimiento fuerte, bastante más.</li>
+      <li><b>Nueva York → Tokio (día siguiente):</b> lo que hace EEUU al cierre se nota en la apertura de Tokio.</li>
+    </ul>
+    <div class="ex">Importante: la ventaja está sobre todo en <b>cómo abre</b> el mercado, no en lo que hace después. De apertura a cierre, el acierto es casi el del azar. Por eso hablamos de "pronóstico de apertura" y no prometemos ganancias.</div>
+  </div>
+
+  <h2>Motor 2: mezcla de señales con fiabilidad medida</h2>
+  <div class="panel">
+    <p style="margin-top:0">Motor 2 combina varias señales reales en una sola probabilidad: la cadena de bolsas, el impulso de los últimos 5 días, la volatilidad de las últimas 20 sesiones y el calendario (día de la semana, cambio de mes). No usa nada que no sea medible.</p>
+    <p><b>Cómo se comprueba:</b> el modelo se entrena solo con lo anterior a cada fecha y después predice días que nunca ha visto (validación "caminando hacia delante"). Con eso se mide, para cada nivel de confianza, cuántos días acertó de verdad.</p>
+    <p><b>Qué publicamos:</b> solo los pronósticos cuyo "mínimo seguro" (ver abajo) supera a "decir siempre lo mismo". Si un día no hay ninguno, el mensaje lo dice y no fuerza nada. Si falta el cierre reciente de algún mercado que el motor necesita, no calcula nada.</p>
+    <p style="margin-bottom:0"><b>Cómo se lee:</b> "con esta confianza (70 % o más) acertó el 79 % de 211 días (mínimo seguro 73 %)" significa que, en el pasado, cuando el motor estaba así de seguro, acertó la dirección en el 79 % de 211 días que no había visto.</p>
+  </div>
+
+  <h2>Cómo leer la fiabilidad: el "mínimo seguro"</h2>
+  <div class="panel">
+    <p style="margin-top:0">Con pocos días, un acierto alto puede ser suerte. El "mínimo seguro" es el suelo razonable: con un 95 % de confianza estadística, el acierto real no debería ser menor que esa cifra. Cuantos más días medidos, más cerca está del acierto observado.</p>
+    <div class="ex">Ejemplo: acertar 9 de 10 parece mucho, pero con tan pocos días el mínimo seguro sería bajo. Acertar 160 de 211 (76 %) tiene un mínimo seguro mucho más alto, porque hay más datos.</div>
+    <p style="margin-bottom:0">Compara siempre el acierto con el de "decir siempre lo mismo": si un mercado sube el 58 % de los días, adivinar "sube" siempre ya acierta el 58 %. Solo vale la pena lo que lo supera con claridad.</p>
+  </div>
+
+  <h2>Cuándo se actualiza y de dónde salen los datos</h2>
+  <div class="panel">
+    <ul style="margin:0;padding-left:20px;color:var(--muted)">
+      <li>El Escáner se actualiza cada madrugada con el cierre del día anterior. Los pronósticos se calculan cada mañana (sobre las 8:30 en España) y se envía un único mensaje a Telegram.</li>
+      <li>Acciones de EEUU, cripto y forex: datos diarios de Polygon.io (Massive). Madrid, Londres, Alemania, Francia y Tokio: cierres diarios de cada bolsa descargados de Yahoo Finance. Es una fuente no oficial y no garantiza exactitud.</li>
+      <li>Antes de calcular, el robot comprueba que tiene el último cierre de cada mercado que usa. Si falta alguno, no publica ese pronóstico.</li>
+      <li>Las sesiones que ya cerraron no se envían: un pronóstico solo es válido mientras su sesión no haya empezado a pasar.</li>
+    </ul>
+  </div>
+
+  <h2>Preguntas frecuentes</h2>
+  <details><summary>¿Los datos son en directo?</summary><p>No. Son del último cierre. Esto es una herramienta de análisis y de preparación, no un terminal de operaciones.</p></details>
+  <details><summary>¿Me dice qué comprar y cuándo vender?</summary><p>No. Te enseña qué situación técnica tiene cada valor y qué ha pasado históricamente en situaciones parecidas. La decisión y el riesgo son tuyos.</p></details>
+  <details><summary>¿Garantiza resultados?</summary><p>No. Nadie puede. Medimos cuántas veces acertó en el pasado y lo mostramos tal cual, incluidos los fallos. La rentabilidad pasada no garantiza resultados futuros.</p></details>
+  <details><summary>¿Por qué a veces no hay pronóstico para un mercado?</summary><p>Porque falta algún dato reciente, porque la sesión ya cerró o porque la fiabilidad medida no supera al azar con claridad. Preferimos no publicar a publicar algo débil.</p></details>
+  <details><summary>¿Qué significa "sin ventaja demostrada"?</summary><p>Que, con los datos medidos hasta hoy, el acierto del pronóstico todavía no se distingue estadísticamente del azar. Lo decimos en lugar de esconderlo.</p></details>
+  <p class="note" style="margin-top:18px">Contenido educativo e informativo. No es asesoramiento financiero ni una recomendación de compra o venta. Toda inversión conlleva riesgo de pérdida.</p>
+  </div>
+
 </main>
+<aside class="side" id="newsR"></aside>
+</div>
+<footer><div class="d">Nexus Terminal ofrece análisis técnico y estadístico automático con fines informativos. No es asesoramiento financiero ni una recomendación de compra o venta. Toda inversión conlleva riesgo de pérdida y la rentabilidad pasada no garantiza resultados futuros.<br><br>Nexus Terminal es un servicio de Community16 LLC, sociedad de Nuevo México (EE. UU.).</div></footer>
+
+<script>
+const T = {};
+const NT_L = "Noticias de mercado", NT_R = "Economía y empresas", NT_NONE = "Todavía no hay noticias cargadas.", NT_NOTE = "Titulares de medios externos. Cada enlace abre la fuente original.", NT_THEME = "Cambiar entre modo claro y oscuro", NT_AD = {"from": "Desde", "tag": "Publicidad", "fine": "Valmont & Co. · Community16 LLC. Contenido educativo, no es asesoramiento financiero.", "g": {"k": "Valmont & Co. · Academia", "h": "Guías de inversión en bolsa", "p": "Guías digitales y libros en español e inglés para aprender paso a paso.", "b": "Ver guías", "u": "https://www.valmontco.com/collections/complete-guides"}, "c": {"k": "Valmont & Co. · Academia", "h": "Cursos de trading e inversión", "p": "Cursos en vídeo, en español.", "b": "Ver cursos", "u": "https://www.valmontco.com/collections/courses"}, "f": {"k": "Valmont & Co. · Academia", "h": "Prólogos gratis de libros y guías", "p": "Lee gratis el prólogo de nuestros libros y guías antes de decidir.", "b": "Leer gratis", "u": "https://www.valmontco.com/collections/free-introductions"}, "l": {"k": "Valmont & Co. · Academia", "h": "Libros de inversión", "p": "Libros para entender los mercados y gestionar el riesgo, en español e inglés.", "b": "Ver libros", "u": "https://www.valmontco.com/collections/books"}}, NT_MB = {"note": "Último cierre ({d}) · no es en directo. Índices medidos con ETF que los replican.", "names": {"SPY": ["S&P 500", "ETF SPY"], "QQQ": ["Nasdaq 100", "ETF QQQ"], "DIA": ["Dow Jones", "ETF DIA"], "IWM": ["Russell 2000", "ETF IWM"], "GLD": ["Oro", "ETF GLD"], "TLT": ["Bonos EEUU 20a", "ETF TLT"], "X:BTCUSD": ["Bitcoin", "BTC/USD"], "X:ETHUSD": ["Ethereum", "ETH/USD"], "C:EURUSD": ["EUR/USD", "Euro / dólar"], "C:USDJPY": ["USD/JPY", "Dólar / yen"], "C:GBPUSD": ["GBP/USD", "Libra / dólar"]}};
+const LOC = "es-ES";
+
+// ---- tema claro / oscuro ----
+(function(){
+  const b = document.getElementById('themeBtn'); if(!b) return;
+  const cur = () => document.documentElement.getAttribute('data-theme') || 'dark';
+  const paint = () => { b.textContent = cur()==='dark' ? '☀' : '☾'; b.setAttribute('aria-label', NT_THEME); b.title = NT_THEME; };
+  b.onclick = () => { const n = cur()==='dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', n); try{ localStorage.setItem('nx-theme', n); }catch(e){} paint(); if(window.__redraw) window.__redraw(); };
+  paint();
+})();
+// ---- noticias a los lados (solo titulares y enlace a la fuente original) ----
+(function(){
+  const L = document.getElementById('newsL'), R = document.getElementById('newsR');
+  if(!L || !R) return;
+  const rtf = new Intl.RelativeTimeFormat("es-ES", {numeric:'auto'});
+  function ago(iso){
+    const m = Math.round((Date.parse(iso) - Date.now())/60000); if(!isFinite(m)) return '';
+    if(Math.abs(m) < 60) return rtf.format(Math.min(m,-1), 'minute');
+    const h = Math.round(m/60); if(Math.abs(h) < 48) return rtf.format(h, 'hour');
+    return rtf.format(Math.round(h/24), 'day');
+  }
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const safe = u => /^https?:\/\//i.test(u) ? u : '#';
+  function adCard(a, prod){
+    const head = '<span class="adt">' + esc(NT_AD.tag) + '</span>';
+    const fine = '<div class="adf">' + esc(NT_AD.fine) + '</div>';
+    if(prod && prod.i){
+      const pr = (typeof prod.p === 'number' && prod.p > 0) ? '<div class="adp">' + esc(NT_AD.from) + ' $' + prod.p.toFixed(2) + ' USD</div>' : '';
+      return '<a class="adc has" href="' + esc(safe(prod.u)) + '" target="_blank" rel="sponsored noopener">' + head +
+        '<div class="adrow"><img class="adimg" src="' + esc(prod.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' +
+        '<div class="adtx"><div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(prod.t) + '</div>' + pr + '<span class="btn gold">' + esc(a.b) + '</span></div></div>' + fine + '</a>';
+    }
+    return '<a class="adc" href="' + esc(a.u) + '" target="_blank" rel="sponsored noopener">' + head + '<div class="adk">' + esc(a.k) + '</div><div class="adh">' + esc(a.h) + '</div><p>' + esc(a.p) + '</p><span class="btn gold">' + esc(a.b) + '</span>' + fine + '</a>';
+  }
+  function card(n, idx){
+    const ok = n.i && /^https:\/\//i.test(n.i);
+    const img = ok ? '<div class="ni-img"><img src="' + esc(n.i) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>' : '';
+    const big = ok && idx < 2;
+    const meta = '<div class="nm"><b>' + esc(n.s) + '</b> · ' + esc(ago(n.d)) + '</div><div class="nt">' + esc(n.t) + '</div>';
+    return '<a class="ni ' + (big ? 'big' : 'sm') + '" href="' + esc(safe(n.u)) + '" target="_blank" rel="noopener nofollow">' + img + '<div class="nb">' + meta + '</div></a>';
+  }
+  function draw(el, title, items, ad, adPos, prod){
+    let h = '<h2>' + esc(title) + '</h2>';
+    const list = (items || []).map(card);
+    if(!list.length) list.push('<div class="ni none"><div class="nb">' + esc(NT_NONE) + '</div></div>');
+    list.splice(Math.min(adPos, list.length), 0, adCard(ad, prod));
+    h += list.join('');
+    h += '<div class="note" style="margin-top:8px">' + esc(NT_NOTE) + '</div>';
+    el.innerHTML = h;
+  }
+  const day = Math.floor(Date.now() / 86400000);
+  const rot = (arr, off) => (arr && arr.length) ? arr[(day + off) % arr.length] : null;
+  Promise.all([
+    fetch('noticias.json?v=' + Date.now()).then(r => r.json()).catch(() => null),
+    fetch('academia.json?v=' + Math.floor(Date.now() / 600000)).then(r => r.json()).catch(() => null)
+  ]).then(([j, ac]) => {
+    const d = (j && j['es']) || {};
+    const alt = [NT_AD.g, NT_AD.f, NT_AD.l].filter(Boolean), pick = alt[day % alt.length];
+    draw(L, NT_L, d.a, pick, 2, pick === NT_AD.g ? rot(ac && ac.guias, 0) : null);
+    draw(R, NT_R, d.b, NT_AD.c, 0, rot(ac && ac.cursos, 0));
+  });
+})();
+// ---- barra de mercado (último cierre; datos reales de la última descarga) ----
+(function(){
+  const el = document.getElementById('mbar'); if(!el) return;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  fetch('barra.json?v=' + Date.now()).then(r => r.json()).then(j => {
+    const items = (j && j.items || []).filter(i => NT_MB.names[i.k] && typeof i.p === 'number' && typeof i.c === 'number');
+    if(!items.length) return;
+    const fmt = i => i.k.startsWith('C:') ? i.p.toFixed(i.p >= 50 ? 3 : 4) : i.p >= 1000 ? Math.round(i.p).toLocaleString('es-ES') : i.p.toFixed(2);
+    const dmax = items.filter(i => !i.k.startsWith('X:') && !i.k.startsWith('C:')).map(i => i.d).sort().pop() || items[0].d;
+    const dl = new Date(dmax + 'T12:00:00').toLocaleDateString('es-ES', {day:'numeric', month:'short'});
+    el.innerHTML = items.map(i => '<div class="mi" title="' + esc(NT_MB.names[i.k][1]) + '"><b>' + esc(NT_MB.names[i.k][0]) + '</b><span class="mp">' + fmt(i) + '</span><span class="mc ' + (i.c >= 0 ? 'up' : 'dn') + '">' + (i.c > 0 ? '+' : '') + i.c.toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2}) + '%</span></div>').join('') + '<div class="mn">' + esc(NT_MB.note.replace('{d}', dl)) + '</div>';
+  }).catch(() => {});
+})();
+
+</script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
