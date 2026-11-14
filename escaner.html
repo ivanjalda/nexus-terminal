@@ -516,7 +516,7 @@ function renderCalc(s){
 loadResults();
 
 /* ===== Vistas: mapa de calor y analizador ===== */
-const X = {"list": "Lista", "map": "Mapa de calor", "az": "Analizador", "loc": "es-ES", "pfx": "./", "mk": {}, "cal": "Próximas publicaciones económicas de EEUU", "caln": "Fechas oficiales de FRED (Reserva Federal de San Luis). Pueden cambiar.", "adv": "Valores que suben hoy", "up": "suben", "down": "bajan", "s50": "Sobre su media de 50 sesiones", "s200": "Sobre su media de 200 sesiones", "of": "de", "hl": "Máximos / mínimos de 20 sesiones", "hl2": "valores que hoy marcan máximo / mínimo", "amp": "Amplitud del mercado", "close": "cierre del", "heat": "Mapa de calor: verde sube, rojo baja", "hnote": "Cada cuadro es un valor ({n} con más dinero negociado). El tamaño es el dinero negociado de media en 20 sesiones, no el tamaño de la empresa. El color es la variación del último cierre. Pulsa un cuadro para ver su análisis.", "nodata": "Todavía no hay datos de esta vista.", "nomkt": "El mapa de calor aún no está disponible para este mercado: no tenemos su variación diaria descargada.", "search": "Buscar símbolo…", "f_sig": "Señal: todas", "f_tr": "Tendencia: todas", "f_rsi": "RSI: todos", "r_ob": "Sobrecompra (>70)", "r_os": "Sobreventa (<30)", "r_mid": "Normal (30–70)", "mine": "Mi lista", "views": {"res": "Resumen", "tec": "Técnico", "act": "Actividad"}, "none": "Ningún valor cumple esos filtros.", "count": "Mostrando {a} de {b} valores.", "nochg": "La variación del día no está disponible para este mercado.", "wait": "ESPERAR", "c_sym": "Símbolo", "c_price": "Precio", "c_chg": "Var. día", "c_trend": "Tendencia", "c_sig": "Señal", "c_m20": "Media 20", "c_m50": "Media 50", "c_dh": "A su máx. 20", "c_dl": "A su mín. 20", "c_money": "Dinero negociado", "c_str": "Fuerza tend.", "tr": {"alcista": "Alcista", "bajista": "Bajista", "lateral": "Lateral"}};
+const X = {"list": "Lista", "map": "Mapa de calor", "az": "Analizador", "loc": "es-ES", "pfx": "./", "mk": {}, "vok": "Datos verificados.", "vbad": "Atención: discrepancia entre fuentes.", "vtxt": "{a} de {b} cierres del {d} coinciden con {f}, una segunda fuente independiente.", "cal": "Próximas publicaciones económicas de EEUU", "caln": "Fechas oficiales de FRED (Reserva Federal de San Luis). Pueden cambiar.", "adv": "Valores que suben hoy", "up": "suben", "down": "bajan", "s50": "Sobre su media de 50 sesiones", "s200": "Sobre su media de 200 sesiones", "of": "de", "hl": "Máximos / mínimos de 20 sesiones", "hl2": "valores que hoy marcan máximo / mínimo", "amp": "Amplitud del mercado", "close": "cierre del", "heat": "Mapa de calor: verde sube, rojo baja", "hnote": "Cada cuadro es un valor ({n} con más dinero negociado). El tamaño es el dinero negociado de media en 20 sesiones, no el tamaño de la empresa. El color es la variación del último cierre. Pulsa un cuadro para ver su análisis.", "nodata": "Todavía no hay datos de esta vista.", "nomkt": "El mapa de calor aún no está disponible para este mercado: no tenemos su variación diaria descargada.", "search": "Buscar símbolo…", "f_sig": "Señal: todas", "f_tr": "Tendencia: todas", "f_rsi": "RSI: todos", "r_ob": "Sobrecompra (>70)", "r_os": "Sobreventa (<30)", "r_mid": "Normal (30–70)", "mine": "Mi lista", "views": {"res": "Resumen", "tec": "Técnico", "act": "Actividad"}, "none": "Ningún valor cumple esos filtros.", "count": "Mostrando {a} de {b} valores.", "nochg": "La variación del día no está disponible para este mercado.", "wait": "ESPERAR", "c_sym": "Símbolo", "c_price": "Precio", "c_chg": "Var. día", "c_trend": "Tendencia", "c_sig": "Señal", "c_m20": "Media 20", "c_m50": "Media 50", "c_dh": "A su máx. 20", "c_dl": "A su mín. 20", "c_money": "Dinero negociado", "c_str": "Fuerza tend.", "tr": {"alcista": "Alcista", "bajista": "Bajista", "lateral": "Lateral"}};
 let VIEW = 'list', MH = null, AZV = 'res', AZS = {k:'d', dir:-1}, AZF = {q:'', sig:'', tr:'', rsi:'', fav:false};
 const WK = 'nt_watch';
 const wlGet = () => { try { return JSON.parse(localStorage.getItem(WK) || '[]'); } catch(e) { return []; } };
@@ -559,7 +559,7 @@ function ampHtml(m){
 function renderMap(){
   const ov = document.getElementById('ov'); const m = mhm();
   if(!m){ ov.innerHTML = '<div class="hmnote">' + (MH ? X.nomkt : X.nodata) + '</div>'; return; }
-  ov.innerHTML = '<h3>' + X.amp + ' · ' + (X.mk[m.nombre] || m.nombre) + ' · ' + X.close + ' ' + fmtD(m.fecha, {day:'numeric', month:'long'}) + '</h3>' + ampHtml(m) + '<h3>' + X.heat + '</h3><div id="hm"></div><div class="hmnote">' + X.hnote.replace('{n}', Math.min(150, m.items.length)) + '</div>' + calStrip();
+  ov.innerHTML = verStrip() + '<h3>' + X.amp + ' · ' + (X.mk[m.nombre] || m.nombre) + ' · ' + X.close + ' ' + fmtD(m.fecha, {day:'numeric', month:'long'}) + '</h3>' + ampHtml(m) + '<h3>' + X.heat + '</h3><div id="hm"></div><div class="hmnote">' + X.hnote.replace('{n}', Math.min(150, m.items.length)) + '</div>' + calStrip();
   drawMap(m);
 }
 /* ----- Analizador ----- */
@@ -618,6 +618,13 @@ function renderAz(){
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([L.join('\n')], {type: 'text/csv'})); a.download = 'nexus-' + currentMarket + '-' + ((data[currentMarket] && data[currentMarket].dataDate) || '') + '.csv'; a.click();
   };
 }
+let VERD = null;
+async function loadVer(){ if(VERD !== null) return; VERD = false; try { const r = await fetch(X.pfx + 'verificacion.json?v=' + Date.now()); if(r.ok) VERD = await r.json(); } catch(e) {} }
+function verStrip(){
+  const v = VERD && VERD.mercados && VERD.mercados[currentMarket]; if(!v || v.estado === 'sin_datos') return '';
+  const ok = v.estado === 'verificado';
+  return '<div class="hmnote" style="margin:0 0 14px;padding:10px 14px;border-radius:12px;background:' + (ok ? 'var(--green-bg)' : 'var(--red-bg)') + ';color:' + (ok ? 'var(--green)' : 'var(--red)') + '"><b>' + (ok ? X.vok : X.vbad) + '</b> ' + X.vtxt.replace('{a}', v.coinciden).replace('{b}', v.comparados).replace('{f}', v.fuente).replace('{d}', fmtD(v.fecha, {day:'numeric', month:'long'})) + '</div>';
+}
 let CALD = null;
 const CALN = {empleo:['Informe de empleo','Jobs report'],ipc:['Inflación (IPC)','Inflation (CPI)'],pib:['PIB','GDP'],ipp:['Precios de producción','Producer prices'],ventas:['Ventas minoristas','Retail sales'],pce:['Ingresos y gasto personal','Personal income and spending'],fomc:['Reserva Federal (FOMC)','Federal Reserve (FOMC)'],jolts:['Ofertas de empleo (JOLTS)','Job openings (JOLTS)'],industria:['Producción industrial','Industrial production']};
 async function loadCal(){ if(CALD !== null) return; CALD = false; try { const r = await fetch(X.pfx + 'calendario.json?v=' + Date.now()); if(r.ok) CALD = await r.json(); } catch(e) {} }
@@ -625,7 +632,7 @@ function calStrip(){
   if(!CALD) return ''; const hoy = new Date().toISOString().slice(0, 10); const ev = (CALD.eventos || []).filter(e => e.fecha >= hoy).slice(0, 6); if(!ev.length) return '';
   return '<h3 style="margin-top:20px">' + X.cal + '</h3><div class="am">' + ev.map(e => '<div><b style="font-size:.9rem">' + (CALN[e.clave] ? CALN[e.clave][X.pfx === '../' ? 1 : 0] : e.nombre) + '</b><div class="sub">' + fmtD(e.fecha, {weekday:'long', day:'numeric', month:'long'}) + '</div></div>').join('') + '</div><div class="hmnote">' + X.caln + '</div>';
 }
-async function renderOv(){ await loadMH(); await loadCal(); if(VIEW === 'map') renderMap(); else if(VIEW === 'az') renderAz(); }
+async function renderOv(){ await loadMH(); await loadCal(); await loadVer(); if(VIEW === 'map') renderMap(); else if(VIEW === 'az') renderAz(); }
 function setView(v){
   VIEW = v; document.querySelectorAll('#vbar button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   document.querySelector('.layout').style.display = v === 'list' ? '' : 'none';
