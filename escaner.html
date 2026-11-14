@@ -109,7 +109,7 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
   .tab{padding:10px 12px;white-space:nowrap;}
   .col{padding:16px;}
 }
-</style>
+.tabs{overflow-x:auto;white-space:nowrap;scrollbar-width:thin;}.tabs .tab{flex:0 0 auto;}</style>
 </head>
 <body>
 
@@ -123,6 +123,11 @@ iframe{flex:1;border:1px solid var(--border);border-radius:16px;}
   <div class="tab active" data-market="stocks">Acciones EEUU</div>
   <div class="tab" data-market="crypto">Cripto</div>
   <div class="tab" data-market="fx">Forex</div>
+  <div class="tab" data-market="es">Madrid</div>
+  <div class="tab" data-market="gb">Londres</div>
+  <div class="tab" data-market="de">Alemania</div>
+  <div class="tab" data-market="fr">Francia</div>
+  <div class="tab" data-market="jp">Tokio</div>
 </div>
 
 <div class="layout">
@@ -195,12 +200,22 @@ async function markNew(){
     const d = data[m];
     if(!d) continue;
     for(const list of [d.longs || [], d.shorts || [], d.all || []]){
-      for(const s of list){ const k = `${m}|${s.symbol}|${s.verdict}`; s.nuevo = keys.has(k); s.desde = s.nuevo ? null : (since.get(k) || null); s.ses = s.desde ? sesBetween(s.desde, data[m].dataDate, m) : null; }
+      for(const s of list){ const k = `${m}|${s.symbol}|${s.verdict}`; s.nuevo = MUNDO.includes(m) ? (s.verdict === 'long' || s.verdict === 'short') : keys.has(k); s.desde = s.nuevo ? null : (since.get(k) || null); s.ses = s.desde ? sesBetween(s.desde, data[m].dataDate, m) : null; }
     }
   }
 }
 
 let PRON = null;
+const MUNDO = ['es','gb','de','fr','jp'];
+let CAD = [];
+function cadTxt(m){
+  const e = (CAD || []).find(x => x.a === m && x.vigente && x.direccion !== 'neutra'); if(!e) return '';
+  const alza = e.direccion === 'alza', pr = e.parecidos || {}, r = e.retornoOrigen;
+  const f = x => (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toFixed(2).replace('.', ',') + '%';
+  const d = iso => new Date(iso + 'T12:00:00').toLocaleDateString('es-ES', {weekday:'short', day:'numeric', month:'short'});
+  return '<b>Cadena de bolsas</b>: ' + e.deNombre + (alza ? ' subió ' : ' bajó ') + f(r) + ' (' + d(e.fechaOrigen) + ') y ' + e.aNombre + ' abre el ' + d(e.objetivo) + '. Tras días parecidos (' + pr.dias + ' en el historial), la apertura fue ' + (alza ? 'al alza' : 'a la baja') + ' el ' + Math.round(pr.hueco) + '% de las veces y la sesión completa terminó ' + (alza ? 'al alza' : 'a la baja') + ' el ' + Math.round(pr.sesion) + '%. Medido sobre el pasado, sin garantía. ';
+}
+const FIN_UTC = { es: '16:30', gb: '16:30', de: '16:30', fr: '16:30', jp: '06:00' };
 const NYHOL_S = ['2026-11-26','2026-12-25','2027-01-01','2027-01-18','2027-02-15','2027-03-26','2027-05-31','2027-06-18','2027-07-05','2027-09-06','2027-11-25','2027-12-24'];
 function nextSession(m, iso){
   const d = new Date(iso + 'T12:00:00Z');
@@ -219,7 +234,7 @@ async function markPron(){
       const pm = P.mercados && P.mercados[m], d = data[m];
       if(!pm || !d || pm.dataDate !== d.dataDate) continue;
       const nf = nextSession(m, d.dataDate);
-      const fin = m === 'crypto' ? Date.parse(nf + 'T00:00:00Z') + 864e5 : m === 'fx' ? Date.parse(nf + 'T22:00:00Z') : Date.parse(nf + 'T21:00:00Z');
+      const fin = m === 'crypto' ? Date.parse(nf + 'T00:00:00Z') + 864e5 : m === 'fx' ? Date.parse(nf + 'T22:00:00Z') : MUNDO.includes(m) ? Date.parse(nf + 'T' + FIN_UTC[m] + ':00Z') : Date.parse(nf + 'T21:00:00Z');
       PRON[m] = { fecha: nf, pasada: Date.now() > fin };
       const mp = new Map();
       for(const side of ['long','short']) for(const c of ((pm.candidatos || {})[side] || [])){ const z = (c.hz || []).find(x => x.h === 5) || {}; mp.set(c.symbol, { pc: (z.pc != null ? z.pc : z.p), v: side }); }
@@ -232,6 +247,8 @@ async function loadResults(){
   try{
     const res = await fetch('./results.json');
     data = await res.json();
+    try { const rm = await fetch('./results_mundo.json?v=' + Date.now()); if (rm.ok) Object.assign(data, await rm.json()); } catch (e) {}
+    try { const rc = await fetch('./cadena.json?v=' + Date.now()); if (rc.ok) CAD = (await rc.json()).enlaces || []; } catch (e) {}
   }catch(e){
     document.getElementById('updatedAt').textContent = "No se pudieron cargar los resultados.";
     return;
@@ -279,7 +296,7 @@ function refreshLabels(){
   const nxl = (pr && !pr.pasada) ? fmtD(pr.fecha,{weekday:'long',day:'numeric',month:'long'}) : null;
   document.getElementById('btnPron').textContent = 'Pronósticos' + (window.__nx ? ' · ' + window.__nx : ' · pendiente');
   document.getElementById('btnNuevas').textContent = 'Señales del ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = (nxl ? '<b>Pronósticos</b>: lo que nuestro motor calcula para la próxima sesión (la del ' + nxl + '), con los datos del cierre del ' + l + '. Ordenados de mayor a menor probabilidad. ' : (window.__pas ? '<b>Pronósticos</b>: el pronóstico calculado con el cierre del ' + l + ' era para una sesión que ya terminó, así que no se muestra. El del próximo día de mercado aparece aquí en cuanto el motor procesa el último cierre (cada mañana, sobre las 8:30 en España). ' : '<b>Pronósticos</b>: todavía no se ha publicado el pronóstico de este cierre. ')) + '<b>Detectadas</b>: señales que aparecieron con el cierre del ' + l + ' (ya pasó: no son pronósticos). <b>Anteriores</b>: señales detectadas en cierres anteriores. Se siguen 5 sesiones desde el día en que se detectaron: «día 3 de 5» significa que han pasado 3 sesiones desde esa fecha. Después pasan a Todos. Los precios no son en directo.';
+  document.getElementById('modeNote').innerHTML = cadTxt(currentMarket) + (nxl ? '<b>Pronósticos</b>: lo que nuestro motor calcula para la próxima sesión (la del ' + nxl + '), con los datos del cierre del ' + l + '. Ordenados de mayor a menor probabilidad. ' : (window.__pas ? '<b>Pronósticos</b>: el pronóstico calculado con el cierre del ' + l + ' era para una sesión que ya terminó, así que no se muestra. El del próximo día de mercado aparece aquí en cuanto el motor procesa el último cierre (cada mañana, sobre las 8:30 en España). ' : '<b>Pronósticos</b>: todavía no se ha publicado el pronóstico de este cierre. ')) + '<b>Detectadas</b>: señales que aparecieron con el cierre del ' + l + ' (ya pasó: no son pronósticos). <b>Anteriores</b>: señales detectadas en cierres anteriores. Se siguen 5 sesiones desde el día en que se detectaron: «día 3 de 5» significa que han pasado 3 sesiones desde esa fecha. Después pasan a Todos. Los precios no son en directo.';
 }
 function renderLists(){
   restoreDetail();
@@ -329,6 +346,8 @@ function rowHtml(s, type){
 function tvSymbol(symbol, market){
   if(market==="fx") return "FX:" + symbol.replace("C:","");
   if(market==="crypto") return "COINBASE:" + symbol.replace("X:","");
+  const PFX = { es: "BME:", gb: "LSE:", de: "XETR:", fr: "EURONEXT:", jp: "TSE:" };
+  if(PFX[market]) return PFX[market] + symbol;
   return symbol;
 }
 
@@ -435,7 +454,7 @@ function renderCalc(s){
     const maxUnits = cap / price;
     const limited = units > maxUnits;
     if(limited) units = maxUnits;
-    const isStock = currentMarket === 'stocks';
+    const isStock = currentMarket === 'stocks' || MUNDO.includes(currentMarket);
     units = isStock ? Math.floor(units) : Math.floor(units * 10000) / 10000;
     if(units <= 0){
       out.innerHTML = '<div class="empty" style="padding:10px">Con este capital y este riesgo no alcanza ni para una unidad</div>';
