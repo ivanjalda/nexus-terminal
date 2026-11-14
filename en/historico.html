@@ -49,8 +49,8 @@ main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
 .shell{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:0 24px;max-width:none;margin:0;}
 .side{min-width:0;}
 .shell>main{order:1;}
-#newsL{order:2;}
-#newsR{order:3;}
+#sideL{order:2;}
+#sideR{order:3;}
 .side h2{margin-top:44px;}
 .ni{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color .15s,transform .15s;}
 .ni .nb{padding:11px 14px 13px;}
@@ -92,8 +92,8 @@ main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
 @media (min-width:2300px){ .shell{grid-template-columns:380px minmax(0,1fr) 380px;} }
 @media (min-width:1500px){
   .shell{grid-template-columns:330px minmax(0,1fr) 330px;}
-  #newsL{order:0;}
-  #newsR{order:2;}
+  #sideL{order:0;}
+  #sideR{order:2;}
   .side{position:sticky;top:66px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto;padding-bottom:20px;}
 }
 .tbtn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:1rem;line-height:1.3;font-family:inherit;}
@@ -192,6 +192,10 @@ footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
 .tag{display:inline-block;font-size:.66rem;font-weight:800;padding:2px 7px;border-radius:6px;}
 .method ul{margin:8px 0 12px;padding-left:20px;} .method li{margin-bottom:7px;}
 .empty{color:var(--muted);padding:22px;text-align:center;}
+.sw{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px 14px;margin-bottom:14px;font-size:.88rem;}
+.sw .r{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.sw .r:last-child{border-bottom:0;} .sw .t{color:var(--text);font-weight:700;} .sw small{display:block;color:var(--muted);font-size:.74rem;font-weight:400;}
+.sw .none{color:var(--muted);padding:12px 0;}
 
 .pgh{padding:48px 0 10px;}
 .pgh h1{font-size:clamp(1.8rem,4.4vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:0 0 14px;font-weight:700;}
@@ -265,12 +269,12 @@ svg.fan{width:100%;height:auto;display:block;}
 <div class="mbar" id="mbar"></div>
 
 <div class="shell">
-<aside class="side" id="newsL"></aside>
+<aside class="side" id="sideL"></aside>
 <main>
 
   <section class="pgh">
     <h1>Signal history</h1>
-    <p>Here we record every signal the system generates and what the price did afterwards, hits and misses included. Nothing is deleted or touched up. We also log the signals of Madrid, London, Germany, France and Tokyo, and the forecasts of Engine 2.</p>
+    <p>Every signal and every forecast is logged on the day it is published and we check what happened afterwards. Hits and misses. Nothing is deleted or touched up.</p>
   </section>
   <div class="filters" id="filters"></div>
   <div id="warn"></div>
@@ -280,30 +284,28 @@ svg.fan{width:100%;height:auto;display:block;}
   <div class="panel tw"><table><thead><tr><th>Market</th><th class="num">Signals</th><th class="num">Closed</th><th class="num">Hit rate</th><th class="num">By chance</th><th class="num">Versus the market</th></tr></thead><tbody id="bymkt"></tbody></table></div>
 
   <h2>Engine 2: published forecasts and what happened</h2>
-  <div class="panel"><p class="muted" style="margin:0 0 8px">Every opening forecast published by Engine 2 is logged the same day, with the reliability it had measured in testing, and then we check what the market did. This shows whether what it promised in testing holds up in real life.</p><div class="cards" id="m2cards"></div><div class="tw"><table><thead><tr><th>Date</th><th>Market</th><th>What it predicts</th><th>Direction</th><th class="num">Measured reliability</th><th class="num">Result</th></tr></thead><tbody id="m2body"></tbody></table></div></div>
+  <p class="muted" style="margin:0 0 6px">What Engine 2 promised in testing versus what has really happened.</p><div class="cards" id="m2cards"></div><div class="panel"><div class="tw"><table><thead><tr><th>Date</th><th>Market</th><th>What it predicts</th><th>Direction</th><th class="num">Measured reliability</th><th class="num">Result</th></tr></thead><tbody id="m2body"></tbody></table></div></div>
 
   <h2>Latest signals</h2>
   <div class="panel tw"><table><thead><tr><th>Signal date</th><th>Market</th><th>Asset</th><th>Direction</th><th class="num">Strength</th><th class="num">Entry</th><th class="num">Result after 5 sessions</th></tr></thead><tbody id="tbody"></tbody></table></div>
 
   <h2>How it is measured</h2>
   <div class="panel method"><ul>
-<li><b>What a signal is:</b> an asset that enters the bullish or bearish list when it was on neither before.</li>
-<li><b>Entry:</b> close of the session after the signal, which is when you could actually act.</li>
-<li><b>Exit:</b> close 5 sessions after the entry. Always 5, fixed in advance.</li>
-<li><b>Result:</b> change in %. For bearish signals the sign is flipped (you gain if the price falls).</li>
-<li><b>Forward tracking:</b> only signals since the system started are recorded (for the other exchanges, since their first recorded close); nothing is ever computed with past data.</li>
-<li><b>Engine 2:</b> every published forecast is logged with its measured reliability. "Open" means whether the market will open above or below the previous close; "Day close", whether it will close above or below the previous close. It counts as a hit if the average of the market's stocks moved in that direction.</li>
+<li><b>Signal:</b> an asset that enters the bullish or bearish list when it was on neither before.</li>
+<li><b>Entry and exit:</b> entry at the close of the session after the signal; exit at the close 5 sessions later, fixed in advance. For bearish signals the sign is flipped.</li>
+<li><b>Versus the market:</b> each signal is compared with the average of the same market on the same dates, so a general rise is not mistaken for skill.</li>
+<li><b>Engine 2:</b> "open" is whether the market opens above or below the previous close; "day close", whether it closes above or below. It counts as a hit if the average of the stocks moved in that direction.</li>
+<li><b>Forward tracking:</b> only signals since the record started count; nothing is ever computed with past data.</li>
 </ul>
-<p><b>What this history does NOT include:</b> commissions or price differences when trading. To avoid confusing a general market rise with merit, we compare each signal with the average of the same market on the same dates. With few closed signals the percentages mean nothing. Past performance does not guarantee future results and this is not financial advice.</p>
-<p>Recorded signals are never deleted or modified: only their result is filled in when the deadline is reached.</p></div>
+<p class="muted">It does not include commissions or price differences when trading. With few closed signals the percentages mean nothing. Past performance does not guarantee future results.</p></div>
 
 </main>
-<aside class="side" id="newsR"></aside>
+<aside class="side" id="sideR"></aside>
 </div>
 <footer><div class="d">Nexus Terminal provides automatic technical and statistical analysis for informational purposes only. It is not financial advice or a recommendation to buy or sell. Every investment carries a risk of loss and past performance does not guarantee future results.<br><br>Nexus Terminal is a service of Community16 LLC, a New Mexico (USA) limited liability company.</div></footer>
 
 <script>
-const T = {"DEC": ".", "ALL": "All", "CSV": "Download the full record (CSV)", "L": {"stocks": "US stocks", "crypto": "Crypto", "fx": "Forex", "es": "Madrid", "gb": "London", "de": "Germany", "fr": "France", "jp": "Tokyo"}, "WARN": "Small sample: {n} closed signals. With fewer than 30 the percentages are not reliable; they will become more meaningful over time.", "SINCE": "Record started on {d}.", "OF": "of", "K_REG": "signals recorded<br>{c} closed · {o} in progress", "K_LONG": "times we said it would rise and it did (over 5 sessions)", "K_SHORT": "times we said it would fall and it did (over 5 sessions)", "K_HIT": "overall hit rate · by chance it would have been {b}", "K_EX": "average result versus the market average on the same dates", "K_EXL": "buys only, versus the market average", "K_EXS": "sells only, versus the market average", "K_AVG": "average result", "K_MED": "median result (less sensitive to extreme cases)", "M2_PUB": "forecasts published<br>{r} already with a result.", "M2_HIT": "times the direction was right", "M2_REAL": "real hit rate so far", "M2_MEAS": "hit rate they had measured in testing (average)", "UP": "up", "DOWN": "down", "HITW": "hit", "MISS": "miss", "PEND": "pending", "OPEN": "Open", "CLOSE": "Day close", "IN": "in", "DAYS": "days", "M2_EMPTY": "There are no Engine 2 forecasts logged yet. They will appear here from the first published forecast.", "NODATA": "no data", "RUN": "in progress", "WAIT": "waiting for entry", "NOSIG": "There are no recorded signals yet. They will appear here as the system detects new ones."};
+const T = {"DEC": ".", "ALL": "All", "CSV": "Download the full record (CSV)", "L": {"stocks": "US stocks", "crypto": "Crypto", "fx": "Forex", "es": "Madrid", "gb": "London", "de": "Germany", "fr": "France", "jp": "Tokyo"}, "WARN": "Small sample: {n} closed signals. With fewer than 30 the percentages are not reliable; they will become more meaningful over time.", "SINCE": "Record started on {d}.", "OF": "of", "K_REG": "signals recorded<br>{c} closed · {o} in progress", "K_LONG": "times we said it would rise and it did (over 5 sessions)", "K_SHORT": "times we said it would fall and it did (over 5 sessions)", "K_HIT": "overall hit rate · by chance it would have been {b}", "K_EX": "average result versus the market average on the same dates", "K_EXL": "buys only, versus the market average", "K_EXS": "sells only, versus the market average", "K_AVG": "average result", "K_MED": "median result (less sensitive to extreme cases)", "M2_PUB": "forecasts published<br>{r} already with a result.", "M2_HIT": "times the direction was right", "M2_REAL": "real hit rate so far ({a} of {r})", "M2_MEAS": "hit rate they had measured in testing (average)", "UP": "up", "DOWN": "down", "HITW": "hit", "MISS": "miss", "PEND": "pending", "OPEN": "Open", "CLOSE": "Day close", "IN": "in", "DAYS": "days", "M2_EMPTY": "There are no Engine 2 forecasts logged yet. They will appear here from the first one published.", "PU_T": "Market pulse", "PU_UP": "In an uptrend", "PU_OB": "Overbought (RSI>70)", "PU_OS": "Oversold (RSI<30)", "PU_N": "Out of {n} assets analysed at the latest close.", "PU_HI": "Most overbought", "PU_LO": "Most oversold", "PU_NONE": "None right now.", "SD_L": "Latest closed signals", "SD_LN": "Result after 5 sessions, most recent first.", "SD_NONE": "There are no closed signals yet.", "SD_R": "Engine 2, latest", "SD_OPEN": "Signals in progress", "SD_NONE2": "None right now.", "NODATA": "no data", "RUN": "in progress", "WAIT": "waiting for entry", "NOSIG": "There are no recorded signals yet. They will appear here as the system detects new ones."};
 const NT_L = "Market news", NT_R = "Economy and companies", NT_NONE = "No news loaded yet.", NT_NOTE = "Headlines from external outlets. Each link opens the original source.", NT_THEME = "Switch between light and dark mode", NT_AD = {"from": "From", "tag": "Advertisement", "fine": "Valmont & Co. · Community16 LLC. Educational content, not financial advice.", "g": {"k": "Valmont & Co. · Academy", "h": "Stock market investing guides", "p": "Digital guides and books in English and Spanish to learn step by step.", "b": "View guides", "u": "https://www.valmontco.com/collections/complete-guides"}, "c": {"k": "Valmont & Co. · Academy", "h": "Trading and investing courses", "p": "Video courses, taught in Spanish.", "b": "View courses (in Spanish)", "u": "https://www.valmontco.com/collections/courses"}, "f": {"k": "Valmont & Co. · Academy", "h": "Free previews of our books and guides", "p": "Read the free introduction of our books and guides before you decide.", "b": "Read for free", "u": "https://www.valmontco.com/collections/free-introductions"}, "l": {"k": "Valmont & Co. · Academy", "h": "Investing books", "p": "Books to understand the markets and manage risk, in English and Spanish.", "b": "View books", "u": "https://www.valmontco.com/collections/books"}}, NT_MB = {"note": "Latest close ({d}) · not live. Indices tracked with ETFs that replicate them.", "names": {"SPY": ["S&P 500", "ETF SPY"], "QQQ": ["Nasdaq 100", "ETF QQQ"], "DIA": ["Dow Jones", "ETF DIA"], "IWM": ["Russell 2000", "ETF IWM"], "GLD": ["Gold", "ETF GLD"], "TLT": ["US 20y Bonds", "ETF TLT"], "X:BTCUSD": ["Bitcoin", "BTC/USD"], "X:ETHUSD": ["Ethereum", "ETH/USD"], "C:EURUSD": ["EUR/USD", "Euro / dollar"], "C:USDJPY": ["USD/JPY", "Dollar / yen"], "C:GBPUSD": ["GBP/USD", "Pound / dollar"]}};
 const LOC = "en-GB";
 
@@ -343,14 +345,9 @@ function render(){
   const cnt = (v) => S.closed.filter(s => s.verdict === v && s.returnPct > 0).length + ' ' + T.OF + ' ' + S.closed.filter(s => s.verdict === v).length;
   document.getElementById('cards').innerHTML =
     '<div class="card"><div class="num">' + S.n + '</div><div class="lbl">' + T.K_REG.replace('{c}', S.closed.length).replace('{o}', S.open.length) + '</div></div>' +
-    '<div class="card"><div class="num">' + cnt("long") + '</div><div class="lbl">' + T.K_LONG + '</div></div>' +
-    '<div class="card"><div class="num">' + cnt("short") + '</div><div class="lbl">' + T.K_SHORT + '</div></div>' +
     '<div class="card"><div class="num">' + (S.hit === null ? "—" : Math.round(S.hit) + "%") + '</div><div class="lbl">' + T.K_HIT.replace('{b}', S.baseHit === null ? "—" : Math.round(S.baseHit) + "%") + '</div></div>' +
     '<div class="card"><div class="num ' + cls(S.exMean) + '">' + fmtPct(S.exMean) + '</div><div class="lbl">' + T.K_EX + '</div></div>' +
-    '<div class="card"><div class="num ' + cls(S.exLong) + '">' + fmtPct(S.exLong) + '</div><div class="lbl">' + T.K_EXL + '</div></div>' +
-    '<div class="card"><div class="num ' + cls(S.exShort) + '">' + fmtPct(S.exShort) + '</div><div class="lbl">' + T.K_EXS + '</div></div>' +
-    '<div class="card"><div class="num ' + cls(S.avg) + '">' + fmtPct(S.avg) + '</div><div class="lbl">' + T.K_AVG + '</div></div>' +
-    '<div class="card"><div class="num ' + cls(S.med) + '">' + fmtPct(S.med) + '</div><div class="lbl">' + T.K_MED + '</div></div>';
+    '<div class="card"><div class="num ' + cls(S.avg) + '">' + fmtPct(S.avg) + '</div><div class="lbl">' + T.K_AVG + '</div></div>';
   // por mercado
   document.getElementById('bymkt').innerHTML = MK.map(m => { const s = stats(signals.filter(x => x.market === m));
     return '<tr><td><b>' + T.L[m] + '</b></td><td class="num">' + s.n + '</td><td class="num">' + s.closed.length + '</td><td class="num">' + (s.hit === null ? '—' : Math.round(s.hit) + '%') + '</td><td class="num">' + (s.baseHit === null ? '—' : Math.round(s.baseHit) + '%') + '</td><td class="num ' + cls(s.exMean) + '">' + fmtPct(s.exMean) + '</td></tr>'; }).join('');
@@ -359,8 +356,7 @@ function render(){
   const meas = R.length ? R.reduce((a, p) => a + p.aciertoMedido, 0) / R.length : null;
   document.getElementById('m2cards').innerHTML = P.length ?
     '<div class="card"><div class="num">' + P.length + '</div><div class="lbl">' + T.M2_PUB.replace('{r}', R.length) + (reg.desde ? ' ' + T.SINCE.replace('{d}', reg.desde) : '') + '</div></div>' +
-    '<div class="card"><div class="num">' + (R.length ? A.length + ' ' + T.OF + ' ' + R.length : '—') + '</div><div class="lbl">' + T.M2_HIT + '</div></div>' +
-    '<div class="card"><div class="num">' + (R.length ? Math.round(A.length / R.length * 100) + '%' : '—') + '</div><div class="lbl">' + T.M2_REAL + '</div></div>' +
+    '<div class="card"><div class="num">' + (R.length ? Math.round(A.length / R.length * 100) + '%' : '—') + '</div><div class="lbl">' + T.M2_REAL.replace('{a}', A.length).replace('{r}', R.length) + '</div></div>' +
     '<div class="card"><div class="num">' + (meas === null ? '—' : Math.round(meas) + '%') + '</div><div class="lbl">' + T.M2_MEAS + '</div></div>' : '';
   document.getElementById('m2body').innerHTML = P.length ? [...P].sort((a, b) => b.fecha.localeCompare(a.fecha) || a.nombre.localeCompare(b.nombre)).slice(0, 30).map(p => {
     const dir = p.direccion === 'alza' ? T.UP : T.DOWN;
@@ -378,6 +374,40 @@ function render(){
     const entry = (s.entryPrice === null || s.entryPrice === undefined) ? "—" : s.entryPrice;
     return '<tr><td>' + s.signalDate + '</td><td>' + (T.L[s.market] || s.market) + '</td><td><b>' + esc(s.symbol) + '</b></td><td><span class="tag ' + s.verdict + '">' + (s.verdict === "long" ? "LONG" : "SHORT") + '</span></td><td class="num">' + s.trendStrength + '%</td><td class="num">' + entry + '</td><td class="num">' + res + '</td></tr>';
   }).join('') : '<tr><td colspan="7" class="empty">' + T.NOSIG + '</td></tr>';
+  sides();
+}
+function sides(){
+  const L = document.getElementById('sideL'), R = document.getElementById('sideR'); if(!L || !R) return;
+  const closed = signals.filter(s => s.status === 'closed' && s.exitDate).sort((a, b) => b.exitDate.localeCompare(a.exitDate)).slice(0, 8);
+  L.innerHTML = '<h2>' + T.SD_L + '</h2><div class="sw">' + (closed.length ? closed.map(s => '<div class="r"><span><span class="t">' + esc(s.symbol) + '</span><small>' + (T.L[s.market] || s.market) + ' · ' + (s.verdict === 'long' ? 'LONG' : 'SHORT') + ' · ' + s.exitDate + '</small></span><span class="' + cls(s.returnPct) + '"><b>' + fmtPct(s.returnPct) + '</b></span></div>').join('') : '<div class="none">' + T.SD_NONE + '</div>') + '</div>' +
+    '<div class="note">' + T.SD_LN + '</div>';
+  const open = signals.filter(s => s.status !== 'closed' && s.status !== 'unverified');
+  const by = MK.map(m => [m, open.filter(s => s.market === m).length]).filter(x => x[1] > 0);
+  const P = ((reg && reg.pronosticos) || []).slice().sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 6);
+  R.innerHTML = '<h2>' + T.SD_R + '</h2><div class="sw">' + (P.length ? P.map(p => '<div class="r"><span><span class="t">' + esc(p.nombre) + '</span><small>' + (p.objetivo === 'gap' ? T.OPEN : T.CLOSE) + ' ' + (p.direccion === 'alza' ? T.UP : T.DOWN) + ' · ' + p.fecha + '</small></span><span class="' + (p.resultado === 'acierto' ? 'pos' : p.resultado ? 'neg' : 'muted') + '"><b>' + (p.resultado ? (p.resultado === 'acierto' ? T.HITW : T.MISS) : T.PEND) + '</b></span></div>').join('') : '<div class="none">' + T.M2_EMPTY + '</div>') + '</div>' +
+    '<h2 style="margin-top:22px">' + T.SD_OPEN + '</h2><div class="sw">' + (by.length ? by.map(x => '<div class="r"><span class="t">' + T.L[x[0]] + '</span><span>' + x[1] + '</span></div>').join('') : '<div class="none">' + T.SD_NONE2 + '</div>') + '</div>';
+  pulse(L);
+}
+let PUL = null;
+async function pulse(L){
+  if(!PUL) PUL = Promise.all(['results.json','results_mundo.json'].map(f => fetch('../' + f + '?v=' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null)));
+  const [a, w] = await PUL; const sets = [];
+  if(a && a.stocks && a.stocks.all) sets.push(['stocks', a.stocks.all]);
+  if(w) Object.keys(w).forEach(k => { if(w[k] && w[k].all) sets.push([k, w[k].all]); });
+  if(!sets.length) return;
+  const all = []; sets.forEach(x => x[1].forEach(e => { if(typeof e.rsi === 'number') all.push(e); }));
+  const pc = n => all.length ? Math.round(n / all.length * 100) : 0;
+  const up = all.filter(e => e.trend === 'alcista').length, ob = all.filter(e => e.rsi > 70).length, os = all.filter(e => e.rsi < 30).length;
+  const bar = (v, c) => '<div style="height:6px;border-radius:3px;background:var(--border);margin:4px 0 8px"><div style="height:6px;border-radius:3px;width:' + v + '%;background:' + c + '"></div></div>';
+  const top = (arr, n) => arr.slice(0, n).map(e => '<div class="r"><span><span class="t">' + esc(e.symbol) + '</span><small>' + (T.L[e.market] || e.market) + '</small></span><span>RSI <b>' + Math.round(e.rsi) + '</b></span></div>').join('');
+  const hi = all.filter(e => e.rsi > 70).sort((x, y) => y.rsi - x.rsi), lo = all.filter(e => e.rsi < 30).sort((x, y) => x.rsi - y.rsi);
+  L.insertAdjacentHTML('beforeend', '<h2 style="margin-top:22px">' + T.PU_T + '</h2><div class="sw" style="padding:12px 14px">' +
+    '<div style="display:flex;justify-content:space-between"><span>' + T.PU_UP + '</span><b>' + pc(up) + '%</b></div>' + bar(pc(up), 'var(--green)') +
+    '<div style="display:flex;justify-content:space-between"><span>' + T.PU_OB + '</span><b>' + pc(ob) + '%</b></div>' + bar(pc(ob), 'var(--gold)') +
+    '<div style="display:flex;justify-content:space-between"><span>' + T.PU_OS + '</span><b>' + pc(os) + '%</b></div>' + bar(pc(os), 'var(--red)') +
+    '<small class="muted">' + T.PU_N.replace('{n}', all.length) + '</small></div>' +
+    '<h2 style="margin-top:22px">' + T.PU_HI + '</h2><div class="sw">' + (hi.length ? top(hi, 4) : '<div class="none">' + T.PU_NONE + '</div>') + '</div>' +
+    '<h2 style="margin-top:22px">' + T.PU_LO + '</h2><div class="sw">' + (lo.length ? top(lo, 4) : '<div class="none">' + T.PU_NONE + '</div>') + '</div>');
 }
 function csv(){
   const lines = [["fecha_senal","mercado","activo","direccion","fuerza_pct","fecha_entrada","precio_entrada","fecha_salida","precio_salida","resultado_5_sesiones_pct","estado"].join(",")];

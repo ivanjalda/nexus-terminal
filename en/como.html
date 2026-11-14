@@ -49,8 +49,8 @@ main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
 .shell{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:0 24px;max-width:none;margin:0;}
 .side{min-width:0;}
 .shell>main{order:1;}
-#newsL{order:2;}
-#newsR{order:3;}
+#sideL{order:2;}
+#sideR{order:3;}
 .side h2{margin-top:44px;}
 .ni{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color .15s,transform .15s;}
 .ni .nb{padding:11px 14px 13px;}
@@ -92,8 +92,8 @@ main{max-width:none;margin:0;padding:0 0 40px;min-width:0;}
 @media (min-width:2300px){ .shell{grid-template-columns:380px minmax(0,1fr) 380px;} }
 @media (min-width:1500px){
   .shell{grid-template-columns:330px minmax(0,1fr) 330px;}
-  #newsL{order:0;}
-  #newsR{order:2;}
+  #sideL{order:0;}
+  #sideR{order:2;}
   .side{position:sticky;top:66px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto;padding-bottom:20px;}
 }
 .tbtn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:1rem;line-height:1.3;font-family:inherit;}
@@ -178,17 +178,22 @@ footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
   .clock .time{font-size:1.7rem;}
 }
 
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:12px 0;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:12px 0;}
 .box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;}
 .box h3{margin:0 0 8px;font-size:1.05rem;}
-.box p,.box li{color:var(--muted);font-size:.93rem;margin:0 0 8px;}
-.box ul{margin:6px 0 0;padding-left:18px;}
+.box p{color:var(--muted);font-size:.93rem;margin:0;}
 .box .k{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
-.ex{border-left:3px solid var(--gold);padding:4px 0 4px 14px;margin:12px 0;color:var(--muted);font-size:.93rem;}
-dl.gl{margin:6px 0 0;} dl.gl dt{font-weight:700;margin-top:12px;} dl.gl dd{margin:3px 0 0;color:var(--muted);font-size:.93rem;}
+dl.gl{margin:0;} dl.gl dt{font-weight:700;margin-top:12px;} dl.gl dt:first-child{margin-top:0;} dl.gl dd{margin:3px 0 0;color:var(--muted);font-size:.93rem;}
+.step{display:grid;grid-template-columns:40px 1fr;gap:14px;margin:0 0 14px;}
+.step .n{width:36px;height:36px;border-radius:50%;background:var(--gold-bg);border:1px solid var(--gold);color:var(--gold2);display:flex;align-items:center;justify-content:center;font-weight:800;}
+.step h3{margin:0 0 4px;font-size:1.05rem;} .step p{margin:0;color:var(--muted);font-size:.93rem;}
 details{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin:8px 0;}
 details summary{cursor:pointer;font-weight:600;} details p{color:var(--muted);font-size:.93rem;margin:8px 0 2px;}
-.how h2{margin-top:34px;}
+.sw{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px 14px;margin-bottom:14px;font-size:.88rem;}
+.sw .r{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.sw .r:last-child{border-bottom:0;} .sw .t{color:var(--text);font-weight:700;} .sw small{display:block;color:var(--muted);font-size:.74rem;font-weight:400;}
+.sw .none{color:var(--muted);padding:12px 0;} .sw.cd{padding:14px;} .sw.cd h3{margin:0 0 6px;font-size:1.05rem;} .sw.cd p{margin:0;color:var(--muted);}
+.pos{color:var(--green);} .muted{color:var(--muted);}
 
 .pgh{padding:48px 0 10px;}
 .pgh h1{font-size:clamp(1.8rem,4.4vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:0 0 14px;font-weight:700;}
@@ -262,106 +267,83 @@ svg.fan{width:100%;height:auto;display:block;}
 <div class="mbar" id="mbar"></div>
 
 <div class="shell">
-<aside class="side" id="newsL"></aside>
+<aside class="side" id="sideL"></aside>
 <main>
 
   <section class="pgh">
     <h1>How <em>Nexus Terminal</em> works</h1>
-    <p>What we do, how we read the market and what everything you see on the site means, explained without jargon. If you are new to trading, start here.</p>
+    <p>What you see on the site, explained without jargon: how a signal is detected, where a forecast comes from and how we measure whether it is right.</p>
   </section>
-  <div class="how">
-  <h2>What Nexus Terminal does</h2>
-  <p style="max-width:860px;color:var(--muted)">Every day we analyse the latest close of thousands of US stocks, the main companies of Madrid, London, Germany, France and Tokyo, cryptocurrencies and currency pairs. We show you what each chart says, calculate forecasts for the next open and measure in public whether we are right. The data is from the latest close, not live.</p>
-  <div class="grid3">
-    <div class="box"><span class="k">Scanner</span><h3>The signals of the day</h3><p>A list of assets with a clear technical situation: those that could rise (LONG) and those that could fall (SHORT), with the chart and the reasons.</p></div>
-    <div class="box"><span class="k">Forecasts</span><h3>The next open</h3><p>Before each market opens we calculate where the data points and how reliable that has been in the past. They reach the site and a single Telegram message every morning.</p></div>
-    <div class="box"><span class="k">History</span><h3>The truth, measured</h3><p>We log every signal and every forecast on the day it is published and check what happened afterwards. Hits and misses. Nothing is deleted.</p></div>
-  </div>
 
-  <h2>Trading basics</h2>
+  <h2>The vocabulary in one minute</h2>
   <div class="panel"><dl class="gl">
-    <dt>Session, open and close</dt><dd>A session is an exchange's trading day. The open is the first price of the day and the close is the last. Each exchange has its own hours: Tokyo opens first, then Europe and finally New York.</dd>
-    <dt>Opening gap</dt><dd>The difference between yesterday's close and today's open. If an exchange opens above where it closed, there is a gap up.</dd>
-    <dt>Bullish and bearish</dt><dd>An asset is in an uptrend (bullish) when it generally rises over time; bearish when it falls. If it does neither, we talk about a range or sideways trend.</dd>
-    <dt>LONG and SHORT</dt><dd>LONG is betting that the price rises (buying). SHORT is betting that it falls (short selling). A SHORT carries different risks and requirements than buying, and not every broker allows it.</dd>
-    <dt>Volatility</dt><dd>How much an asset moves on a normal day. The more it moves, the more you can gain and the more you can lose.</dd>
-    <dt>Stop</dt><dd>An exit price you set in advance to limit the loss if the market goes against you. We suggest one based on volatility, but the decision is yours.</dd>
+    <dt>Open, close and gap</dt><dd>The open is the first price of the day and the close the last. The gap is the difference between yesterday's close and today's open.</dd>
+    <dt>Bullish and bearish</dt><dd>An asset is bullish if it generally rises over time and bearish if it falls. If it does neither, it is in a range.</dd>
+    <dt>LONG and SHORT</dt><dd>LONG is betting the price rises (buying). SHORT is betting it falls (short selling), with different risks and requirements that not every broker allows.</dd>
+    <dt>Stop</dt><dd>An exit price set in advance to limit the loss. We suggest one based on volatility, but the decision is yours.</dd>
   </dl></div>
 
-  <h2>How we read a chart</h2>
+  <h2>How a signal is detected</h2>
   <div class="grid3">
-    <div class="box"><span class="k">Trend</span><h3>20- and 50-session moving average</h3><p>A moving average is the average price of the last 20 (or 50) sessions. If the 20 is above the 50, the price has been rising: uptrend. If it is below, downtrend. The "strength" is the distance between the two.</p></div>
-    <div class="box"><span class="k">RSI</span><h3>Has it gone too fast?</h3><p>A number from 0 to 100 measuring the speed of the last 14 sessions. Above 70 is called overbought (it may pull back); below 30, oversold (it may bounce). We avoid signals when it is at an extreme.</p></div>
-    <div class="box"><span class="k">ATR</span><h3>The normal daily move</h3><p>The average range an asset covers in a session. It tells you whether a move is normal or unusual and suggests a reasonable stop (1.5 times the ATR).</p></div>
-    <div class="box"><span class="k">Highs and lows</span><h3>Recent ceilings and floors</h3><p>We look at the highest and lowest price of the last 20 sessions. An asset near its high in an uptrend is a classic setup; near its low in a downtrend, the opposite.</p></div>
+    <div class="box"><span class="k">Trend</span><h3>20- and 50-session averages</h3><p>If the 20-session average is above the 50, the price has been rising (bullish); if below, falling. The strength is the distance between them.</p></div>
+    <div class="box"><span class="k">RSI</span><h3>Is it going too fast?</h3><p>From 0 to 100, it measures the speed of the last 14 sessions. Above 70 is overbought (it may pull back); below 30, oversold (it may bounce).</p></div>
+    <div class="box"><span class="k">ATR and extremes</span><h3>Volatility and ceilings</h3><p>The ATR is the average daily move and is used to suggest a stop. We also look at the high and low of the last 20 sessions.</p></div>
   </div>
+  <div class="panel"><b>LONG:</b> uptrend, RSI below 68 and price within 3% of its 20-session high. <b>SHORT:</b> downtrend, RSI above 32 and price within 3% of its 20-session low. The same fixed rules for every asset, which is why we can honestly check afterwards how many times they worked.</div>
 
-  <h2>What a signal is</h2>
+  <h2>Where a forecast comes from</h2>
+  <div class="step"><div class="n">1</div><div><h3>Similar situations</h3><p>For each asset we search the history for days with the same trend, RSI and volatility and look at what happened next. That gives a probability and a range of movement, corrected with how often the method was actually right in the past.</p></div></div>
+  <div class="step"><div class="n">2</div><div><h3>The chain of markets</h3><p>Tokyo opens before Europe and New York before Tokyo the next day, so what one market does influences the next. In the history, the open of Madrid, London, Germany and France followed Tokyo's direction between 63% and 67% of days. The edge is in how the market opens: from open to close the hit rate is almost that of chance.</p></div></div>
+  <div class="step"><div class="n">3</div><div><h3>Engine 2</h3><p>It mixes the chain, 5-day momentum, volatility and the calendar into a single probability. It is trained only on what came before each date and tested on days it had not seen. A forecast is only published if its measured hit rate clearly beats "always saying the same thing".</p></div></div>
+
+  <h2>How to read reliability</h2>
   <div class="panel">
-    <p style="margin-top:0"><b>LONG:</b> uptrend, RSI without an extreme overbought reading (below 68) and price within 3% of its 20-session high.<br><b>SHORT:</b> downtrend, RSI without an extreme oversold reading (above 32) and price within 3% of its 20-session low.</p>
-    <div class="ex">A signal is not an order or a promise: it is a specific technical situation, measured with fixed rules applied equally to every asset. That is why we can honestly check afterwards how many times it worked. For each one we give an indicative horizon (1 to 10 sessions) based on its strength and volatility.</div>
+    <p style="margin-top:0">"At this confidence (70% or more) it hit 79% of 211 days (safe floor 73%)" means that, in the past, when the engine was this sure, it got the direction right on 79 out of every 100 days it had not seen.</p>
+    <p style="margin-bottom:0">The <b>safe floor</b> is the statistical minimum: with few days a high hit rate can be luck, and that figure discounts it. Always compare with "always saying the same thing": if a market rises 58% of days, guessing "up" is already right 58% of the time.</p>
   </div>
 
-  <h2>Forecasts for the next open</h2>
-  <div class="panel">
-    <p style="margin-top:0">For each asset we search the history for similar situations (same trend, same RSI, same volatility) and look at what happened next. With that we give a probability and a probable range of movement. Then we correct it with what actually worked in the past, so that "60%" means something.</p>
-    <p>In the Scanner, the <b>"Forecasts · date"</b> tab is the next session, the one that has not opened yet. The other tabs are signals from days that have already passed, kept to measure results.</p>
-    <p style="margin-bottom:0">The measurement result, with the hit rate against chance, is always visible on the Forecasts page. If it does not beat chance yet, we say so.</p>
-  </div>
-
-  <h2>The chain of markets</h2>
-  <div class="panel">
-    <p style="margin-top:0">Markets move in a chain because the world never sleeps: Tokyo opens first, then Europe and finally New York, and what one does influences the next. We measure it with real data:</p>
-    <ul style="color:var(--muted)">
-      <li><b>Tokyo → Madrid, London, Germany and France (same day):</b> in the history, the open of each European exchange followed Tokyo's direction between 63% and 67% of days. On days with a strong move, considerably more.</li>
-      <li><b>New York → Tokyo (next day):</b> what the US does into the close shows in Tokyo's open.</li>
-    </ul>
-    <div class="ex">Important: the edge is mostly in <b>how the market opens</b>, not in what it does afterwards. From open to close, the hit rate is almost that of chance. That is why we talk about an "opening forecast" and do not promise profits.</div>
-  </div>
-
-  <h2>Engine 2: a mix of signals with measured reliability</h2>
-  <div class="panel">
-    <p style="margin-top:0">Engine 2 combines several real signals into a single probability: the chain of markets, the momentum of the last 5 days, the volatility of the last 20 sessions and the calendar (day of the week, turn of the month). It uses nothing that cannot be measured.</p>
-    <p><b>How it is checked:</b> the model is trained only on what came before each date and then predicts days it has never seen ("walk-forward" validation). That measures, for each confidence level, how many days it was really right.</p>
-    <p><b>What we publish:</b> only forecasts whose "safe floor" (see below) beats "always saying the same thing". If on a given day there are none, the message says so and forces nothing. If a market the engine needs is missing its latest close, it calculates nothing.</p>
-    <p style="margin-bottom:0"><b>How to read it:</b> "at this confidence (70% or more) it hit 79% of 211 days (safe floor 73%)" means that, in the past, when the engine was this sure, it got the direction right on 79% of 211 days it had not seen.</p>
-  </div>
-
-  <h2>How to read reliability: the "safe floor"</h2>
-  <div class="panel">
-    <p style="margin-top:0">With few days, a high hit rate can be luck. The "safe floor" is the reasonable minimum: with 95% statistical confidence, the real hit rate should not be lower than that figure. The more days measured, the closer it gets to the observed hit rate.</p>
-    <div class="ex">Example: being right 9 times out of 10 sounds great, but with so few days the safe floor would be low. Being right 160 out of 211 (76%) has a much higher safe floor, because there is more data.</div>
-    <p style="margin-bottom:0">Always compare the hit rate with "always saying the same thing": if a market rises 58% of days, guessing "up" every time is already right 58% of the time. Only what clearly beats that is worth it.</p>
-  </div>
-
-  <h2>When it updates and where the data comes from</h2>
+  <h2>Data and timing</h2>
   <div class="panel">
     <ul style="margin:0;padding-left:20px;color:var(--muted)">
-      <li>The Scanner updates every night with the previous day's close. Forecasts are calculated every morning (around 8:30 Spanish time) and a single message is sent to Telegram.</li>
-      <li>US stocks, crypto and forex: daily data from Polygon.io (Massive). Madrid, London, Germany, France and Tokyo: each exchange's daily closes downloaded from Yahoo Finance. It is an unofficial source and does not guarantee accuracy.</li>
-      <li>Before calculating, the robot checks that it has the latest close of every market it uses. If one is missing, that forecast is not published.</li>
-      <li>Sessions that have already closed are not sent: a forecast is only valid while its session has not started to pass.</li>
+      <li>The Scanner updates every night with the previous close; forecasts every morning (around 8:30 Spanish time), together with a single Telegram message.</li>
+      <li>US, crypto and forex come from Polygon.io (Massive). Madrid, London, Germany, France and Tokyo come from Yahoo Finance, an unofficial source with no guarantee of accuracy.</li>
+      <li>If the latest close of a market the engine needs is missing, that forecast is not published; and sessions that have already closed are not sent.</li>
     </ul>
   </div>
 
   <h2>Frequently asked questions</h2>
-  <details><summary>Is the data live?</summary><p>No. It is from the latest close. This is an analysis and preparation tool, not a trading terminal.</p></details>
-  <details><summary>Does it tell me what to buy and when to sell?</summary><p>No. It shows you the technical situation of each asset and what has historically happened in similar situations. The decision and the risk are yours.</p></details>
-  <details><summary>Does it guarantee results?</summary><p>No. Nobody can. We measure how many times it was right in the past and show it as it is, misses included. Past performance does not guarantee future results.</p></details>
-  <details><summary>Why is there sometimes no forecast for a market?</summary><p>Because some recent data is missing, because the session has already closed or because the measured reliability does not clearly beat chance. We prefer not to publish rather than publish something weak.</p></details>
-  <details><summary>What does "no proven edge" mean?</summary><p>That, with the data measured so far, the forecast's hit rate is not yet statistically distinguishable from chance. We say it instead of hiding it.</p></details>
-  <p class="note" style="margin-top:18px">Educational and informational content. It is not financial advice or a recommendation to buy or sell. Every investment carries a risk of loss.</p>
-  </div>
+  <details><summary>Is the data live?</summary><p>No, it is from the latest close. It is an analysis and preparation tool, not a trading terminal.</p></details>
+  <details><summary>Does it guarantee results?</summary><p>No. We measure how many times it was right in the past and show it as it is, misses included. It is not financial advice and every investment carries a risk of loss.</p></details>
+  <details><summary>Why is there sometimes no forecast for a market?</summary><p>Because some recent data is missing, the session has already closed or the measured reliability does not clearly beat chance. We prefer not to publish rather than publish something weak.</p></details>
 
 </main>
-<aside class="side" id="newsR"></aside>
+<aside class="side" id="sideR"></aside>
 </div>
 <footer><div class="d">Nexus Terminal provides automatic technical and statistical analysis for informational purposes only. It is not financial advice or a recommendation to buy or sell. Every investment carries a risk of loss and past performance does not guarantee future results.<br><br>Nexus Terminal is a service of Community16 LLC, a New Mexico (USA) limited liability company.</div></footer>
 
 <script>
-const T = {};
+const T = {"DEC": ".", "UP": "up", "DOWN": "down", "CONCEPTS": [["Support and resistance", "A support is a price where an asset has stopped falling several times; a resistance, where it has stopped rising. When they break, they often mark a change in behaviour."], ["Volume", "How many shares have traded. A move on heavy volume is more credible than one on light volume."], ["Risk/reward ratio", "Before entering, compare what you could lose (down to your stop) with what you could gain. Risking 1 to gain 0.5 means you need to be right far more often."], ["Diversification", "Not putting everything in one asset or one market: if one falls, the others cushion it."], ["Leverage", "Trading with borrowed money multiplies gains and losses. At 10x leverage, a 10% move against you wipes out all your capital."], ["Opening gap", "The difference between yesterday's close and today's open. It usually comes from news or from what other exchanges did while this one was closed."], ["Overbought and oversold", "When an asset rises or falls very fast, the RSI spikes. It is not an order to sell or buy: it shows the move is accelerating."], ["Limit order", "An order that only fills at the price you set or better. It protects you from overpaying on gap openings."], ["Volatility", "How much an asset moves on a normal day. More volatility means more opportunity and more risk at the same time."], ["Confirmation bias", "We tend to look for data that confirms what we already think. That is why we measure forecasts in a record nobody can touch up."], ["Position size", "How much money you put into each trade. Many traders limit what they are willing to lose on each one to a small part of their capital."], ["Correlation", "Two assets that rise and fall together do not diversify. The world's exchanges are correlated, which is why the chain of markets works."], ["Sideways trend", "When the price moves in a range with no direction. Trend signals work worse in that situation."], ["Exchange hours", "Tokyo opens first, then Europe and finally New York. What happens in one exchange influences the next."]], "SD_CONCEPT": "Concept of the day", "SD_NEXT": "Coming concepts", "SD_M2": "What Engine 2 measures", "SD_NODATA": "No Engine 2 data yet.", "SD_ALWAYS": "always the same: {b}%", "SD_HI": "high confidence {a}% over {n} days", "SD_NOTE": "Measured open hit rate on days it had not seen. Updated {d}.", "SD_LIVE": "Forecasts published now", "SD_NOLIVE": "None in force right now."};
 const NT_L = "Market news", NT_R = "Economy and companies", NT_NONE = "No news loaded yet.", NT_NOTE = "Headlines from external outlets. Each link opens the original source.", NT_THEME = "Switch between light and dark mode", NT_AD = {"from": "From", "tag": "Advertisement", "fine": "Valmont & Co. · Community16 LLC. Educational content, not financial advice.", "g": {"k": "Valmont & Co. · Academy", "h": "Stock market investing guides", "p": "Digital guides and books in English and Spanish to learn step by step.", "b": "View guides", "u": "https://www.valmontco.com/collections/complete-guides"}, "c": {"k": "Valmont & Co. · Academy", "h": "Trading and investing courses", "p": "Video courses, taught in Spanish.", "b": "View courses (in Spanish)", "u": "https://www.valmontco.com/collections/courses"}, "f": {"k": "Valmont & Co. · Academy", "h": "Free previews of our books and guides", "p": "Read the free introduction of our books and guides before you decide.", "b": "Read for free", "u": "https://www.valmontco.com/collections/free-introductions"}, "l": {"k": "Valmont & Co. · Academy", "h": "Investing books", "p": "Books to understand the markets and manage risk, in English and Spanish.", "b": "View books", "u": "https://www.valmontco.com/collections/books"}}, NT_MB = {"note": "Latest close ({d}) · not live. Indices tracked with ETFs that replicate them.", "names": {"SPY": ["S&P 500", "ETF SPY"], "QQQ": ["Nasdaq 100", "ETF QQQ"], "DIA": ["Dow Jones", "ETF DIA"], "IWM": ["Russell 2000", "ETF IWM"], "GLD": ["Gold", "ETF GLD"], "TLT": ["US 20y Bonds", "ETF TLT"], "X:BTCUSD": ["Bitcoin", "BTC/USD"], "X:ETHUSD": ["Ethereum", "ETH/USD"], "C:EURUSD": ["EUR/USD", "Euro / dollar"], "C:USDJPY": ["USD/JPY", "Dollar / yen"], "C:GBPUSD": ["GBP/USD", "Pound / dollar"]}};
 const LOC = "en-GB";
+
+const MKT = ["es","gb","de","fr","jp"];
+const day = Math.floor(Date.now() / 86400000);
+const nf = x => Number(x).toFixed(1).replace(".", T.DEC);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+(async function(){
+  const L = document.getElementById('sideL'), R = document.getElementById('sideR'); if(!L || !R) return;
+  const c = T.CONCEPTS[day % T.CONCEPTS.length], nx = T.CONCEPTS[(day + 1) % T.CONCEPTS.length];
+  L.innerHTML = '<h2>' + T.SD_CONCEPT + '</h2><div class="sw cd"><h3>' + esc(c[0]) + '</h3><p>' + esc(c[1]) + '</p></div><h2 style="margin-top:22px">' + T.SD_NEXT + '</h2><div class="sw">' + [1,2,3,4].map(i => '<div class="r"><span class="t">' + esc(T.CONCEPTS[(day + i) % T.CONCEPTS.length][0]) + '</span></div>').join('') + '</div>';
+  let M = null; try{ const r = await fetch('../motor2.json?v=' + Date.now()); if(r.ok) M = await r.json(); }catch(e){}
+  if(!M || !M.mercados){ R.innerHTML = '<h2>' + T.SD_M2 + '</h2><div class="sw"><div class="none">' + T.SD_NODATA + '</div></div>'; return; }
+  const rows = MKT.map(id => { const m = (id === 'jp' && M.mercados.jp_eeuu) ? M.mercados.jp_eeuu : M.mercados[id]; if(!m || !m.evaluacion || !m.evaluacion.gap) return ''; const g = m.evaluacion.gap, t = (g.tramos || [])[3];
+    return '<div class="r"><span><span class="t">' + esc(m.nombre) + '</span><small>' + T.SD_ALWAYS.replace('{b}', nf(g.siempreLoMismo)) + (t && t.dias >= 30 ? ' · ' + T.SD_HI.replace('{a}', nf(t.acierto)).replace('{n}', t.dias) : '') + '</small></span><span class="pos"><b>' + nf(g.acierto) + '%</b></span></div>'; }).join('');
+  const live = (M.pronosticos || []).filter(e => new Date(e.validoHasta).getTime() > Date.now() && e.objetivos && e.objetivos.gap && e.objetivos.gap.publicable);
+  const liveRows = live.map(e => '<div class="r"><span class="t">' + esc(e.nombre) + '</span><span><b>' + (e.objetivos.gap.direccion === 'alza' ? T.UP : T.DOWN) + '</b></span></div>').join('');
+  const when = M.generado ? new Date(M.generado).toLocaleDateString('en-GB', {day:'numeric', month:'short'}) : '';
+  R.innerHTML = '<h2>' + T.SD_M2 + '</h2><div class="sw">' + rows + '</div><div class="note">' + T.SD_NOTE.replace('{d}', when) + '</div>' +
+    '<h2 style="margin-top:22px">' + T.SD_LIVE + '</h2><div class="sw">' + (liveRows || '<div class="none">' + T.SD_NOLIVE + '</div>') + '</div>';
+})();
 
 // ---- tema claro / oscuro ----
 (function(){
