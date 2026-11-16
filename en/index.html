@@ -188,6 +188,9 @@ footer .d{border-top:1px solid var(--border);padding-top:20px;max-width:820px;}
 .xs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;margin:14px 0;}
 .xs a{display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;transition:border-color .15s,transform .15s;}
 .xs a:hover{border-color:var(--gold);transform:translateY(-2px);} .xs b{display:block;font-size:1.02rem;margin-bottom:4px;} .xs span{color:var(--muted);font-size:.9rem;}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;align-items:stretch;} @media(max-width:860px){.duo{grid-template-columns:1fr}}
+.duo .free,.duo .ad2{border:1px solid var(--gold);border-radius:16px;background:linear-gradient(135deg,var(--gold-bg),var(--surface));padding:22px 24px;position:relative;} .duo .ad2 .tag{position:absolute;top:-10px;left:20px;background:var(--bg);color:var(--muted);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;padding:0 8px;}
+.duo .kick{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 6px;} .duo h3{margin:0 0 6px;font-size:1.15rem;font-family:Georgia,'Times New Roman',serif;} .duo p{margin:0 0 12px;color:var(--muted);font-size:.9rem;} .duo .btns{display:flex;gap:10px;flex-wrap:wrap;} .fine2{margin-top:12px;font-size:.75rem;color:var(--muted);}
 .eqcard{margin-top:44px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(135deg,var(--gold-bg),var(--surface));padding:22px 26px;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
 .eqcard .kick{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:4px;} .eqcard h3{margin:0 0 6px;font-size:1.25rem;font-family:Georgia,'Times New Roman',serif;} .eqcard p{margin:0;color:var(--muted);font-size:.93rem;max-width:62ch;}
 .eqfoot{margin-top:10px;font-size:.85rem;} .eqfoot a{color:var(--gold2,#b8860b);font-weight:600;}
@@ -248,22 +251,9 @@ a.gl{color:inherit;text-decoration:underline dotted;text-underline-offset:3px;cu
 
   <h2>Explore by section</h2>
   <div class="xs"><a href="escaner.html"><b>Scanner</b><span>Stocks, crypto and forex with heat map and analyzer.</span></a><a href="sesion.html"><b>Forecasts</b><span>Probability of a rise for the next open.</span></a><a href="aprender.html"><b>Learn</b><span>A plain-words trading glossary, every term explained.</span></a><a href="herramientas.html"><b>Tools</b><span>Risk calculators and an asset comparer.</span></a><a href="historico.html"><b>Signal history</b><span>What happened to each signal. No makeup.</span></a><a href="como.html"><b>How it works</b><span>How it is calculated and how reliability is measured.</span></a></div>
-  <section class="eqcard"><div><div class="kick">Our other site</div><h3>Equity Intrinsic</h3><p>Intrinsic value of U.S. stocks: three valuation methods, margin of safety and financial health. Free.</p></div><a class="btn gold" href="https://equityintrinsic.com/en/" target="_blank" rel="noopener">Visit Equity Intrinsic</a></section>
-
-  <section class="ad" aria-label="Advertisement">
-    <span class="tag">Advertisement</span>
-    <div class="kick">Valmont & Co. · Investment academy</div>
-    <h3>Learn to invest in the stock market with step-by-step guides and courses</h3>
-    <p>Digital guides, courses and books about markets, risk management and investing. Start free with the introductions to our books and guides. Guides and books are available in English and Spanish; courses are in Spanish. Educational content created by the Community16 LLC team.</p>
-    <div class="btns">
-      <a class="btn gold" href="https://www.valmontco.com/collections/complete-guides" target="_blank" rel="sponsored noopener">View guides</a>
-      <a class="btn ghost" href="https://www.valmontco.com/collections/books" target="_blank" rel="sponsored noopener">View books</a>
-      <a class="btn ghost" href="https://www.valmontco.com/collections/free-introductions" target="_blank" rel="sponsored noopener">Free previews</a>
-      <a class="btn ghost" href="https://www.valmontco.com/collections/courses" target="_blank" rel="sponsored noopener">View courses (in Spanish)</a>
-      <a class="btn ghost" href="https://www.valmontco.com" target="_blank" rel="sponsored noopener">Go to valmontco.com</a>
-    </div>
-    <div class="fine">Nexus Terminal and Valmont & Co. are owned by Community16 LLC. Educational content: not financial advice and no results are promised.</div>
-  </section>
+  <div class="duo"><section class="free" aria-label="Free alerts"><div class="kick">Free alerts</div><h3>Telegram channel</h3><p>One message every morning with the day's forecasts and market alerts. A free account is needed to join.</p><div class="btns"><a class="btn gold" href="https://t.me/nexus_terminal_Alerts" target="_blank" rel="noopener" data-acc="telegram">Create a free account to join</a></div><h3 style="margin-top:20px">Daily summary by email</h3><p>The day's forecasts, signals and calendar in your inbox, with the same content as the channel. Sent in the language of the site you use.</p><div class="btns"><button class="btn gold" type="button" data-acc="signup">Create a free account</button><button class="btn ghost" type="button" data-acc="login">I already have an account · Sign in</button></div></section><section class="ad2" aria-label="Advertising"><span class="tag">Advertising</span><div class="kick">Valmont & Co. · Investing academy</div><h3>Learn to invest with guides, books and courses</h3><p>Guides and books in Spanish and English, with free prologues. Educational content by Community16 LLC.</p><div class="btns"><a class="btn gold" href="https://www.valmontco.com/collections/complete-guides" target="_blank" rel="sponsored noopener">See guides</a><a class="btn ghost" href="https://www.valmontco.com" target="_blank" rel="sponsored noopener">Go to valmontco.com</a></div><div class="kick" style="margin-top:20px">Our other site</div><h3>Equity Intrinsic</h3><p>Intrinsic value of U.S. stocks: three valuation methods, margin of safety and financial health. Free.</p><div class="btns"><a class="btn gold" href="https://equityintrinsic.com/en/" target="_blank" rel="noopener">Visit Equity Intrinsic</a></div></section></div>
+  <div class="fine2">Nexus Terminal, Equity Intrinsic and Valmont & Co. belong to Community16 LLC. Informational and educational content: not financial advice and no promise of results.</div>
+  
 
 </main>
 <aside class="side" id="newsR"></aside>
@@ -568,5 +558,5 @@ load();
 
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
-</body>
+<script src="../cuenta-config.js"></script><script src="../cuenta.js"></script></body>
 </html>

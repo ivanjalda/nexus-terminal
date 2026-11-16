@@ -259,6 +259,9 @@ svg.fan{width:100%;height:auto;display:block;}
 .xs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;margin:14px 0;}
 .xs a{display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;transition:border-color .15s,transform .15s;}
 .xs a:hover{border-color:var(--gold);transform:translateY(-2px);} .xs b{display:block;font-size:1.02rem;margin-bottom:4px;} .xs span{color:var(--muted);font-size:.9rem;}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;align-items:stretch;} @media(max-width:860px){.duo{grid-template-columns:1fr}}
+.duo .free,.duo .ad2{border:1px solid var(--gold);border-radius:16px;background:linear-gradient(135deg,var(--gold-bg),var(--surface));padding:22px 24px;position:relative;} .duo .ad2 .tag{position:absolute;top:-10px;left:20px;background:var(--bg);color:var(--muted);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;padding:0 8px;}
+.duo .kick{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 6px;} .duo h3{margin:0 0 6px;font-size:1.15rem;font-family:Georgia,'Times New Roman',serif;} .duo p{margin:0 0 12px;color:var(--muted);font-size:.9rem;} .duo .btns{display:flex;gap:10px;flex-wrap:wrap;} .fine2{margin-top:12px;font-size:.75rem;color:var(--muted);}
 .eqcard{margin-top:44px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(135deg,var(--gold-bg),var(--surface));padding:22px 26px;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
 .eqcard .kick{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:4px;} .eqcard h3{margin:0 0 6px;font-size:1.25rem;font-family:Georgia,'Times New Roman',serif;} .eqcard p{margin:0;color:var(--muted);font-size:.93rem;max-width:62ch;}
 .eqfoot{margin-top:10px;font-size:.85rem;} .eqfoot a{color:var(--gold2,#b8860b);font-weight:600;}
@@ -453,5 +456,5 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "77e917313c204610a233b657994010b5"}'></script><!-- End Cloudflare Web Analytics -->
-</body>
+<script src="cuenta-config.js"></script><script src="cuenta.js"></script></body>
 </html>
