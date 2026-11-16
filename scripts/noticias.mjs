@@ -5,22 +5,30 @@ import fs from "node:fs";
 
 const FEEDS = {
   es: {
-    a: [ // mercados
+    a: [ // trading y mercados (columna de la izquierda): bolsa, divisas y cripto
       { s: "Expansión", u: "https://e00-expansion.uecdn.es/rss/mercados.xml" },
-      { s: "Cinco Días", u: "https://feeds.elpais.com/mrss-s/pages/ep/site/cincodias.elpais.com/portada" },
       { s: "Investing.com", u: "https://es.investing.com/rss/news_25.rss" },
+      { s: "Investing.com", u: "https://es.investing.com/rss/market_overview_Technical.rss" },
+      { s: "FXStreet", u: "https://www.fxstreet.es/rss/news" },
+      { s: "Cointelegraph", u: "https://es.cointelegraph.com/rss" },
     ],
     b: [ // economía y empresas
       { s: "Expansión", u: "https://e00-expansion.uecdn.es/rss/empresas.xml" },
       { s: "Expansión", u: "https://e00-expansion.uecdn.es/rss/economia.xml" },
       { s: "Europa Press", u: "https://www.europapress.es/rss/rss.aspx?ch=136" },
+      { s: "Cinco Días", u: "https://feeds.elpais.com/mrss-s/pages/ep/site/cincodias.elpais.com/portada" },
     ],
   },
   en: {
     a: [
+      { s: "MarketWatch", u: "https://feeds.content.dowjones.io/public/rss/mw_marketpulse" },
       { s: "CNBC", u: "https://www.cnbc.com/id/15839069/device/rss/rss.html" },
-      { s: "CNBC", u: "https://www.cnbc.com/id/100003114/device/rss/rss.html" },
       { s: "Investing.com", u: "https://www.investing.com/rss/news_25.rss" },
+      { s: "Investing.com", u: "https://www.investing.com/rss/market_overview_Technical.rss" },
+      { s: "Yahoo Finance", u: "https://finance.yahoo.com/news/rssindex" },
+      { s: "FXStreet", u: "https://www.fxstreet.com/rss/news" },
+      { s: "Cointelegraph", u: "https://cointelegraph.com/rss" },
+      { s: "CoinDesk", u: "https://www.coindesk.com/arc/outboundfeeds/rss/" },
     ],
     b: [
       { s: "CNBC", u: "https://www.cnbc.com/id/20910258/device/rss/rss.html" },
