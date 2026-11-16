@@ -1,12 +1,16 @@
-/* Configuración de las cuentas de Nexus Terminal.
-   Para activar el registro: pega aquí los datos de tu proyecto de Firebase (los 6 datos de "firebaseConfig").
-   Mientras "apiKey" esté vacío, el registro está dormido: el botón de Telegram abre directo y no se bloquea nada. */
 window.NT_CFG = {
-  fb: { apiKey: "", authDomain: "", projectId: "", storageBucket: "", messagingSenderId: "", appId: "" },
-  tgEs: "https://t.me/nexus_terminal_Alerts",   // canal en español
-  tgEn: "",                                      // canal en inglés (cuando lo crees, pega aquí su enlace)
-  formEs: "",                                    // formulario de Brevo (lista en español): dirección "action" del formulario
-  formEn: "",                                    // formulario de Brevo (lista en inglés)
-  emailField: "EMAIL",                           // nombre del campo del correo en el formulario de Brevo
-  lock: { map: true, az: true, cmp: true, csv: true }   // qué se pide registrarse para ver (pon false para dejarlo libre)
+  fb: {
+    apiKey: "AIzaSyCQ5szK3P5Ea3CkZvs0ZuhZBckrLsHyL7w",
+    authDomain: "nexus-terminal-610f7.firebaseapp.com",
+    projectId: "nexus-terminal-610f7",
+    storageBucket: "nexus-terminal-610f7.firebasestorage.app",
+    messagingSenderId: "65639081869",
+    appId: "1:65639081869:web:5a8ace275351f8d200bfc4"
+  },
+  tgEs: "https://t.me/nexus_terminal_Alerts",
+  tgEn: "",
+  formEs: "",
+  formEn: "",
+  emailField: "EMAIL",
+  lock: { map: true, az: true, cmp: true, csv: true }
 };
