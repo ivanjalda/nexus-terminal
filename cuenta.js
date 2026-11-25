@@ -138,3 +138,21 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { boot(); gracias(); }); else { boot(); gracias(); }
 })();
+
+/* Nexus Terminal · contador de ganancias reales hacia el objetivo (se guarda en este navegador; empieza en 0 y solo suma lo que tú registras) */
+(function () {
+  var p1 = document.getElementById('p1'); if (!p1 || !document.getElementById('ep-app')) return;
+  var EN = (document.documentElement.lang || '').slice(0, 2) === 'en', META = 144000000000, K = 'nt_ganancias';
+  var T = EN ? { h: 'Profit counter', g: 'Real profit recorded', m: 'Goal: go public at', b: 'Add result', ph: 'Amount in € (use − for a loss)', n: 'Only real results you record are counted. Nexus gives you the signals; you decide every trade from your own broker.' }
+             : { h: 'Contador de ganancias', g: 'Ganancia real registrada', m: 'Objetivo: salir a bolsa con', b: 'Añadir resultado', ph: 'Importe en € (usa − si es pérdida)', n: 'Solo se cuenta lo que tú registras como resultado real. Nexus te da las señales; tú decides cada operación desde tu bróker.' };
+  function get() { try { return parseFloat(localStorage.getItem(K)) || 0; } catch (e) { return 0; } }
+  function fmt(x) { return x.toLocaleString(EN ? 'en-US' : 'es-ES', { maximumFractionDigits: 2 }) + ' €'; }
+  var c = document.createElement('div'); c.className = 'ep-c'; c.style.marginBottom = '16px';
+  c.innerHTML = '<h3>' + T.h + '</h3><div style="display:flex;flex-wrap:wrap;gap:20px;align-items:baseline"><div><div style="color:var(--muted);font-size:.8rem">' + T.g + '</div><div id="nt-gv" style="font-size:1.8rem;font-weight:800"></div></div><div><div style="color:var(--muted);font-size:.8rem">' + T.m + '</div><div style="font-size:1.2rem;font-weight:700">' + META.toLocaleString(EN ? 'en-US' : 'es-ES') + ' €</div></div></div>'
+    + '<div style="height:10px;background:rgba(128,128,128,.25);border-radius:6px;margin:12px 0;overflow:hidden"><div id="nt-gb" style="height:100%;width:0;background:#d4a72c;min-width:2px"></div></div><div id="nt-gp" style="color:var(--muted);font-size:.85rem;margin-bottom:10px"></div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap"><input id="nt-gi" type="number" step="0.01" placeholder="' + T.ph + '" style="flex:1;min-width:180px;padding:8px;border-radius:8px;border:1px solid rgba(128,128,128,.4);background:transparent;color:inherit"><button id="nt-gbtn" type="button" style="background:#d4a72c;color:#111;border:0;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer">' + T.b + '</button></div><p style="margin:10px 0 0;color:var(--muted);font-size:.8rem">' + T.n + '</p>';
+  p1.insertBefore(c, p1.firstChild);
+  function pinta() { var v = get(), pc = Math.max(0, v) / META * 100; document.getElementById('nt-gv').textContent = fmt(v); document.getElementById('nt-gb').style.width = Math.min(100, pc) + '%'; document.getElementById('nt-gp').textContent = (pc < 0.0001 ? '0' : pc.toFixed(6).replace(/0+$/, '').replace(/\.$/, '')) + ' %'; }
+  document.getElementById('nt-gbtn').onclick = function () { var i = document.getElementById('nt-gi'), x = parseFloat(i.value); if (isNaN(x)) return; try { localStorage.setItem(K, String(get() + x)); } catch (e) {} i.value = ''; pinta(); };
+  pinta();
+})();
