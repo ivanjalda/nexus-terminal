@@ -156,3 +156,23 @@
   document.getElementById('nt-gbtn').onclick = function () { var i = document.getElementById('nt-gi'), x = parseFloat(i.value); if (isNaN(x)) return; try { localStorage.setItem(K, String(get() + x)); } catch (e) {} i.value = ''; pinta(); };
   pinta();
 })();
+
+/* Nexus Terminal · plan Pro: enlace de suscripción (5 €/mes) */
+(function () {
+  var L = 'https://buy.stripe.com/3cI4gA0EI8uE3UicGO1gW1q', EN = (document.documentElement.lang || '').slice(0, 2) === 'en', n = 0;
+  function add() {
+    var hs = document.querySelectorAll('.ep-c h3');
+    for (var i = 0; i < hs.length; i++) {
+      var t = hs[i].textContent;
+      if (t === 'Tu plan' || t === 'Your plan') {
+        var c = hs[i].parentNode; if (c.querySelector('.nt-pro')) return true;
+        var a = document.createElement('a'); a.className = 'nt-pro'; a.href = L; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = EN ? 'Subscribe to Pro · €5/month' : 'Suscribirme a Pro · 5 €/mes';
+        a.style.cssText = 'display:inline-block;margin-top:10px;background:#d4a72c;color:#111;border-radius:8px;padding:9px 18px;font-weight:700;text-decoration:none';
+        c.appendChild(a); return true;
+      }
+    }
+    return false;
+  }
+  var iv = setInterval(function () { if (add() || ++n > 40) clearInterval(iv); }, 500);
+})();
