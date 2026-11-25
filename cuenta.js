@@ -69,7 +69,7 @@
   document.addEventListener('click', function (e) { var p = $('#ntAp'); if (p && !p.hidden && !box.contains(e.target)) p.hidden = true; });
   function panel() {
     var u = A.user, f = wlGet(), p = $('#ntAp'), form = C.formEs && !EN || C.formEn && EN ? (EN ? C.formEn : C.formEs) : '';
-    p.innerHTML = '<p>' + T.hi + ' <b>' + esc(u.email || '') + '</b></p><h4>' + T.favs + '</h4>'
+    p.innerHTML = '<p>' + T.hi + ' <b>' + esc(u.email || '') + '</b></p><p style="margin:6px 0 10px"><a href="' + (EN ? '/en/espacio.html' : '/espacio.html') + '" style="font-weight:700">' + (EN ? 'Open My space →' : 'Abrir Mi espacio →') + '</a></p><h4>' + T.favs + '</h4>'
       + (f.length ? '<ul>' + f.map(function (k) { var m = k.split(':'); return '<li><a href="' + P + 'herramientas.html?m=' + encodeURIComponent(m[0]) + '&s=' + encodeURIComponent(m[1]) + '#comparador">⭐ ' + esc(m[1]) + ' <span style="font-weight:400;color:var(--muted)">' + esc(m[0]) + '</span></a></li>'; }).join('') + '</ul>' : '<p>' + T.nofav + '</p>')
       + '<h4>Telegram</h4><a class="ntB" href="' + TG() + '" target="_blank" rel="noopener">' + T.tg + '</a>'
       + (form ? '<h4>' + T.ml + '</h4><p>' + T.mlp + '</p><form id="ntMF" action="' + esc(form) + '" method="post"><input type="email" name="' + esc(C.emailField || 'EMAIL') + '" required value="' + esc(u.email || '') + '"><input type="hidden" name="locale" value="' + LG + '"><label><input type="checkbox" required> ' + T.mlc + '</label><button class="ntB" type="submit">' + T.mlb + '</button><div class="m" id="ntMFm"></div></form>' : '')

@@ -176,7 +176,7 @@ a.gl{color:inherit;text-decoration:underline dotted;text-underline-offset:3px;cu
   <div class="col left">
     <div id="marketPulse" class="metric-card"></div>
     <input type="text" id="filterBox" placeholder="Filtrar por símbolo..." oninput="renderLists()">
-    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="pron" id="btnPron">Pronósticos</button><button class="modebtn" data-mode="nuevas" id="btnNuevas">Detectadas</button><button class="modebtn" data-mode="activas">Anteriores</button><button class="modebtn" data-mode="todos">Todos</button></div>
+    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="pron" id="btnPron">Pronósticos</button><button class="modebtn" data-mode="nuevas" id="btnNuevas">Detectadas</button><button class="modebtn" data-mode="activas">Siguen vigentes</button><button class="modebtn" data-mode="todos">Todos</button></div>
     <div id="modeNote" style="font-size:.75rem;color:var(--muted);margin-top:8px;line-height:1.45"></div>
     <div class="mobile-hint">Toca un activo para abrir su gráfico y su análisis justo debajo.</div>
     <h2 id="longsTitle">Candidatos con sesgo alcista</h2>
@@ -351,7 +351,7 @@ function refreshLabels(){
   const nxl = (pr && !pr.pasada) ? fmtD(pr.fecha,{weekday:'long',day:'numeric',month:'long'}) : null;
   document.getElementById('btnPron').textContent = 'Pronósticos' + (window.__nx ? ' · ' + window.__nx : ' · pendiente');
   document.getElementById('btnNuevas').textContent = 'Señales del ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = cadTxt(currentMarket) + motTxt(currentMarket) + (nxl ? '<b>Pronósticos</b>: lo que nuestro motor calcula para la próxima sesión (la del ' + nxl + '), con los datos del cierre del ' + l + '. Ordenados de mayor a menor probabilidad. ' : (window.__pas ? '<b>Pronósticos</b>: el pronóstico calculado con el cierre del ' + l + ' era para una sesión que ya terminó, así que no se muestra. El del próximo día de mercado aparece aquí en cuanto el motor procesa el último cierre (cada mañana, sobre las 8:30 en España). ' : '<b>Pronósticos</b>: todavía no se ha publicado el pronóstico de este cierre. ')) + '<b>Detectadas</b>: señales que aparecieron con el cierre del ' + l + ' (ya pasó: no son pronósticos). <b>Anteriores</b>: señales detectadas en cierres anteriores. Se siguen 5 sesiones desde el día en que se detectaron: «día 3 de 5» significa que han pasado 3 sesiones desde esa fecha. Después pasan a Todos. Los precios no son en directo.';
+  document.getElementById('modeNote').innerHTML = cadTxt(currentMarket) + motTxt(currentMarket) + (nxl ? '<b>Pronósticos</b>: lo que nuestro motor calcula para la próxima sesión (la del ' + nxl + '), con los datos del cierre del ' + l + '. Ordenados de mayor a menor probabilidad. ' : (window.__pas ? '<b>Pronósticos</b>: el pronóstico calculado con el cierre del ' + l + ' era para una sesión que ya terminó, así que no se muestra. El del próximo día de mercado aparece aquí en cuanto el motor procesa el último cierre (cada mañana, sobre las 8:30 en España). ' : '<b>Pronósticos</b>: todavía no se ha publicado el pronóstico de este cierre. ')) + '<b>Detectadas</b>: señales que aparecieron con el cierre del ' + l + ' (ya pasó: no son pronósticos). Miran hacia delante: los 5 días de bolsa siguientes. <b>Siguen vigentes</b>: señales de cierres anteriores a las que aún les quedan días. Los precios no son en directo.';
 }
 function renderLists(){
   restoreDetail();
@@ -393,7 +393,7 @@ function renderLists(){
 
 function rowHtml(s, type){
   return `<div class="scan-row" data-symbol="${s.symbol}">
-    <div><div class="sym">${s.symbol}${(mode === 'pron' && s.pron && s.pron.pc != null) ? ' <span style="font-size:.66rem;color:var(--blue);font-weight:700;">' + Math.round(s.pron.pc) + '% · 5 ses.</span>' : (mode !== 'pron' && s.nuevo) ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">DETECTADA</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${s.trend}${s.atrPct >= 8 ? ' · ⚠ volatilidad muy alta' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · detectada el ' + fmtD(s.desde,{day:'numeric',month:'short'}) + ' · día ' + s.ses + ' de 5' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ precio casi inmóvil, señal poco fiable' : ''}</div></div>
+    <div><div class="sym">${s.symbol}${(mode === 'pron' && s.pron && s.pron.pc != null) ? ' <span style="font-size:.66rem;color:var(--blue);font-weight:700;">' + Math.round(s.pron.pc) + '% · 5 ses.</span>' : (mode !== 'pron' && s.nuevo) ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">DETECTADA</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${s.trend}${s.atrPct >= 8 ? ' · ⚠ volatilidad muy alta' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · vigente: quedan ' + (5 - s.ses) + ' de 5 días de bolsa' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ precio casi inmóvil, señal poco fiable' : ''}</div></div>
     <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"ESPERAR"}</span>
   </div>`;
 }
