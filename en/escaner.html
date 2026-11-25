@@ -178,7 +178,7 @@ a.gl{color:inherit;text-decoration:underline dotted;text-underline-offset:3px;cu
   <div class="col left">
     <div id="marketPulse" class="metric-card"></div>
     <input type="text" id="filterBox" placeholder="Filter by symbol..." oninput="renderLists()">
-    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="pron" id="btnPron">Forecasts</button><button class="modebtn" data-mode="nuevas" id="btnNuevas">Detected</button><button class="modebtn" data-mode="activas">Earlier</button><button class="modebtn" data-mode="todos">All</button></div>
+    <div style="display:flex;gap:6px;margin-top:8px;"><button class="modebtn active" data-mode="pron" id="btnPron">Forecasts</button><button class="modebtn" data-mode="nuevas" id="btnNuevas">Detected</button><button class="modebtn" data-mode="activas">Still active</button><button class="modebtn" data-mode="todos">All</button></div>
     <div id="modeNote" style="font-size:.75rem;color:var(--muted);margin-top:8px;line-height:1.45"></div>
     <div class="mobile-hint">Tap an asset to open its chart and analysis right below it.</div>
     <h2 id="longsTitle">Bullish-bias candidates</h2>
@@ -368,7 +368,7 @@ function refreshLabels(){
   const nxl = (pr && !pr.pasada) ? fmtD(pr.fecha,{weekday:'long',day:'numeric',month:'long'}) : null;
   document.getElementById('btnPron').textContent = 'Forecasts' + (window.__nx ? ' · ' + window.__nx : ' · pending');
   document.getElementById('btnNuevas').textContent = 'Signals of ' + window.__cs;
-  document.getElementById('modeNote').innerHTML = cadTxt(currentMarket) + motTxt(currentMarket) + (nxl ? '<b>Forecasts</b>: what our engine calculates for the next session (' + nxl + '), using the data of the close of ' + l + '. Sorted from highest to lowest probability. ' : (window.__pas ? '<b>Forecasts</b>: the forecast calculated with the close of ' + l + ' was for a session that has already ended, so it is not shown. The one for the next market day appears here as soon as the engine processes the latest close (every morning, around 8:30 Spain time). ' : '<b>Forecasts</b>: the forecast for this close has not been published yet. ')) + '<b>Detected</b>: signals that appeared with the close of ' + l + ' (already past: not forecasts). <b>Earlier</b>: signals detected in earlier closes. Each is tracked for 5 sessions from the day it was detected: “day 3 of 5” means 3 sessions have passed since that date. Afterwards they move to All. Prices are not live.';
+  document.getElementById('modeNote').innerHTML = cadTxt(currentMarket) + motTxt(currentMarket) + (nxl ? '<b>Forecasts</b>: what our engine calculates for the next session (' + nxl + '), using the data of the close of ' + l + '. Sorted from highest to lowest probability. ' : (window.__pas ? '<b>Forecasts</b>: the forecast calculated with the close of ' + l + ' was for a session that has already ended, so it is not shown. The one for the next market day appears here as soon as the engine processes the latest close (every morning, around 8:30 Spain time). ' : '<b>Forecasts</b>: the forecast for this close has not been published yet. ')) + '<b>Detected</b>: signals that appeared with the close of ' + l + ' (already past: not forecasts). They look forward: the following 5 trading days. <b>Still active</b>: signals from earlier closes that still have days left. Prices are not live.';
 }
 function renderLists(){
   restoreDetail();
@@ -410,7 +410,7 @@ function renderLists(){
 
 function rowHtml(s, type){
   return `<div class="scan-row" data-symbol="${s.symbol}">
-    <div><div class="sym">${s.symbol}${(mode === 'pron' && s.pron && s.pron.pc != null) ? ' <span style="font-size:.66rem;color:var(--blue);font-weight:700;">' + Math.round(s.pron.pc) + '% · 5 ses.</span>' : (mode !== 'pron' && s.nuevo) ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">DETECTED</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${trEn(s.trend)}${s.atrPct >= 8 ? ' · ⚠ very high volatility' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · detected ' + fmtD(s.desde,{day:'numeric',month:'short'}) + ' · day ' + s.ses + ' of 5' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ price almost frozen, unreliable signal' : ''}</div></div>
+    <div><div class="sym">${s.symbol}${(mode === 'pron' && s.pron && s.pron.pc != null) ? ' <span style="font-size:.66rem;color:var(--blue);font-weight:700;">' + Math.round(s.pron.pc) + '% · 5 ses.</span>' : (mode !== 'pron' && s.nuevo) ? ' <span style="font-size:.6rem;color:var(--blue);font-weight:700;">DETECTED</span>' : ''}</div><div class="meta">RSI ${s.rsi} · ${trEn(s.trend)}${s.atrPct >= 8 ? ' · ⚠ very high volatility' : ''}${(s.ses >= 1 && s.ses <= 5 && !s.nuevo) ? ' · active: ' + (5 - s.ses) + ' of 5 trading days left' : ''}${(currentMarket === 'stocks' && s.atrPct < 0.4) ? ' · ⚠ price almost frozen, unreliable signal' : ''}</div></div>
     <span class="tag ${type}">${type==="long"?"LONG":type==="short"?"SHORT":"WAIT"}</span>
   </div>`;
 }
