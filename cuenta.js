@@ -176,3 +176,17 @@
   }
   var iv = setInterval(function () { if (add() || ++n > 40) clearInterval(iv); }, 500);
 })();
+
+(function () {
+  var EN = (document.documentElement.lang || '').slice(0, 2) === 'en', n = 0;
+  var T = EN ? { f: 'Free (what you have now)', fl: ['Engine status', 'Today\u2019s forecasts with proven reliability', 'Favorites and profit counter', 'Daily Telegram channel'], p: 'Pro \u00b7 \u20ac5/month', pl: ['Europe forecasts', 'Full Scanner', 'Email and Telegram alerts'], note: 'Pro is being switched on step by step. If you subscribe now, your subscription is registered and you get the perks as soon as they open.' } : { f: 'Gratis (lo que tienes ahora)', fl: ['Estado de los motores', 'Pron\u00f3sticos de hoy con fiabilidad demostrada', 'Favoritos y contador de ganancias', 'Canal diario de Telegram'], p: 'Pro \u00b7 5 \u20ac/mes', pl: ['Pron\u00f3sticos de Europa', 'Esc\u00e1ner completo', 'Avisos por correo y Telegram'], note: 'Pro se est\u00e1 activando poco a poco. Si te suscribes ahora, tu suscripci\u00f3n queda registrada y tendr\u00e1s las ventajas en cuanto se abran.' };
+  function li(a) { return a.map(function (x) { return '<li>' + x + '</li>'; }).join(''); }
+  function go() { var hs = document.querySelectorAll('.ep-c h3');
+    for (var i = 0; i < hs.length; i++) { var t = hs[i].textContent;
+      if (t === 'Tu plan' || t === 'Your plan') { var c = hs[i].parentNode; if (c.querySelector('.nt-plan')) return true; var p = c.querySelector('p'); if (!p) return false;
+        var d = document.createElement('div'); d.className = 'nt-plan'; d.style.cssText = 'font-size:.9rem;color:var(--muted);line-height:1.5';
+        d.innerHTML = '<p style="margin:8px 0 2px;font-weight:600;color:var(--text)">' + T.f + '</p><ul style="margin:0 0 8px;padding-left:18px">' + li(T.fl) + '</ul><p style="margin:8px 0 2px;font-weight:600;color:var(--text)">' + T.p + '</p><ul style="margin:0 0 8px;padding-left:18px">' + li(T.pl) + '</ul><p style="margin:6px 0 10px">' + T.note + '</p>';
+        p.parentNode.replaceChild(d, p); return true; } }
+    return false; }
+  var iv = setInterval(function () { if (go() || ++n > 40) clearInterval(iv); }, 500);
+})();
