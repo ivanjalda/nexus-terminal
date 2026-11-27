@@ -14,3 +14,5 @@ window.NT_CFG = {
   emailField: "EMAIL",
   lock: { map: true, az: true, cmp: true, csv: true }
 };
+
+/* Enlace directo al plan Pro: espacio.html#pro o ?pro lleva a la tarjeta Suscribirme a Pro */ (function () { if (!/#pro\b|[?&]pro\b/.test(location.href)) return; var n = 0; var t = setInterval(function () { var a = document.querySelector('a.nt-pro'); n++; if (a && a.offsetParent) { clearInterval(t); var box = a.closest('section,article,div') || a; box.scrollIntoView({ behavior: 'smooth', block: 'center' }); a.style.boxShadow = '0 0 0 3px #d4af37'; } else if (n > 40) clearInterval(t); }, 250); })();
